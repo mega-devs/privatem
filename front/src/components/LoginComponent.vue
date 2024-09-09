@@ -1,0 +1,128 @@
+<template>
+    <div class="container vh-100 d-flex align-items-center">
+        <div id="innerPage" class="w-100">
+            <div class="row align-items-center justify-content-center" style="background-color: black;">
+                <div class="col-sm-6 col-xs-12 d-sm-block d-none">
+                    <div id="imgBgn">
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12 text-white p-5">
+                    <div class="lead" style="color:red;">
+                        <h3>Welcome Back</h3>
+                    </div>
+                    <div class="mt-4">
+                        <p>Sign In</p>
+                    </div>
+                    <div class="form-floating mb-3" style="background-color: black;">
+                        <input class="form-control" id="floatingInput" type="login" name="" v-model="name" placeholder="Enter Login" style="color: white; " />
+                        <label for="floatingInput">Login</label>
+                    </div>
+                    <div class="form-floating mb-4" style="background-color: black;">
+                        <input class="form-control" id="floatingPassword" style="color: white;" type="password" name="" v-model="password" placeholder="Enter Password" />
+                        <label for="floatingPassword">Password</label>
+                    </div>
+                    <p class="mt-4">{{ error }}</p>
+                    <button class="btn btn-info mt-4 w-100" style="background-color: red; color: white;" type="submit" @click.prevent="submit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import router from "../router";
+import axios from "axios";
+
+function createCookie(name, value, days) {
+    let date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + value + "; " + expires + "; path=/";
+}
+
+export default {
+    data() {
+        return {
+            name: null,
+            password: null,
+            error: null,
+        }
+    },
+    methods: {
+        setAuth() {
+            let token = ''
+            let cookies = document.cookie.split(";")
+            cookies.forEach(cookie => {
+                if (cookie.includes('authToken')) {
+                    token = cookie.split("=")[1];
+                }
+            })
+            this.$store.dispatch('setAuth', token)
+        },
+        submit() {
+            axios.post(`${this.$store.state.back_url}/api/login`, { name: this.name, password: this.password }).then(res => {
+                this.error = ''
+                createCookie("authToken", res.data.token, 30)
+                this.setAuth()
+                router.push('/dashboard')
+            }).catch(errors => {
+                this.error = 'User not found or password is incorrect!'
+            })
+        }
+    },
+	beforeMount() {
+    this.setAuth();
+    let el = document.querySelector('body');
+    el.setAttribute("data-bs-theme", "dark");
+    el.style.backgroundColor = "black";
+
+	},
+
+    mounted() {
+        setTimeout(() => {
+            if (this.$store.state.auth) {
+                router.back()
+            }
+        }, 500)
+    }
+};
+</script>
+
+<style scoped>
+body, html {
+    background-color: black !important;
+    color: white;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#innerPage {
+    width: 100%;
+    max-width: 840px;
+    margin: 0 auto;
+    border-radius: 12px;
+    background: #202630;
+    box-shadow: 7px 7px 13px 1px #010b1e, -10px -9px 11px 1px #202630;
+}
+
+.form-control {
+    background: none;
+    border: none;
+    border-bottom: 1px solid #202630;
+    color: #fff;
+}
+
+#imgBgn {
+    background: url('../assets/logo.jpg') no-repeat center center;
+    background-size: contain;
+    min-height: 75vh;
+    width: 100%;
+    border-radius: 12px 0 0 12px;
+}
+
+.container, .row, .col-sm-6, .col-xs-12 {
+    padding: 0;
+    height: 100%;
+}
+</style>

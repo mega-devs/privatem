@@ -1,0 +1,845 @@
+<template>
+    <NavBarComponent stateProp="SMTPs"/>
+    <div class="container-fluid dummy-form">
+        <div class="row">
+            <h2 class="text-center headerzn">SMTPs</h2>
+            <hr>
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-6 mb-3">
+                        <label for="formFile1" class="form-label labelnew">Input SMTPs.txt or csv</label>
+                        <input ref="inputEl1" class="form-control" type="file" id="formFile1" @change="fileUpload">
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                        <label for="formFile2" class="form-label labelnew">Input SMTPs.zip</label>
+                        <input ref="inputEl2" class="form-control" type="file" id="formFile2" @change="fileUpload">
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                          <label for="formText" class="form-label labelnew">Input SMTPs</label>
+                          <textarea ref="inputEl3" class="form-control" id="formText" v-model="smtpTextInput" placeholder="Enter multiple SMTPs separated by new lines"></textarea>
+                      </div>
+                </div>
+                <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>&nbsp;
+                <button type="button" @click.prevent="exportToTxt" class="btn btn-primary">Export to TXT</button>
+                <p class="text-danger">{{ errorSub }}</p>
+            </div>
+            <div class="col-lg-12">
+                <DataTable :data="smtpsData" :columns="smtpsColumns" :class="tableClasses" class="data-cell" @click="handleClick">
+                </DataTable>
+            </div>
+        </div>
+        <div>
+            <br>
+            <hr>
+            <p class="headerzn">Check SMTP</p>
+            <hr>
+            <div class="row">
+                <div class="col-lg-6">
+                    <p class="labelnew">SMTP</p>
+                    <div class="custom-select" ref="smtpDropdown" >
+                        <div class="select-selected" @click="toggleDropdown">{{ isEmpty(selectedSmtp) ? 'Select SMTP' : selectedSmtp }}</div>
+                        <div v-if="dropdownOpen" class="select-items">
+                            <div v-for="item in allowedStatuses" :key="item.id" @click="selectSmtp(item)">{{ item}}</div>
+                        </div>
+                    </div>
+                    <p class="labelnew">Proxy</p>
+                    <div class="custom-select" ref="proxyDropdown">
+                        <div class="select-selected" @click="toggleProxyDropdown">{{ isEmpty(selectedProxy) ? 'Select Proxy' : selectedProxy }}</div>
+                        <div v-if="proxyDropdownOpen" class="select-items">
+                            <div v-for="item in allowedStatuses" :key="item.id" @click="selectProxy(item)">{{ item }}</div>
+                        </div>
+                    </div>
+                    <p class="labelnew">IMAP</p>
+                    <div class="custom-select" ref="imapDropdown">
+                        <div class="select-selected" @click="toggleImapDropdown">{{ isEmpty(selectedImap) ? 'Select IMAP' : selectedImap }}</div>
+                        <div v-if="imapDropdownOpen" class="select-items">
+                            <div v-for="item in allowedStatuses" :key="item.id" @click="selectImap(item)">{{ item }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <br/>
+                    <input v-model="timeout" style="margin-top: 1em;" type="text" class="form-control" aria-label="Small" placeholder="timeout">
+                </div>
+            </div>
+        </div>
+        <div v-if="can_check">
+            <button style="margin-top: 1em;" type="button" @click.prevent="checkSubmit" class="btn btn-primary">Submit</button>
+        </div>
+        <div v-else>
+            <p class="labelnew">Please wait!</p>
+        </div>
+        <p class="text-danger">{{ errorCheck }}</p>
+        <h3 class="headerzn">Progress</h3>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" :style="'width: '+log_progress+'%'" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <p class="text-success">Valid: {{ log_valid }}</p>
+            </div>
+            <div class="col-lg-6">
+                <p class="text-danger">Errors: {{ log_error }}</p>
+            </div>
+        </div>
+        <div>
+            <h3 class="headerzn">Console</h3>
+            <div id="console-output" ref="consoleOutput">
+                <template v-for="(item, index) in logs" :key="index">
+                    <span :class="item['status']">{{ item['TEXT'] }}<br/></span>
+                </template>
+            </div>
+            <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
+        </div>
+    </div>
+    <ModalViewComponent ref="modal"></ModalViewComponent>
+</template>
+
+<script>
+import axios from 'axios';
+import NavBarComponent from './components/NavBarComponent.vue';
+import ModalViewComponent from './components/ModalViewComponent.vue';
+import DataTable from 'datatables.net-vue3';
+import JSZip from 'jszip';
+import { io } from "socket.io-client";
+
+export default {
+    components: {
+        NavBarComponent,
+        ModalViewComponent,
+        DataTable
+    },
+    data() {
+        return {
+            name: null,
+            file: null,
+            fileName: null,
+            errorSub: null,
+            can_check: true,
+            log_error: null,
+            log_valid: null,
+            check_file: null,
+            check_file_name: null,
+            log_progress: null,
+            errorCheck: null,
+            smtpTextInput: '',
+            logs: [],
+            imapsData: [],
+            selectedImap: {},
+            smtpsData: [],
+            allowedStatuses: ['all','inbox', 'junk', 'dead', 'none', 'checked'],
+            selectedSmtps: [],
+            smtpsColumns: [
+                { 
+                    title: 'Select',
+                    data: 'id',
+                    render: (data, type, row) => {
+                        return `<input type="checkbox" class="form-check-input" data-id="${data}" data-server="${row.server}" ${this.selectedSmtps.some(item => item.id === data) ? 'checked' : ''}>`;
+                    },
+                    className: 'data-cell'
+
+                },
+                { title: 'ID', data: 'id' ,className: 'data-cell'},
+                { title: 'Server', data: 'server' ,className: 'data-cell'},
+                { title: 'Port', data: 'port' ,className: 'data-cell'},
+                { title: 'User', data: 'user' ,className: 'data-cell'},
+                { title: 'Pw', data: 'pw' ,className: 'data-cell'},
+                { title: 'STATUS', data: 'status', render: (data) => `<a href="#" class="btn btn-${data}">${data}</a>` },
+                { title: 'DELETE', data: 'id', render: (data) => `<button class="btn btn-danger" data-action="delete" data-id="${data}"><i class="bi bi-dash"></i></button>` },
+                { title: 'Check B/L', data: 'id',className: 'data-cell', render: (data) => {
+                    return `<button class="btn btn-info" data-action="checkSMTP" data-id="${data}"><i class="bi bi-check"></i></button>`;
+                },
+            },
+                
+            ],
+            tableClasses: 'table text-start align-middle table-bordered table-hover mb-0',
+            selectedSmtp: {},
+            selectedProxy: {},
+            selectedImap: {},
+            imapDropdownOpen: false,
+            dropdownOpen: false,
+            proxyDropdownOpen: false,
+        };
+    },
+    methods: {
+        saveSelection() {
+            localStorage.setItem('selectedSmtps', JSON.stringify(this.selectedSmtps));
+        },
+        loadSelection() {
+            this.selectedSmtps = JSON.parse(localStorage.getItem('selectedSmtps') || '[]');
+        },
+        isEmpty(obj) {
+            return Object.keys(obj).length === 0;
+        },
+        fetchImaps() {
+            axios.get(`${this.$store.state.back_url}/api/imaps`)
+                .then(response => {
+                    if (response.data && response.data.status === 'success') {
+                        this.imaps = response.data.imaps;
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to fetch imaps:', error);
+                });
+        },
+        getMaterials() {
+            const currentSessionName = this.getCurrentSessionName();
+            if (!currentSessionName) {
+                this.errorSubTemplates = 'No session loaded';
+                return;
+            }
+            axios.get(`${this.$store.state.back_url}/api/get/list/proxies/${currentSessionName}`).then(res => {
+                this.proxies = res.data;
+            });
+            axios.get(`${this.$store.state.back_url}/api/get/list/smtps/${currentSessionName}`).then(res => {
+                this.smtpsData = res.data.map(item => ({
+                    id: item.id,
+                    server: item.server,
+                    port: item.port,
+                    user: item.email,
+                    pw: item.password,
+                    status: item.status
+                }));
+            }).catch(error => {
+                console.error('Error fetching templates:', error);
+            });
+        },
+        toggleSelection(id, server) {
+            const index = this.selectedSmtps.findIndex(item => item.id === id);
+            if (index !== -1) {
+                this.selectedSmtps.splice(index, 1);
+            } else {
+                this.selectedSmtps.push({ id, server });
+            }
+            console.log(this.selectedSmtps);
+        },
+        getCurrentSessionName() {
+            const name = document.cookie.split('; ').find(row => row.startsWith('currentSessionName='));
+            return name ? name.split('=')[1] : null;
+        },
+        handleClick(event) {
+            const action = event.target.getAttribute('data-action');
+            const id = event.target.getAttribute('data-id');
+
+            if (action === 'view') {
+                this.view(id);
+            } else if (action === 'delete') {
+                this.del(id);
+            } else if (action === 'checkSMTP') {
+                this.checkSMTP(id);
+            }
+        },
+        submit() {
+            const currentSessionName = this.getCurrentSessionName();
+            if (!currentSessionName) {
+                this.errorSubTemplates = 'No session loaded';
+                return;
+            }
+            let token = '';
+            document.cookie.split(';').forEach(cookie => {
+                if (cookie.includes('authToken')) {
+                    token = cookie.split('=')[1].trim();
+                }
+            });
+            this.errorSub = '';
+            if (this.file || this.smtpTextInput) {
+                let smtpArray = this.smtpTextInput.split('\n').map(smtp => smtp.trim()).filter(smtp => smtp);
+                let fileContent = this.file ? this.file : smtpArray.join('\n');
+                axios.post(`${this.$store.state.back_url}/api/input/material`, {
+                    token: token,
+                    session: currentSessionName,
+                    type: 'smtps',
+                    file: fileContent,
+                    fileName: this.fileName || ''
+                }).then(res => {
+                    this.getMaterials();
+                    this.$refs.inputEl1.value = '';
+                    this.smtpTextInput = '';
+                    if (res.data.data === 'error') {
+                        this.errorSub = res.data.error;
+                    }
+                }).catch(error => {
+                    this.errorSub = 'An error occurred during submission.';
+                    console.error('Submission error:', error);
+                });
+            } else {
+                this.errorSub = 'Fill in the fields!';
+            }
+        },
+        del(id) {
+            let token = '';
+            document.cookie.split(';').forEach(cookie => {
+                if (cookie.includes('authToken')) {
+                    token = cookie.split('=')[1].trim();
+                }
+            });
+            axios.post(`${this.$store.state.back_url}/api/del/material`, { token: token, id: id, type: 'smtps' }).then(res => {
+                this.getMaterials();
+            }).catch(error => {
+                console.error('Error deleting material:', error);
+            });
+        },
+        get_zip_data(zip, files_keys, data, callback) {
+            zip.files[files_keys[0]].async('string').then(el_data => {
+                files_keys.shift();
+                callback(data = data + '\n' + el_data);
+                if (files_keys.length > 0) {
+                    this.get_zip_data(zip, files_keys, data, () => {});
+                } else {
+                    this.file = data;
+                }
+            });
+        },
+        fileUpload(event) {
+            const file = event.target.files[0];
+            this.fileName = file.name;
+
+            if (event.target.getAttribute('id') === 'formFile1') {
+                file.arrayBuffer().then((buffer) => {
+                    const bufferByteLength = buffer.byteLength;
+                    const bufferUint8Array = new Uint8Array(buffer, 0, bufferByteLength);
+                    this.file = new TextDecoder().decode(bufferUint8Array);
+                });
+            } else if (event.target.getAttribute('id') === 'formFile2') {
+                this.$refs.inputEl1.value = '';
+                file.arrayBuffer().then((buffer) => {
+                    const zip = new JSZip();
+                    zip.loadAsync(buffer).then((zip) => {
+                        let data = '';
+                        let files = zip.files;
+                        let files_keys = Object.keys(files);
+                        this.get_zip_data(zip, files_keys, data, () => {});
+                    });
+                });
+            }
+        },
+        view(id) {
+            axios.get(`${this.$store.state.back_url}/api/get/materials/${id}`).then(res => {
+                let modalData = [];
+                res.data.forEach(el => {
+                    delete el[1];
+                    modalData.push(el);
+                });
+                this.$refs.modal.data = res.data;
+                this.$refs.modal.show = true;
+            }).catch(error => {
+                console.error('Error fetching material details:', error);
+            });
+        },
+        saveLog(logText, status) {
+            const currentSessionName = this.getCurrentSessionName();
+            if (!currentSessionName) {
+                return;
+            }
+
+            let token = '';
+            let cookies = document.cookie.split(";");
+            cookies.forEach(cookie => {
+                if (cookie.includes('authToken')) {
+                    token = cookie.split("=")[1];
+                }
+            });
+
+            axios.post(`${this.$store.state.back_url}/api/input/log/smtps/${currentSessionName}`, {
+                token: token,
+                logtext: logText,
+                status: status,
+            }).then(res => {
+                if (res.data.data !== 'success') {
+                    console.error('Error saving log:', res.data.error);
+                }
+            }).catch(error => {
+                console.error('Error saving log:', error.message);
+            });
+        },
+        fetchLogs() {
+            const currentSessionName = this.getCurrentSessionName();
+            const logType = 'smtps';
+            if (!currentSessionName) {
+                return;
+            }
+
+            axios.get(`${this.$store.state.back_url}/api/logs/${logType}/${currentSessionName}`)
+                .then(res => {
+                    console.log(res.data);
+                    this.logs = res.data.data;
+                })
+                .catch(error => {
+                    console.error('Error fetching logs:', error);
+                });
+        },
+        deleteLog() {
+            this.logs = [];
+            const session = this.getCurrentSessionName();
+            let token = '';
+            document.cookie.split(';').forEach(cookie => {
+                if (cookie.includes('authToken')) {
+                    token = cookie.split('=')[1].trim();
+                }
+            });
+            if (!token || !session) {
+                this.error = 'No session or token found';
+                return;
+            }
+
+            axios.post(`${this.$store.state.back_url}/api/del/log`, {
+                token: token,
+                session: session,
+                type: 'smtps'
+            })
+            .then(response => {
+                if (response.data.data === 'success') {
+                    this.logs = "";
+                    this.fetchLogs(); 
+                } else {
+                    this.error = response.data.error;
+                }
+            })
+            .catch(error => {
+                this.error = 'Error deleting log: ' + error.message;
+            });
+        },
+        addLogEntry(logEntry) {
+                this.logs.push(logEntry);
+                this.$nextTick(() => {
+                     const consoleOutput = this.$refs.consoleOutput;
+                     if (consoleOutput) {
+                         consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                     }
+                });
+        },
+        checkSubmit() {
+
+            console.log('Check file:', this.check_file);
+            console.log('Timeout:', this.timeout);
+            console.log('Proxy form:', this.proxy_form);
+
+            this.logs = [];
+            let token = '';
+            document.cookie.split(';').forEach(cookie => {
+                if (cookie.includes('authToken')) {
+                    token = cookie.split('=')[1].trim();
+                }
+            });
+            this.errorCheck = null;
+
+            if (this.check_file && this.timeout && this.proxy_form) {
+                this.can_check = false;
+
+                axios.post(`${this.$store.state.back_url}/api/check/smtp`, {
+                    token: token,
+                    session: this.getCurrentSessionName(),
+                    smtp_id: this.check_file,
+                    proxy_id: this.proxy_form,
+                    timeout: this.timeout,
+                }).then(res => {
+                    if (res.data.data == 'success') {
+                        this.can_check = true;
+                        this.errorCheck = null;
+                    } else if (res.data.error) {
+                        this.can_check = true;
+                        this.errorCheck = res.data.error;
+                    }
+                }).catch(error => {
+                    this.can_check = true;
+                    this.errorCheck = 'Error occurred while submitting';
+                    console.error('Error submitting:', error);
+                });
+            } else {
+                this.errorCheck = 'Fill in the fields!';
+            }
+        },
+        checkSMTP(id) {
+            console.log('Check file:', id);
+
+            this.logs = [];
+            let token = '';
+            document.cookie.split(';').forEach(cookie => {
+                if (cookie.includes('authToken')) {
+                    token = cookie.split('=')[1].trim();
+                }
+            });
+            this.errorCheck = null;
+
+            if (id) {
+                this.can_check = false;
+
+                axios.post(`${this.$store.state.back_url}/api/check/smtpp`, {
+                    token: token,
+                    session: this.getCurrentSessionName(),
+                    smtp_id: id,
+                }).then(res => {
+                    if (res.data.data == 'success') {
+                        this.can_check = true;
+                        this.errorCheck = null;
+                    } else if (res.data.error) {
+                        this.can_check = true;
+                        this.errorCheck = res.data.error;
+                    }
+                }).catch(error => {
+                    this.can_check = true;
+                    this.errorCheck = 'Error occurred while submitting';
+                    console.error('Error submitting:', error);
+                });
+            } else {
+                this.errorCheck = 'Fill in the fields!';
+            }
+        },
+        toggleDropdown() {
+            this.dropdownOpen = !this.dropdownOpen;
+            this.proxyDropdownOpen = false; 
+        },
+         toggleImapDropdown() {
+            this.imapDropdownOpen = !this.imapDropdownOpen;
+        },
+        toggleProxyDropdown() {
+            this.proxyDropdownOpen = !this.proxyDropdownOpen;
+            this.dropdownOpen = false;
+        },
+        selectImap(item) {
+            this.selectedImap = item;
+            this.imapDropdownOpen = false;
+        },
+        selectSmtp(item) {
+            this.selectedSmtp = item;
+            this.check_file = item;
+            this.dropdownOpen = false;
+        },
+        selectProxy(item) {
+            this.selectedProxy = item;
+            this.proxy_form = item;
+            this.proxyDropdownOpen = false;
+        },
+        handleClickOutside(event) {
+            if (!this.$refs.smtpDropdown.contains(event.target)) {
+                this.dropdownOpen = false;
+            }
+            if (!this.$refs.proxyDropdown.contains(event.target)) {
+                this.proxyDropdownOpen = false;
+            }
+            if (!this.$refs.imapDropdown.contains(event.target)) {
+                this.imapDropdownOpen = false;
+            }
+        },
+        exportToTxt() {
+            const data = this.smtpsData.map(item => `${item.server}, ${item.port},  ${item.user},  ${item.pw}, ${item.status}`).join('\n');
+            const blob = new Blob([data], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'smtps.txt';
+            link.click();
+        },
+        sendTestEmail() {
+        const smtpData = this.smtpTextInput.split('\n').map(line => {
+            const [server, port, user, pw] = line.split(',').map(item => item.trim());
+            return { server, port, user, pw };
+        });
+
+        axios.post('/api/send-test-email', { smtps: smtpData })
+            .then(response => {
+
+                console.log('Тестовое письмо успешно отправлено:', response.data);
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке тестового письма:', error);
+            });
+        }
+
+    },
+    mounted() {
+        this.fetchImaps();
+        this.loadSelection();
+        this.getMaterials();
+        this.fetchLogs();
+        console.log(this.selectedSmtps)
+        document.querySelector('.table').addEventListener('change', (event) => {
+            if (event.target.classList.contains('form-check-input')) {
+                const id = parseInt(event.target.getAttribute('data-id'));
+                const server = event.target.dataset.server;
+                this.toggleSelection(id, server);
+                this.saveSelection();
+            }
+        });
+    },
+    beforeDestroy() {
+        document.removeEventListener('click', this.handleClickOutside);
+    },
+    created() {
+        this.connection = io.connect(this.$store.state.back_url);
+        this.connection.on('message', (data) => {
+            data = data.split(':');
+            if (data[0] == 'progress_check_smtps') {
+                this.log_valid = data[1];
+                this.log_error = data[2];
+                this.log_progress = data[3];
+                if (data[3] == '100') {
+                    this.can_check = true;
+                    setTimeout(() => {
+                        this.getMaterials();
+                    }, 1000);
+                } else {
+                    this.can_check = false;
+                }
+            } else if (data[0] == 'logs_check_smtps') {
+                this.saveLog(data[2], data[1]);
+                this.fetchLogs();
+                this.addLogEntry({ TEXT: data[2], status: data[1] });
+
+            }
+        });
+    }
+};
+</script>
+
+<style scoped>
+.dummy-form {
+    margin-left: 20em;
+    margin-right: 10em;
+    margin-top: 2em;
+    width: auto;
+}
+
+.custom-select {
+    position: relative;
+    font-family: Arial;
+}
+
+.select-selected {
+    background-color: #2a2e35;
+    color: #fff;
+    padding: 8px 16px;
+    border: 1px solid #444;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.select-selected:hover {
+    background-color: #3b4048; 
+}
+
+.select-items {
+    position: absolute;
+    background-color: #2a2e35; 
+    border: 1px solid #444;
+    z-index: 99;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    border-radius: 4px;
+}
+
+.select-items div {
+    color: #fff;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+.select-items div:hover {
+    background-color: #3b4048; 
+}
+
+.select-selected::after {
+    content: "";
+    position: absolute;
+    top: 14px;
+    right: 10px;
+    border: 6px solid transparent;
+    border-color: #ccc transparent transparent transparent;
+}
+
+.select-selected.select-arrow-active::after {
+    border-color: transparent transparent #ccc transparent;
+    top: 7px;
+}
+
+#console-output {
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background-color: #000;
+  color: #fff;
+  overflow: scroll;
+  z-index: 9999;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 5px;
+}
+
+.console-line {
+  padding: 5px;
+  margin: 0;
+  line-height: 1.5rem;
+}
+
+.console-error {
+  color: #f00;
+}
+
+.console-warn {
+  color: #ffa500;
+}
+
+.console-info {
+  color: #00f;
+}
+
+.console-debug {
+  color: #00ff00;
+}
+.dt-container label {
+    font-size: 14px;
+    color: #5c0707;
+    margin-right: 100px;
+}
+
+/deep/ .dt-input {
+    border: 1px solid #ccc;
+    padding: 5px; 
+    border-radius: 4px; 
+    background-color: #333;  
+    color: #ffffff; 
+}
+
+    /deep/ .dt-input:focus {
+    border-color: #66afe9;
+    outline: none;
+}
+
+    /deep/ .dt-length label {
+
+    margin-left: 10px;
+}
+/deep/ .dt-search input{
+    margin-left: 10px; 
+}
+/deep/ .data-cell {
+    color: #ff0000 !important;
+}
+
+/deep/ .table th {
+    color: white !important;
+}
+
+.table-dark th, .table-dark td {
+    border-color: #333;
+    color: #ddd;
+}
+
+.headerzn {
+    color: #ddd;
+}
+/deep/ .form-check-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    background-color: var(--da);
+}
+
+/deep/ .form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+/deep/ .form-check-input:checked::after {
+
+    display: block;
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    line-height: 20px;
+}
+/deep/ .btn-dead{
+    background-color: #ff0000 !important;
+    color: #000;
+    width: 100px;
+    
+}
+/deep/ .btn-junk{
+    background-color: #ff0000 !important;
+    color: #000;
+    width: 100px;
+}
+/deep/ .btn-inbox{
+    background-color: #2bff00!important;
+    color: #000;
+    width: 100px;
+}
+/deep/ .btn-none{
+    background-color: #ff0000 !important;
+    color: #000;
+    width: 100px;
+}
+/deep/ .btn-checked{
+    background-color: #2bff00 !important;
+    color: #000;
+    width: 100px;
+}
+
+/deep/ .dt-paging-button {
+  border: 1px solid white;
+  background-color: transparent;
+  margin: 1%;
+  border-radius: 7px;
+  transition: background-color 0.2s linear;
+}
+
+/deep/ .dt-paging-button:hover {
+  background-color: red;
+  color: white;
+}
+
+/deep/ label {
+  padding: 1em 1em 1em 0;
+}
+
+/deep/ .dt-input {
+  margin-right: 1em;
+}
+
+/deep/ .dt-info {
+  padding: 1em 1em 1em 0;
+  margin-bottom: 1%;
+}
+
+label {
+  color: white;
+}
+
+/deep/ .btn-primary {
+  background-color: red;
+  border: none;
+  transition: background-color 0.2s linear;
+}
+
+.btn:hover {
+  background-color: #cc0000;
+}
+
+.btn-delete {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.btn-delete:hover {
+  background-color: #cc0000;
+}
+
+p {
+  color: white;
+  margin: 1em 0 1em 0;
+}
+
+.text-success {
+  color: limegreen !important;
+}
+
+.text-danger {
+  color: red !important;
+}
+</style>

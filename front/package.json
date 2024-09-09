@@ -1,0 +1,35 @@
+{
+  "name": "mailer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^41.4.2",
+    "@ckeditor/ckeditor5-vue": "^5.1.0",
+    "@tinymce/tinymce-vue": "^6.0.1",
+    "axios": "^1.6.8",
+    "bootstrap": "^5.2.3",
+    "bootstrap-icons": "^1.11.3",
+    "datatables.net": "^2.0.8",
+    "datatables.net-dt": "^2.0.8",
+    "datatables.net-vue3": "^3.0.1",
+    "jquery": "^3.7.1",
+    "jszip": "^3.10.1",
+    "sass": "^1.77.2",
+    "socket.io-client": "^4.7.5",
+    "vue": "^3.4.21",
+    "vue-datatables-net": "^2.0.1",
+    "vue-good-table": "^2.21.11",
+    "vue-router": "^4.3.2",
+    "vuex": "^4.0.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "vite": "^5.2.8"
+  }
+}

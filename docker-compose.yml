@@ -1,0 +1,56 @@
+version: '3.9'
+services:
+
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 246808642aA@
+      MYSQL_DATABASE: mailer
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - 3307:3306
+    container_name: proto_sql
+    networks:
+      - api
+
+  backend:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    expose:
+      - 5000
+    ports:
+      - 5001:5000
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 246808642aA@
+      MYSQL_DATABASE: mailer
+    container_name: proto_back
+    command: >
+     sh -c "./wait-for-it.sh db:3306 -- python app.py"
+    depends_on:
+      - db
+    networks:
+      - api
+
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - '5173:5173'
+    container_name: proto_front
+    command: npm run dev
+    depends_on:
+      - db
+      - backend
+    networks:
+      - api
+
+networks:
+  api:
+
+volumes:
+  mysql_data:
