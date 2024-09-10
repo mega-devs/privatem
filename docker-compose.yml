@@ -29,7 +29,7 @@ services:
       MYSQL_DATABASE: mailer
     container_name: proto_back
     command: >
-     sh -c "./wait-for-it.sh db:3306 -- python app.py"
+     bash -c "./wait-for-it.sh db:3306 -- python app.py"
     depends_on:
       - db
     networks:
