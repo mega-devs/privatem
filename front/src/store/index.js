@@ -3,8 +3,8 @@ import axios from "axios";
 
 const store = createStore({
     state: {
-        back_url: "http://127.0.0.1:5001",
-        sock_url: "wss://127.0.0.1:5001",
+        back_url: import.meta.env.VITE_BACK_URL,
+        sock_url: import.meta.env.VITE_SOCK_URL,
         auth: null,
       },
     mutations: {

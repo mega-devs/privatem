@@ -11,6 +11,9 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
+  define: {
+    'process.env': {}
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
