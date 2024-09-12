@@ -1,7 +1,7 @@
 <template>
     <div class="vh-100 d-flex flex-column flex-shrink-0 p-3 position-fixed start-0 top-0 content">
      
-        <ul class="nav nav-pills flex-column mb-auto">
+        <ul class="nav nav-pills flex-column">
             <template v-if="stateProp == 'home'">
                 <li class="nav-item">
                     <RouterLink to="/dashboard" style="text-decoration: none;">
@@ -225,19 +225,64 @@
 
             <hr>
         </ul>
-    <ul class="nav nav-pills flex-column mb-auto fixcss">
-        <li>Loaded Session: <span class="session-name" style="width: 80px !important; display: inline-block; overflow: hidden; text-overflow: ellipsis;">{{ currentSessionName }}</span></li>
-        <li>Total SMTPs: {{ totalSmtps }}</li>
-        <li>Valid SMTPs: {{ validSmtps }}</li>
-        <li>Dead SMTPs: {{ deadSmtps }}</li>
-        <li>Inbox SMTPs: {{ inboxSmtps }}</li>
-        <li>Junk SMTPs: {{ junkSmtps }}</li>
-        <li>TEMPLATES: {{ templatesLoaded }}</li>
-        <li>DOMAINS: {{ domainsLoaded }}</li>
-        <li>SOCKS: {{ socksLoaded }}</li>
-        <li>MAILER STATUS: <span :class="mailerStatusClass">{{ mailerStatus }}</span></li>
-        <li><br><button @click="reset" class="btn-reset">Reset</button></li>
-    </ul>
+    <div class="table_current_session">
+      <div class="table_current_session_header" style="border-radius: 10px 10px 0 0;">
+        <p class="table_current_session_header_p">Loaded Session:</p>
+      </div>
+      <div class="table_current_session_header">
+        <p class="table_current_session_header_p">{{ currentSessionName }}</p>
+      </div>
+      <div class="table_current_session_row">
+        <p class="table_current_session_item">Total SMTPs</p>
+        <p class="table_current_session_item">{{ totalSmtps }}</p>
+      </div>
+      <div class="table_current_session_row">
+        <p class="table_current_session_item">Valid SMTPs</p>
+        <p class="table_current_session_item">{{ validSmtps }}</p>
+      </div>
+      <div class="table_current_session_row">
+        <p class="table_current_session_item">Dead SMTPs</p>
+        <p class="table_current_session_item">{{ deadSmtps }}</p>
+      </div>
+      <div class="table_current_session_row">
+        <p class="table_current_session_item">Inbox SMTPs</p>
+        <p class="table_current_session_item">{{ inboxSmtps }}</p>
+      </div>
+      <div class="table_current_session_row">
+        <p class="table_current_session_item">Junk SMTPs</p>
+        <p class="table_current_session_item">{{ junkSmtps }}</p>
+      </div>
+      <div class="table_current_session_row">
+        <p class="table_current_session_item">TEMPLATES</p>
+        <p class="table_current_session_item">{{ templatesLoaded }}</p>
+      </div>
+      <div class="table_current_session_row">
+        <p class="table_current_session_item">DOMAINS</p>
+        <p class="table_current_session_item">{{ domainsLoaded }}</p>
+      </div>
+      <div class="table_current_session_row">
+        <p class="table_current_session_item">SOCKS</p>
+        <p class="table_current_session_item">{{ socksLoaded }}</p>
+      </div>
+      <div class="table_current_session_row" style="border-radius: 0 0 10px 10px;">
+        <p class="table_current_session_item">MAILER STATUS</p>
+        <p class="table_current_session_item mailerStatusClass">{{ mailerStatus }}</p>
+      </div>
+    </div>
+      <button @click="reset" class="btn-reset mt-3">Reset</button>
+<!--    <ul class="nav nav-pills flex-column mb-auto fixcss">-->
+<!--        <li>Loaded Session: <span class="session-name" style="width: 80px !important; display: inline-block; overflow: hidden; text-overflow: ellipsis;">{{ currentSessionName }}</span></li>-->
+<!--        <li>Total SMTPs: {{ totalSmtps }}</li>-->
+<!--        <li>Valid SMTPs: {{ validSmtps }}</li>-->
+<!--        <li>Dead SMTPs:  {{ deadSmtps }}</li>-->
+<!--        <li>Inbox SMTPs: {{ inboxSmtps }}</li>-->
+<!--        <li>Junk SMTPs:  {{ junkSmtps }}</li>-->
+<!--        <li>TEMPLATES:   {{ templatesLoaded }}</li>-->
+<!--        <li>DOMAINS: {{ domainsLoaded }}</li>-->
+<!--        <li>SOCKS: {{ socksLoaded }}</li>-->
+<!--        <li>MAILER STATUS: <span :class="mailerStatusClass">{{ mailerStatus }}</span></li>-->
+<!--        <li><br><button @click="reset" class="btn-reset">Reset</button></li>-->
+<!--    </ul>-->
 </div>
 </template>
 
@@ -312,14 +357,22 @@ export default {
 
 <style>
 :root {
-    --primary: #EB1616;
+    --primary: #ef4444;
     --secondary: #191C24;
+    --grey-1: #111827;
     --light: #6C7293;
     --dark: #000000;
 }
+body, html {
+    background-color: #121212 !important;
+    color: white;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
 
 .content {
-  border-right: 1px solid gray;
+  border-right: 1px solid grey;
 
 }
 
@@ -329,15 +382,19 @@ hr {
 
 .nav-item {
   color: white;
+  border-radius: 5px;
+  font-weight: 600;
 }
 
 .nav-link:hover {
-  color: var(--primary) !important;
+  //color: var(--primary) !important;
+  background-color: #2c2c2c !important;
 }
 
 .nav-item .active {
-    color: var(--primary) !important;
-    background-color: transparent !important;
+    //color: var(--primary) !important;
+    //background-color: transparent !important;
+  background-color: var(--primary) !important;
 }
 
 .fixcss2 {
@@ -349,9 +406,9 @@ hr {
 }
 .btn-reset {
     margin-top: -1em;
-    margin-left: 13px;
+    //margin-left: 13px;
     padding: 5px 10px;
-    background-color: red;
+    background-color: var(--primary);
     border: none;
     color: #ffffff;
     border-radius: 4px;
@@ -372,4 +429,39 @@ hr {
   width: 10px !important;
   text-overflow: ellipsis !important;
 }
+
+
+.table_current_session {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  height: auto;
+  border-radius: 10px;
+  //overflow: hidden;
+}
+.table_current_session_header {
+  background-color: #3a3a3a;
+  width: 100%;
+  //border-radius: 10px 10px 0 0;
+}
+.table_current_session_header_p {
+  font-weight: 600;
+  padding: 4px 12px;
+  margin: 0;
+}
+.table_current_session_row {
+  width: 100%;
+  background-color: #272727;
+  border-bottom: 1px solid #2c3544;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.table_current_session_item {
+  font-weight: 600;
+  padding: 4px 12px;
+  margin: 0;
+}
+
+
 </style>

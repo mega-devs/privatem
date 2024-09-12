@@ -705,7 +705,7 @@ label {
 }
 
 /deep/ .btn-primary {
-  background-color: red;
+  background-color: var(--primary) !important;
   border: none;
   transition: background-color 0.2s linear;
 }

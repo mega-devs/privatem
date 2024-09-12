@@ -152,14 +152,14 @@ export default {
 }
 .container-fluid.dummy-form {
     padding: 20px;
-    background-color: #212529;
+    //background-color: #212529;
 }
 .form-group {
     margin-bottom: 15px;
 }
 
 /deep/ .btn-primary {
-  background-color: red;
+  background-color: var(--primary) !important;
   border: none;
   transition: background-color 0.2s linear;
 }

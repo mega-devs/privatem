@@ -1,7 +1,7 @@
   <template>
     <NavBarComponent stateProp="home" />
-    <header>
-        <div class="container-fluid dummy-form" style="text-align: center;">
+    <div class="dummy-form">
+        <div class="container-fluid" style="text-align: center;">
             <!-- <button @click.prevent="reset" class="btn btn-primary">Reset</button> -->
             <!-- <p>{{ resetInfo }}</p> -->
             <template v-if="currentSessionName">
@@ -10,6 +10,7 @@
             <template v-else>
                 <h3 class="text-danger" style="color: red;">Please load a session first</h3>
             </template>
+            <hr>
         </div>
         <div class="top-bar">
             <div class="input-group">
@@ -35,7 +36,7 @@
             <p v-if="errorMessage" class="text-danger">{{ errorMessage }}</p>
             <p v-if="successMessage" class="text-success">{{ successMessage }}</p>
         </div>
-    </header>
+    </div>
 </template>
 
 <script>
@@ -167,18 +168,23 @@ export default {
     margin-right: 10em;
     margin-top: 2em;
     width: auto;
+
+    background-color: #313131;
+    border-radius: 10px;
+    padding: 20px;
 }
 
 .top-bar {
-    width: 80%;
+    //width: 80%;
     display: flex;
     margin-top: 1%;
     margin-bottom: 1%;
-    margin-left: 16%;
+    //margin-left: 16%;
     flex-direction: column;
     align-items: flex-start;
     padding: 10px;
-    background-color: #000000;
+    //background-color: #1f2937;
+    border-radius: 5px;
     color: white;
 }
 
@@ -217,7 +223,7 @@ export default {
 }
 
 /deep/ .btn-primary {
-  background-color: red;
+  background-color: var(--primary);
   border: none;
   transition: background-color 0.2s linear;
 }
