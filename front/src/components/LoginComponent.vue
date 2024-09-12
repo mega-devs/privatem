@@ -1,7 +1,7 @@
 <template>
     <div class="container vh-100 d-flex align-items-center">
         <div id="innerPage" class="w-100">
-            <div class="row align-items-center justify-content-center" style="background-color: black;">
+            <div class="login_div row align-items-center justify-content-center">
                 <div class="col-sm-6 col-xs-12 d-sm-block d-none">
                     <div id="imgBgn">
                     </div>
@@ -22,7 +22,7 @@
                         <label for="floatingPassword">Password</label>
                     </div>
                     <p class="mt-4">{{ error }}</p>
-                    <button class="btn btn-info mt-4 w-100" style="background-color: red; color: white;" type="submit" @click.prevent="submit">Submit</button>
+                    <button class="btn btn-info mt-4 w-100 btn-primary" type="submit" @click.prevent="submit">Submit</button>
                 </div>
             </div>
         </div>
@@ -124,5 +124,18 @@ body, html {
 .container, .row, .col-sm-6, .col-xs-12 {
     padding: 0;
     height: 100%;
+}
+
+.login_div {
+  padding: 0 0 0 3rem;
+  border-radius: 20px;
+}
+
+/deep/ .btn-primary {
+  background-color: var(--primary) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border: none;
+  transition: background-color 0.2s linear;
 }
 </style>

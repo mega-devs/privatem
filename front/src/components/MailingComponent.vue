@@ -696,7 +696,7 @@ export default {
 </script>
 <style scoped>
 :root {
-    --primary: #EB1616; /* Красный цвет */
+    --primary: #ef4444; /* Красный цвет */
     --secondary: #191C24; /* Темный цвет фона */
     --light: #6C7293;
     --dark: #000000;
@@ -876,7 +876,7 @@ export default {
 }
 
 /deep/ .btn-primary {
-  background-color: red;
+  background-color: var(--primary) !important;
   border: none;
   transition: background-color 0.2s linear;
 }
