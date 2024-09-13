@@ -575,8 +575,7 @@ export default {
 
 <style scoped>
 .dummy-form {
-    margin-left: 20em;
-    margin-right: 10em;
+    overflow: auto;
     margin-top: 2em;
     width: auto;
 }
@@ -634,14 +633,39 @@ export default {
     top: 7px;
 }
 
+
+#console-output::-webkit-scrollbar {
+    width: 12px;
+}
+#console-output::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 0 10px 10px 10px;
+}
+#console-output::-webkit-scrollbar-track {
+    background-color: #495057;
+    border-radius: 0px 8px 8px 0px;
+}
+
+#console-output::-webkit-scrollbar {
+    width: 12px;
+}
+#console-output::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 0 10px 10px 10px;
+}
+#console-output::-webkit-scrollbar-track {
+    background-color: #495057;
+    border-radius: 0px 8px 8px 0px;
+}
 #console-output {
+  border-radius: 10px;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 200px;
   background-color: #000;
   color: #fff;
-  overflow: scroll;
+  overflow: auto;
   z-index: 9999;
   padding-left: 1em;
   padding-right: 1em;

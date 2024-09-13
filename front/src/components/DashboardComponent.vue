@@ -164,10 +164,11 @@ export default {
 
 <style scoped>
 .dummy-form {
-    margin-left: 20em;
-    margin-right: 10em;
+    overflow: auto;
     margin-top: 2em;
-    width: auto;
+    width: 70%;
+    margin: 0 auto;
+    height: fit-content;
 
     background-color: #313131;
     border-radius: 10px;

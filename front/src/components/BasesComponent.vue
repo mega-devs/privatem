@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <NavBarComponent stateProp="bases"/>
+    <NavBarComponent stateProp="bases"/>
+    <div style="width:100%">
         <div class="container-fluid dummy-form">
             <div class="row">
                 <h2 class="text-center headerzn">Bases</h2>
@@ -287,8 +287,7 @@ export default {
 
 <style scoped>
 .dummy-form {
-    margin-left: 20em;
-    margin-right: 10em;
+    overflow: auto;
     margin-top: 2em;
     width: auto;
 }
@@ -333,13 +332,13 @@ export default {
     line-height: 20px;
 }
 .btn-dead {
-    background-color: #ff0000 !important;
+    background-color: var(--primary) !important;
     color: #000;
     width: 100px;
 }
 
 .btn-junk {
-    background-color: #ff0000 !important;
+    background-color: var(--primary) !important;
     color: #000;
     width: 100px;
 }
@@ -349,7 +348,7 @@ export default {
     width: 100px;
 }
 .btn-none {
-    background-color: #ff0000 !important;
+    background-color: var(--primary) !important;
     color: #000;
     width: 100px;
 }
@@ -368,7 +367,7 @@ export default {
 }
 
 .dt-paging-button:hover {
-  background-color: red;
+  background-color: var(--primary);
   color: white;
 }
 
@@ -396,7 +395,7 @@ label {
 }
 
 .btn:hover {
-  background-color: #cc0000;
+  background-color: #f84545;
 }
 
 .tables-container {
