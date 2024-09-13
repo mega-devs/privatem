@@ -1,5 +1,5 @@
 <template>
-    <div class="container vh-100 d-flex align-items-center">
+    <div class="container d-flex align-items-center" style="width: 100vw; height: 100vh; position: fixed; background-color: black; top: 0; left: 0; max-width: none;">
         <div id="innerPage" class="w-100">
             <div class="login_div row align-items-center justify-content-center">
                 <div class="col-sm-6 col-xs-12 d-sm-block d-none">

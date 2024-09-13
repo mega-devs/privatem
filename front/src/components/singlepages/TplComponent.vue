@@ -137,8 +137,7 @@ export default {
 
 <style scoped>
 .dummy-form {
-    margin-left: 20em;
-    margin-right: 10em;
+    overflow: auto;
     margin-top: 2em;
     width: auto;
 }

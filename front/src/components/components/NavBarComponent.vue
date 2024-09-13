@@ -1,5 +1,11 @@
 <template>
-    <div class="vh-100 d-flex flex-column flex-shrink-0 p-3 position-fixed start-0 top-0 content">
+    <div class=" d-flex flex-column flex-shrink-0 p-3 start-0 top-0 content" style="overflow: auto">
+      <div class="bg_images">
+        <img class="bg_image_1" src="/ui-red-dark.png" width="200px" height="10px" alt="i" />
+        <img class="bg_image_2" src="/ui-red-dark.png" width="200px" height="10px" alt="i" />
+        <img class="bg_image_3" src="/ui-red-dark.png" width="200px" height="10px" alt="i" />
+        <img class="bg_image_4" src="/ui-red-dark.png" width="200px" height="10px" alt="i" />
+      </div>
      
         <ul class="nav nav-pills flex-column">
             <template v-if="stateProp == 'home'">
@@ -364,12 +370,53 @@ export default {
     --dark: #000000;
 }
 body, html {
-    background-color: #121212 !important;
+    //background-color: #121212 !important;
+    background: rgb(32,32,32) !important;
+    background: radial-gradient(circle, rgba(32,32,32,1) 0%, rgba(0,0,0,1) 100%) !important;
     color: white;
     height: 100%;
     margin: 0;
     padding: 0;
+    overflow: hidden;
 }
+
+.app_full {
+    display: flex;
+    height: 90vh;
+    //overflow: auto;
+    /* margin: 11vh; */
+    margin-bottom: 0;
+    padding-top: 10vh;
+    border: 2px solid red;
+}
+.bg_images {
+
+}
+.bg_images > img {
+    position: fixed;
+    width: 300px;
+    height: 92px;
+}
+
+.bg_image_1 {
+  top:  2px;
+  left: 2px;
+}
+.bg_image_2 {
+  top:   2px;
+  right: 2px;
+  transform: scaleX(-1);
+}
+.bg_image_3 {
+  bottom: 2px;
+  left: 50vw;
+}
+.bg_image_4 {
+  bottom: 2px;
+  transform: scaleX(-1);
+  left: 50vh;
+}
+
 
 .content {
   border-right: 1px solid grey;
