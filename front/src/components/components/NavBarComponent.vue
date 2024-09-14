@@ -1,6 +1,7 @@
 <template>
     <div class=" d-flex flex-column flex-shrink-0 p-3 start-0 top-0 content" style="overflow: auto">
       <div class="bg_images">
+        <img class="bg_image_logo" src="/prviatem.webp" width="50px" height="50px" alt="i" />
         <img class="bg_image_1" src="/ui-red-dark.png" width="200px" height="10px" alt="i" />
         <img class="bg_image_2" src="/ui-red-dark.png" width="200px" height="10px" alt="i" />
         <img class="bg_image_3" src="/ui-red-dark.png" width="200px" height="10px" alt="i" />
@@ -8,226 +9,329 @@
       </div>
      
         <ul class="nav nav-pills flex-column">
-            <template v-if="stateProp == 'home'">
-                <li class="nav-item">
-                    <RouterLink to="/dashboard" style="text-decoration: none;">
-                        <a class="nav-link active">
-                            <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                            <i class="bi bi-house"></i> <span>Home</span>
-                        </a>
-                    </RouterLink>
-                </li>
-            </template>
-            <template v-else>
-                <li class="nav-item">
-                    <RouterLink to="/dashboard" style="text-decoration: none;">
-                        <a class="nav-link text-white">
-                            <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                            <i class="bi bi-house"></i> <span>Home</span>
-                        </a>
-                    </RouterLink>
-                </li>
-            </template>
-            <template v-if="stateProp == 'templates'">
-            <li class="nav-item">
-                <RouterLink to="/dashboard/templates" style="text-decoration: none;">
-                    <a class="nav-link active">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-file-earmark"></i> <span>Templates</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-else>
-            <li class="nav-item">
-                <RouterLink to="/dashboard/templates" style="text-decoration: none;">
-                    <a class="nav-link text-white">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-file-earmark"></i> <span>Templates</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-if="stateProp == 'proxies'">
-            <li class="nav-item">
-                <RouterLink to="/dashboard/proxies" style="text-decoration: none;">
-                    <a class="nav-link active">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-hdd-stack"></i> <span>Proxies</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-else>
-            <li class="nav-item">
-                <RouterLink to="/dashboard/proxies" style="text-decoration: none;">
-                    <a class="nav-link text-white">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-hdd-stack"></i> <span>Proxies</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-if="stateProp == 'SMTPs'">
-            <li class="nav-item">
-                <RouterLink to="/dashboard/SMTPs" style="text-decoration: none;">
-                    <a class="nav-link active">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-mailbox"></i> <span>SMTPs</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-else>
-            <li class="nav-item">
-                <RouterLink to="/dashboard/SMTPs" style="text-decoration: none;">
-                    <a class="nav-link text-white">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-mailbox"></i> <span>SMTPs</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-if="stateProp == 'IMAPs'">
-            <li class="nav-item">
-                <RouterLink to="/dashboard/IMAPs" style="text-decoration: none;">
-                    <a class="nav-link active">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-inbox"></i> <span>IMAPs</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-else>
-            <li class="nav-item">
-                <RouterLink to="/dashboard/IMAPs" style="text-decoration: none;">
-                    <a class="nav-link text-white">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-inbox"></i> <span>IMAPs</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-if="stateProp == 'domains'">
-            <li class="nav-item">
-                <RouterLink to="/dashboard/domains" style="text-decoration: none;">
-                    <a class="nav-link active">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-router"></i> <span>Domains</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-else>
-            <li class="nav-item">
-                <RouterLink to="/dashboard/domains" style="text-decoration: none;">
-                    <a class="nav-link text-white">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-router"></i> <span>Domains</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-if="stateProp == 'bases'">
-            <li class="nav-item">
-                <RouterLink to="/dashboard/bases" style="text-decoration: none;">
-                    <a class="nav-link active">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-person-lines-fill"></i> <span>Bases</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-else>
-            <li class="nav-item">
-                <RouterLink to="/dashboard/bases" style="text-decoration: none;">
-                    <a class="nav-link text-white">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-person-lines-fill"></i> <span>Bases</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-if="stateProp == 'test'">
-            <li class="nav-item">
-                <RouterLink to="/dashboard/test" style="text-decoration: none;">
-                    <a class="nav-link active">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-patch-check"></i> <span>Test mode</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-else>
-            <li class="nav-item">
-                <RouterLink to="/dashboard/test" style="text-decoration: none;">
-                    <a class="nav-link text-white">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-patch-check"></i> <span>Test mode</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-             <template v-if="stateProp == 'sendx'">
-            <li class="nav-item">
-                <RouterLink to="/dashboard/sendx" style="text-decoration: none;">
-                    <a class="nav-link active">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-patch-check"></i> <span>SendX mode</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-else>
-            <li class="nav-item">
-                <RouterLink to="/dashboard/sendx" style="text-decoration: none;">
-                    <a class="nav-link text-white">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-patch-check"></i> <span>SendX mode</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-if="stateProp == 'mailing'">
-            <li class="nav-item">
-                <RouterLink to="/dashboard/mailing" style="text-decoration: none;">
-                    <a class="nav-link active">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-envelope"></i> <span>Mailing</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-else>
-            <li class="nav-item">
-                <RouterLink to="/dashboard/mailing" style="text-decoration: none;">
-                    <a class="nav-link text-white">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-envelope"></i> <span>Mailing</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
-            <template v-if="stateProp == 'resetz'">
-                <li class="nav-item">
-                    <RouterLink to="/dashboard/resetz" style="text-decoration: none;">
-                        <a class="nav-link active">
-                            <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                            <i class="bi bi-trash"></i> <span>Reset</span>
-                        </a>
-                    </RouterLink>
-                </li>
-            </template>
-            <template v-else>
-            <li class="nav-item">
-                <RouterLink to="/dashboard/resetz" style="text-decoration: none;">
-                    <a class="nav-link text-white">
-                        <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                        <i class="bi bi-trash"></i> <span>Reset</span>
-                    </a>
-                </RouterLink>
-            </li>
-            </template>
+
+          <!-- Dropdown group -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ currentSessionName || 'Current Session' }}
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
+              <li class="nav-item">
+                  <RouterLink to="/dashboard" style="text-decoration: none;">
+                      <a :class="['nav-link', stateProp === 'home' ? 'active' : 'text-white']">
+                          <i class="bi bi-house"></i> <span>Home</span>
+                      </a>
+                  </RouterLink>
+              </li>
+              <li class="nav-item">
+                  <RouterLink to="/dashboard/templates" style="text-decoration: none;">
+                      <a :class="['nav-link', stateProp === 'templates' ? 'active' : 'text-white']">
+                          <i class="bi bi-house"></i> <span>Templates</span>
+                      </a>
+                  </RouterLink>
+              </li>
+              <li class="nav-item">
+                  <RouterLink to="/dashboard/proxies" style="text-decoration: none;">
+                      <a :class="['nav-link', stateProp === 'proxies' ? 'active' : 'text-white']">
+                          <i class="bi bi-house"></i> <span>Proxies</span>
+                      </a>
+                  </RouterLink>
+              </li>
+
+              <li class="nav-item">
+                  <RouterLink to="/dashboard/SMTPs" style="text-decoration: none;">
+                      <a :class="['nav-link', stateProp === 'SMTPs' ? 'active' : 'text-white']">
+                          <i class="bi bi-house"></i> <span>SMTPs</span>
+                      </a>
+                  </RouterLink>
+              </li>
+
+              <li class="nav-item">
+                  <RouterLink to="/dashboard/IMAPs" style="text-decoration: none;">
+                      <a :class="['nav-link', stateProp === 'IMAPs' ? 'active' : 'text-white']">
+                          <i class="bi bi-house"></i> <span>IMAPs</span>
+                      </a>
+                  </RouterLink>
+              </li>
+
+              <li class="nav-item">
+                  <RouterLink to="/dashboard/domains" style="text-decoration: none;">
+                      <a :class="['nav-link', stateProp === 'domains' ? 'active' : 'text-white']">
+                          <i class="bi bi-house"></i> <span>Domains</span>
+                      </a>
+                  </RouterLink>
+              </li>
+
+              <li class="nav-item">
+                  <RouterLink to="/dashboard/bases" style="text-decoration: none;">
+                      <a :class="['nav-link', stateProp === 'bases' ? 'active' : 'text-white']">
+                          <i class="bi bi-house"></i> <span>Bases</span>
+                      </a>
+                  </RouterLink>
+              </li>
+            </ul>
+          </li>
+
+          <!-- Dropdown group -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Testmodes
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
+              <li class="nav-item">
+                  <RouterLink to="/dashboard/test" style="text-decoration: none;">
+                      <a :class="['nav-link', stateProp === 'test' ? 'active' : 'text-white']">
+                          <i class="bi bi-house"></i> <span>Test mode</span>
+                      </a>
+                  </RouterLink>
+              </li>
+              <li class="nav-item">
+                  <RouterLink to="/dashboard/sendx" style="text-decoration: none;">
+                      <a :class="['nav-link', stateProp === 'sendx' ? 'active' : 'text-white']">
+                          <i class="bi bi-house"></i> <span>SendX mode</span>
+                      </a>
+                  </RouterLink>
+              </li>
+            </ul>
+          </li>
+
+
+          <li class="nav-item">
+              <RouterLink to="/dashboard/mailing" style="text-decoration: none;">
+                  <a :class="['nav-link', stateProp === 'mailing' ? 'active' : 'text-white']">
+                      <i class="bi bi-house"></i> <span>Mailing</span>
+                  </a>
+              </RouterLink>
+          </li>
+          <li class="nav-item">
+              <RouterLink to="/dashboard/resetz" style="text-decoration: none;">
+                  <a :class="['nav-link', stateProp === 'resetz' ? 'active' : 'text-white']">
+                      <i class="bi bi-house"></i> <span>Reset</span>
+                  </a>
+              </RouterLink>
+          </li>
+
+
+<!--            <template v-if="stateProp == 'home'">-->
+<!--                <li class="nav-item">-->
+<!--                    <RouterLink to="/dashboard" style="text-decoration: none;">-->
+<!--                        <a class="nav-link active">-->
+<!--                            <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                            <i class="bi bi-house"></i> <span>Home</span>-->
+<!--                        </a>-->
+<!--                    </RouterLink>-->
+<!--                </li>-->
+<!--            </template>-->
+<!--            <template v-else>-->
+<!--                <li class="nav-item">-->
+<!--                    <RouterLink to="/dashboard" style="text-decoration: none;">-->
+<!--                        <a class="nav-link text-white">-->
+<!--                            <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                            <i class="bi bi-house"></i> <span>Home</span>-->
+<!--                        </a>-->
+<!--                    </RouterLink>-->
+<!--                </li>-->
+<!--            </template>-->
+<!--            <template v-if="stateProp == 'templates'">-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/templates" style="text-decoration: none;">-->
+<!--                    <a class="nav-link active">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-file-earmark"></i> <span>Templates</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-else>-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/templates" style="text-decoration: none;">-->
+<!--                    <a class="nav-link text-white">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-file-earmark"></i> <span>Templates</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-if="stateProp == 'proxies'">-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/proxies" style="text-decoration: none;">-->
+<!--                    <a class="nav-link active">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-hdd-stack"></i> <span>Proxies</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-else>-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/proxies" style="text-decoration: none;">-->
+<!--                    <a class="nav-link text-white">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-hdd-stack"></i> <span>Proxies</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-if="stateProp == 'SMTPs'">-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/SMTPs" style="text-decoration: none;">-->
+<!--                    <a class="nav-link active">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-mailbox"></i> <span>SMTPs</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-else>-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/SMTPs" style="text-decoration: none;">-->
+<!--                    <a class="nav-link text-white">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-mailbox"></i> <span>SMTPs</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-if="stateProp == 'IMAPs'">-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/IMAPs" style="text-decoration: none;">-->
+<!--                    <a class="nav-link active">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-inbox"></i> <span>IMAPs</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-else>-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/IMAPs" style="text-decoration: none;">-->
+<!--                    <a class="nav-link text-white">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-inbox"></i> <span>IMAPs</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-if="stateProp == 'domains'">-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/domains" style="text-decoration: none;">-->
+<!--                    <a class="nav-link active">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-router"></i> <span>Domains</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-else>-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/domains" style="text-decoration: none;">-->
+<!--                    <a class="nav-link text-white">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-router"></i> <span>Domains</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-if="stateProp == 'bases'">-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/bases" style="text-decoration: none;">-->
+<!--                    <a class="nav-link active">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-person-lines-fill"></i> <span>Bases</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-else>-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/bases" style="text-decoration: none;">-->
+<!--                    <a class="nav-link text-white">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-person-lines-fill"></i> <span>Bases</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-if="stateProp == 'test'">-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/test" style="text-decoration: none;">-->
+<!--                    <a class="nav-link active">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-patch-check"></i> <span>Test mode</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-else>-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/test" style="text-decoration: none;">-->
+<!--                    <a class="nav-link text-white">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-patch-check"></i> <span>Test mode</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--             <template v-if="stateProp == 'sendx'">-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/sendx" style="text-decoration: none;">-->
+<!--                    <a class="nav-link active">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-patch-check"></i> <span>SendX mode</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-else>-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/sendx" style="text-decoration: none;">-->
+<!--                    <a class="nav-link text-white">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-patch-check"></i> <span>SendX mode</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-if="stateProp == 'mailing'">-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/mailing" style="text-decoration: none;">-->
+<!--                    <a class="nav-link active">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-envelope"></i> <span>Mailing</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-else>-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/mailing" style="text-decoration: none;">-->
+<!--                    <a class="nav-link text-white">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-envelope"></i> <span>Mailing</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
+<!--            <template v-if="stateProp == 'resetz'">-->
+<!--                <li class="nav-item">-->
+<!--                    <RouterLink to="/dashboard/resetz" style="text-decoration: none;">-->
+<!--                        <a class="nav-link active">-->
+<!--                            <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                            <i class="bi bi-trash"></i> <span>Reset</span>-->
+<!--                        </a>-->
+<!--                    </RouterLink>-->
+<!--                </li>-->
+<!--            </template>-->
+<!--            <template v-else>-->
+<!--            <li class="nav-item">-->
+<!--                <RouterLink to="/dashboard/resetz" style="text-decoration: none;">-->
+<!--                    <a class="nav-link text-white">-->
+<!--                        <svg class="bi pe-none me-2" width="16" height="16"></svg>-->
+<!--                        <i class="bi bi-trash"></i> <span>Reset</span>-->
+<!--                    </a>-->
+<!--                </RouterLink>-->
+<!--            </li>-->
+<!--            </template>-->
 
             <hr>
         </ul>
@@ -395,7 +499,7 @@ body, html {
 .bg_images > img {
     position: fixed;
     width: 300px;
-    height: 92px;
+    height: 9.8vh;
 }
 
 .bg_image_1 {
@@ -409,12 +513,21 @@ body, html {
 }
 .bg_image_3 {
   bottom: 2px;
-  left: 50vw;
+  //left: 50%;
+  left: calc(50% + 50px);
 }
 .bg_image_4 {
   bottom: 2px;
   transform: scaleX(-1);
-  left: 50vh;
+  //right: 50%;
+  right: calc(50% + 50px);
+}
+.bg_image_logo {
+  width: 100px !important;
+  height: 10vh !important;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%,0);
 }
 
 
