@@ -1,9 +1,11 @@
-import mysql.connector
-import config
-import random
-import string
-import re
 import json
+import random
+import re
+import string
+
+import mysql.connector
+
+import config
 import log_config
 from utils import remove_duplicate_lines, process_smtp_line, get_imap_server_and_port
 
@@ -116,6 +118,9 @@ def list_session():
     return result
 
 
+email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+
+
 def input_material(session, type, file, filename):
     print(f'Starting input of material for session {session}, type {type}, filename {filename}')
 
@@ -125,7 +130,6 @@ def input_material(session, type, file, filename):
 
     if type != 'domains':
         filename = '';
-
 
     errors = 0
     connection = mysql.connector.connect(
@@ -139,7 +143,7 @@ def input_material(session, type, file, filename):
 
     if type == 'bases':
         for line in file.split('\n'):
-            data = line.replace('\r', '').split('-')
+            data = line.replace('\n', '').split('-')
             if len(data) == 3:
                 cursor.execute(f'INSERT INTO `bases` (first, last, email, session) VALUES (%s, %s, %s, %s);',
                                (data[0], data[1], data[2], session))
@@ -149,7 +153,7 @@ def input_material(session, type, file, filename):
 
     elif type == 'proxies':
         for line in file.split('\n'):
-            data = line.replace(' ', '').replace('\r', '').split(':')
+            data = line.replace(' ', '').replace('\n', '').split(':')
             if len(data) == 2:
                 cursor.execute(f'INSERT INTO `proxies` (ip, port, status, session) VALUES (%s, %s, %s, %s);',
                                (data[0], data[1], 'none', session))
@@ -159,7 +163,7 @@ def input_material(session, type, file, filename):
 
     elif type == 'domains':
         for line in file.split('\n'):
-            data = line.replace(' ', '').replace('\r', '')
+            data = line.replace(' ', '').replace('\n', '')
             if data == '':
                 errors += 1
                 continue
@@ -312,12 +316,13 @@ def input_material(session, type, file, filename):
                 errors += 1
                 continue
 
-            if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            if not re.match(email_regex, email):
                 logger.error(f"Invalid email format: {email}")
                 print(f"Invalid email format: {email}")
                 errors += 1
                 continue
 
+            # Check if the server and port are provided
             if not server or not port:
                 logger.error(f"Missing server or port for email: {email}")
                 print(f"Missing server or port for email: {email}")
@@ -325,9 +330,11 @@ def input_material(session, type, file, filename):
                 continue
 
             try:
+                # Insert into the database
                 cursor.execute(
                     'INSERT INTO `imaps` (server, port, email, password, status, session) VALUES (%s, %s, %s, %s, %s, %s);',
-                    (server, port, email, password, 'none', session))
+                    (server, port, email, password, 'none', session)
+                )
                 connection.commit()
             except Exception as e:
                 logger.error(f"Error inserting line: {line}. Error: {e}")
@@ -389,7 +396,7 @@ def input_material(session, type, file, filename):
                 template_id = cursor.lastrowid
 
                 for line in data['link'].split('\n'):
-                    url = line.strip().replace(' ', '').replace('\r', '')
+                    url = line.strip().replace(' ', '').replace('\n', '')
                     if url and url.startswith('http'):
                         cursor.execute(
                             f'INSERT INTO `domains` (url, status, session, tempName, template_id) VALUES (%s, %s, %s, %s, %s);',
@@ -948,6 +955,7 @@ def get_counts(session):
         if connection:
             connection.close()
     return counts
+
 
 # def get_counts(session):
 #     logger.info(f'Starting get_counts for session {session}')

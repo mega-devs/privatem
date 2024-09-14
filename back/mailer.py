@@ -188,7 +188,6 @@ def connect_smtp_to_check(queue, socket_, smtp, proxy, timeout):
     return None, smtp
 
 
-
 def connect_imap_to_check(queue, socket_, imap, proxy):
     s1 = imap.email.replace(':', ' ')
     if proxy:
@@ -892,7 +891,7 @@ def mailing_mode(socket, session, template, proxy, smtp, base, domain, threads, 
         chosen_domain = random.choice(domains)
 
         t = threading.Thread(target=send, args=(
-        base, socket, chosen_template, chosen_smtp, chosen_proxy, chosen_domain, timeout, delay))
+            base, socket, chosen_template, chosen_smtp, chosen_proxy, chosen_domain, timeout, delay))
         threads.append(t)
 
     for t in threads:
