@@ -1,6 +1,6 @@
 <template>
     <NavBarComponent stateProp="SingleTPL"/>
-    <div class="container-fluid dummy-form">
+    <div class="container-fluid dummy-form" style=" border: 2px solid red; border-radius: 5px 5px 0 0; box-sizing: border-box; padding: 20px; ">
         <div>
             <div class="row">
                 <h2 class="text-center">Template ID# {{ templateId }}</h2>
