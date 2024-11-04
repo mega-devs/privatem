@@ -78,7 +78,7 @@ def validate_material(ar, c):
 
 def connect_smtp(smtp, proxy):
     logger.info(f'Starting SMTP connection for {smtp.email} with proxy {proxy}')
-
+    smtp_timeout = 45
     for attempt in range(3):
         if proxy:
             time.sleep(uniform(0.1, 10))
@@ -94,7 +94,7 @@ def connect_smtp(smtp, proxy):
                     smtp.server,
                     smtp.port,
                     local_hostname="[127.0.0.1]",
-                    timeout=45,
+                    timeout=smtp_timeout,
                 )
                 server_connect.ehlo_or_helo_if_needed()
                 server_connect.starttls()
@@ -103,11 +103,11 @@ def connect_smtp(smtp, proxy):
                     smtp.server,
                     smtp.port,
                     local_hostname="[127.0.0.1]",
-                    timeout=45,
+                    timeout=smtp_timeout,
                 )
             else:
                 server_connect = smtplib.SMTP(
-                    smtp.server, local_hostname="[127.0.0.1]", timeout=45
+                    smtp.server, local_hostname="[127.0.0.1]", timeout=smtp_timeout
                 )
                 server_connect.ehlo_or_helo_if_needed()
                 try:
