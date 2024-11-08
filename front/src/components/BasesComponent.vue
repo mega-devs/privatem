@@ -1,51 +1,56 @@
 <template>
     <NavBarComponent stateProp="bases"/>
-    <div style="width:100%">
-        <div class="container-fluid dummy-form">
-            <div class="row">
-                <h2 class="text-center headerzn">Bases</h2>
-                <hr>
-                <div class="col-lg-6">
-                    <div class="row">
-                        <div class="col-lg-6 mb-3">
-                            <label for="formFile1" class="form-label labelnew">Input bases.txt</label>
-                            <input ref="inputEl1" class="form-control" type="file" id="formFile1" @change="fileUpload">
+    <div id="main-part">
+      <HorizontalNavBar state-prop="bases"/>
+        <div style="width:100%; overflow-y: scroll; margin-bottom: 10px">
+            <div class="container-fluid dummy-form">
+                <div class="row">
+                    <h2 class="text-center headerzn">Bases</h2>
+                    <hr>
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <label for="formFile1" class="form-label labelnew">Input bases.txt</label>
+                                <input ref="inputEl1" class="form-control" type="file" id="formFile1" @change="fileUpload">
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label for="formText" class="form-label labelnew">Input bases</label>
+                                <textarea ref="inputEl3" class="form-control" id="formText" v-model="baseTextInput" placeholder="Enter multiple bases separated by new lines"></textarea>
+                            </div>
                         </div>
-                        <div class="col-lg-6 mb-3">
-                            <label for="formText" class="form-label labelnew">Input bases</label>
-                            <textarea ref="inputEl3" class="form-control" id="formText" v-model="baseTextInput" placeholder="Enter multiple bases separated by new lines"></textarea>
-                        </div>
+                        <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>
+                        <p class="text-danger">{{ errorSub }}</p>
                     </div>
-                    <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>
-                    <p class="text-danger">{{ errorSub }}</p>
                 </div>
-            </div>
-            <div class="row tables-container">
-                <div class="col-lg-5 bases-list">
-                    <h4 class="text-center">Bases List</h4>
-                    <DataTable :data="basesData" :columns="basesColumns" :class="tableClasses" @click="handleClick"></DataTable>
-                    <button @click="exportBasesToTxt" class="btn btn-primary mt-3">Export Bases to TXT</button>
-                </div>
-                <div class="col-lg-7 base-view">
-                    <h4 class="text-center">Base View</h4>
-                    <DataTable :data="materials" :columns="columns" :class="tableClasses"></DataTable>
-                    <button @click="exportMaterialsToTxt" class="btn btn-primary mt-3">Export Materials to TXT</button>
+                <div class="row tables-container">
+                    <div class="col-lg-5 bases-list">
+                        <h4 class="text-center">Bases List</h4>
+                        <DataTable :data="basesData" :columns="basesColumns" :class="tableClasses" @click="handleClick"></DataTable>
+                        <button @click="exportBasesToTxt" class="btn btn-primary mt-3">Export Bases to TXT</button>
+                    </div>
+                    <div class="col-lg-7 base-view">
+                        <h4 class="text-center">Base View</h4>
+                        <DataTable :data="materials" :columns="columns" :class="tableClasses"></DataTable>
+                        <button @click="exportMaterialsToTxt" class="btn btn-primary mt-3">Export Materials to TXT</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <ModalViewComponent ref="modal"></ModalViewComponent>
+<!--        <ModalViewComponent ref="modal"></ModalViewComponent>-->
     </div>
 </template>
 
 <script>
 import axios from 'axios';
 import NavBarComponent from './components/NavBarComponent.vue';
+import HorizontalNavBar from "./components/HorizontalNavBar.vue";
 import ModalViewComponent from './components/ModalViewComponent.vue';
 import DataTable from 'datatables.net-vue3';
 
 export default {
     components: {
         NavBarComponent,
+        HorizontalNavBar,
         ModalViewComponent,
         DataTable
     },
@@ -286,6 +291,11 @@ export default {
 </script>
 
 <style scoped>
+#main-part {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
 .dummy-form {
     overflow: auto;
     margin-top: 2em;

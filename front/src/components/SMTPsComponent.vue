@@ -1,95 +1,98 @@
 <template>
     <NavBarComponent stateProp="SMTPs"/>
-    <div class="container-fluid dummy-form">
-        <div class="row">
-            <h2 class="text-center headerzn">SMTPs</h2>
-            <hr>
-            <div class="col-lg-6">
-                <div class="row">
-                    <div class="col-lg-6 mb-3">
-                        <label for="formFile1" class="form-label labelnew">Input SMTPs.txt or csv</label>
-                        <input ref="inputEl1" class="form-control" type="file" id="formFile1" @change="fileUpload">
+    <div id="main-part">
+        <HorizontalNavBar state-prop="SMTPs"/>
+        <div class="container-fluid dummy-form">
+            <div class="row">
+                <h2 class="text-center headerzn">SMTPs</h2>
+                <hr>
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-lg-6 mb-3">
+                            <label for="formFile1" class="form-label labelnew">Input SMTPs.txt or csv</label>
+                            <input ref="inputEl1" class="form-control" type="file" id="formFile1" @change="fileUpload">
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                            <label for="formFile2" class="form-label labelnew">Input SMTPs.zip</label>
+                            <input ref="inputEl2" class="form-control" type="file" id="formFile2" @change="fileUpload">
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                              <label for="formText" class="form-label labelnew">Input SMTPs</label>
+                              <textarea ref="inputEl3" class="form-control" id="formText" v-model="smtpTextInput" placeholder="Enter multiple SMTPs separated by new lines"></textarea>
+                          </div>
                     </div>
-                    <div class="col-lg-6 mb-3">
-                        <label for="formFile2" class="form-label labelnew">Input SMTPs.zip</label>
-                        <input ref="inputEl2" class="form-control" type="file" id="formFile2" @change="fileUpload">
-                    </div>
-                    <div class="col-lg-6 mb-3">
-                          <label for="formText" class="form-label labelnew">Input SMTPs</label>
-                          <textarea ref="inputEl3" class="form-control" id="formText" v-model="smtpTextInput" placeholder="Enter multiple SMTPs separated by new lines"></textarea>
-                      </div>
+                    <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>&nbsp;
+                    <button type="button" @click.prevent="exportToTxt" class="btn btn-primary">Export to TXT</button>
+                    <p class="text-danger">{{ errorSub }}</p>
                 </div>
-                <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>&nbsp;
-                <button type="button" @click.prevent="exportToTxt" class="btn btn-primary">Export to TXT</button>
-                <p class="text-danger">{{ errorSub }}</p>
+                <div class="col-lg-12">
+                    <DataTable :data="smtpsData" :columns="smtpsColumns" :class="tableClasses" class="data-cell" @click="handleClick">
+                    </DataTable>
+                </div>
             </div>
-            <div class="col-lg-12">
-                <DataTable :data="smtpsData" :columns="smtpsColumns" :class="tableClasses" class="data-cell" @click="handleClick">
-                </DataTable>
+            <div>
+                <br>
+                <hr>
+                <p class="headerzn">Check SMTP</p>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <p class="labelnew">SMTP</p>
+                        <div class="custom-select" ref="smtpDropdown" >
+                            <div class="select-selected" @click="toggleDropdown">{{ isEmpty(selectedSmtp) ? 'Select SMTP' : selectedSmtp }}</div>
+                            <div v-if="dropdownOpen" class="select-items">
+                                <div v-for="item in allowedStatuses" :key="item.id" @click="selectSmtp(item)">{{ item}}</div>
+                            </div>
+                        </div>
+                        <p class="labelnew">Proxy</p>
+                        <div class="custom-select" ref="proxyDropdown">
+                            <div class="select-selected" @click="toggleProxyDropdown">{{ isEmpty(selectedProxy) ? 'Select Proxy' : selectedProxy }}</div>
+                            <div v-if="proxyDropdownOpen" class="select-items">
+                                <div v-for="item in allowedStatuses" :key="item.id" @click="selectProxy(item)">{{ item }}</div>
+                            </div>
+                        </div>
+                        <p class="labelnew">IMAP</p>
+                        <div class="custom-select" ref="imapDropdown">
+                            <div class="select-selected" @click="toggleImapDropdown">{{ isEmpty(selectedImap) ? 'Select IMAP' : selectedImap }}</div>
+                            <div v-if="imapDropdownOpen" class="select-items">
+                                <div v-for="item in allowedStatuses" :key="item.id" @click="selectImap(item)">{{ item }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <br/>
+                        <input v-model="timeout" style="margin-top: 1em;" type="text" class="form-control" aria-label="Small" placeholder="timeout">
+                    </div>
+                </div>
             </div>
-        </div>
-        <div>
-            <br>
-            <hr>
-            <p class="headerzn">Check SMTP</p>
-            <hr>
+            <div v-if="can_check">
+                <button style="margin-top: 1em;" type="button" @click.prevent="checkSubmit" class="btn btn-primary">Submit</button>
+            </div>
+            <div v-else>
+                <p class="labelnew">Please wait!</p>
+            </div>
+            <p class="text-danger">{{ errorCheck }}</p>
+            <h3 class="headerzn">Progress</h3>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" :style=" 'background-color: #ef4444;'+'width: '+log_progress+'%'" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
             <div class="row">
                 <div class="col-lg-6">
-                    <p class="labelnew">SMTP</p>
-                    <div class="custom-select" ref="smtpDropdown" >
-                        <div class="select-selected" @click="toggleDropdown">{{ isEmpty(selectedSmtp) ? 'Select SMTP' : selectedSmtp }}</div>
-                        <div v-if="dropdownOpen" class="select-items">
-                            <div v-for="item in allowedStatuses" :key="item.id" @click="selectSmtp(item)">{{ item}}</div>
-                        </div>
-                    </div>
-                    <p class="labelnew">Proxy</p>
-                    <div class="custom-select" ref="proxyDropdown">
-                        <div class="select-selected" @click="toggleProxyDropdown">{{ isEmpty(selectedProxy) ? 'Select Proxy' : selectedProxy }}</div>
-                        <div v-if="proxyDropdownOpen" class="select-items">
-                            <div v-for="item in allowedStatuses" :key="item.id" @click="selectProxy(item)">{{ item }}</div>
-                        </div>
-                    </div>
-                    <p class="labelnew">IMAP</p>
-                    <div class="custom-select" ref="imapDropdown">
-                        <div class="select-selected" @click="toggleImapDropdown">{{ isEmpty(selectedImap) ? 'Select IMAP' : selectedImap }}</div>
-                        <div v-if="imapDropdownOpen" class="select-items">
-                            <div v-for="item in allowedStatuses" :key="item.id" @click="selectImap(item)">{{ item }}</div>
-                        </div>
-                    </div>
+                    <p class="text-success bordered">Valid: {{ log_valid }}</p>
                 </div>
                 <div class="col-lg-6">
-                    <br/>
-                    <input v-model="timeout" style="margin-top: 1em;" type="text" class="form-control" aria-label="Small" placeholder="timeout">
+                    <p class="text-danger bordered">Errors: {{ log_error }}</p>
                 </div>
             </div>
-        </div>
-        <div v-if="can_check">
-            <button style="margin-top: 1em;" type="button" @click.prevent="checkSubmit" class="btn btn-primary">Submit</button>
-        </div>
-        <div v-else>
-            <p class="labelnew">Please wait!</p>
-        </div>
-        <p class="text-danger">{{ errorCheck }}</p>
-        <h3 class="headerzn">Progress</h3>
-        <div class="progress">
-            <div class="progress-bar" role="progressbar" :style=" 'background-color: #ef4444;'+'width: '+log_progress+'%'" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <p class="text-success bordered">Valid: {{ log_valid }}</p>
+            <div>
+                <h3 class="headerzn">Console</h3>
+                <div id="console-output" ref="consoleOutput">
+                    <template v-for="(item, index) in logs" :key="index">
+                        <span :class="item['status']">{{ item['TEXT'] }}<br/></span>
+                    </template>
+                </div>
+                <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
             </div>
-            <div class="col-lg-6">
-                <p class="text-danger bordered">Errors: {{ log_error }}</p>
-            </div>
-        </div>
-        <div>
-            <h3 class="headerzn">Console</h3>
-            <div id="console-output" ref="consoleOutput">
-                <template v-for="(item, index) in logs" :key="index">
-                    <span :class="item['status']">{{ item['TEXT'] }}<br/></span>
-                </template>
-            </div>
-            <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
         </div>
     </div>
     <ModalViewComponent ref="modal"></ModalViewComponent>
@@ -99,6 +102,7 @@
 import axios from 'axios';
 import NavBarComponent from './components/NavBarComponent.vue';
 import ModalViewComponent from './components/ModalViewComponent.vue';
+import HorizontalNavBar from "./components/HorizontalNavBar.vue";
 import DataTable from 'datatables.net-vue3';
 import JSZip from 'jszip';
 import { io } from "socket.io-client";
@@ -106,6 +110,7 @@ import { io } from "socket.io-client";
 export default {
     components: {
         NavBarComponent,
+        HorizontalNavBar,
         ModalViewComponent,
         DataTable
     },
@@ -592,6 +597,11 @@ export default {
 </script>
 
 <style scoped>
+#main-part {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
 .dummy-form {
     overflow: auto;
     margin-top: 2em;

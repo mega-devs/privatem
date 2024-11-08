@@ -12,64 +12,64 @@
 
           <!-- Dropdown group -->
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link text-white" href="#" id="navbarDropdown" aria-expanded="false">
               {{ currentSessionName || 'Current Session' }}
             </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="width: 100%;">
-              <li class="nav-item">
-                  <RouterLink to="/dashboard" style="text-decoration: none;">
-                      <a :class="['nav-link', stateProp === 'home' ? 'active' : 'text-white']">
-                          <i class="bi bi-house"></i> <span>Home</span>
-                      </a>
-                  </RouterLink>
-              </li>
-              <li class="nav-item">
-                  <RouterLink to="/dashboard/templates" style="text-decoration: none;">
-                      <a :class="['nav-link', stateProp === 'templates' ? 'active' : 'text-white']">
-                          <i class="bi bi-house"></i> <span>Templates</span>
-                      </a>
-                  </RouterLink>
-              </li>
-              <li class="nav-item">
-                  <RouterLink to="/dashboard/proxies" style="text-decoration: none;">
-                      <a :class="['nav-link', stateProp === 'proxies' ? 'active' : 'text-white']">
-                          <i class="bi bi-house"></i> <span>Proxies</span>
-                      </a>
-                  </RouterLink>
-              </li>
+<!--            <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="width: 100%;">-->
+<!--              <li class="nav-item">-->
+<!--                  <RouterLink to="/dashboard" style="text-decoration: none;">-->
+<!--                      <a :class="['nav-link', stateProp === 'home' ? 'active' : 'text-white']">-->
+<!--                          <i class="bi bi-house"></i> <span>Home</span>-->
+<!--                      </a>-->
+<!--                  </RouterLink>-->
+<!--              </li>-->
+<!--              <li class="nav-item">-->
+<!--                  <RouterLink to="/dashboard/templates" style="text-decoration: none;">-->
+<!--                      <a :class="['nav-link', stateProp === 'templates' ? 'active' : 'text-white']">-->
+<!--                          <i class="bi bi-house"></i> <span>Templates</span>-->
+<!--                      </a>-->
+<!--                  </RouterLink>-->
+<!--              </li>-->
+<!--              <li class="nav-item">-->
+<!--                  <RouterLink to="/dashboard/proxies" style="text-decoration: none;">-->
+<!--                      <a :class="['nav-link', stateProp === 'proxies' ? 'active' : 'text-white']">-->
+<!--                          <i class="bi bi-house"></i> <span>Proxies</span>-->
+<!--                      </a>-->
+<!--                  </RouterLink>-->
+<!--              </li>-->
 
-              <li class="nav-item">
-                  <RouterLink to="/dashboard/SMTPs" style="text-decoration: none;">
-                      <a :class="['nav-link', stateProp === 'SMTPs' ? 'active' : 'text-white']">
-                          <i class="bi bi-house"></i> <span>SMTPs</span>
-                      </a>
-                  </RouterLink>
-              </li>
+<!--              <li class="nav-item">-->
+<!--                  <RouterLink to="/dashboard/SMTPs" style="text-decoration: none;">-->
+<!--                      <a :class="['nav-link', stateProp === 'SMTPs' ? 'active' : 'text-white']">-->
+<!--                          <i class="bi bi-house"></i> <span>SMTPs</span>-->
+<!--                      </a>-->
+<!--                  </RouterLink>-->
+<!--              </li>-->
 
-              <li class="nav-item">
-                  <RouterLink to="/dashboard/IMAPs" style="text-decoration: none;">
-                      <a :class="['nav-link', stateProp === 'IMAPs' ? 'active' : 'text-white']">
-                          <i class="bi bi-house"></i> <span>IMAPs</span>
-                      </a>
-                  </RouterLink>
-              </li>
+<!--              <li class="nav-item">-->
+<!--                  <RouterLink to="/dashboard/IMAPs" style="text-decoration: none;">-->
+<!--                      <a :class="['nav-link', stateProp === 'IMAPs' ? 'active' : 'text-white']">-->
+<!--                          <i class="bi bi-house"></i> <span>IMAPs</span>-->
+<!--                      </a>-->
+<!--                  </RouterLink>-->
+<!--              </li>-->
 
-              <li class="nav-item">
-                  <RouterLink to="/dashboard/domains" style="text-decoration: none;">
-                      <a :class="['nav-link', stateProp === 'domains' ? 'active' : 'text-white']">
-                          <i class="bi bi-house"></i> <span>Domains</span>
-                      </a>
-                  </RouterLink>
-              </li>
+<!--              <li class="nav-item">-->
+<!--                  <RouterLink to="/dashboard/domains" style="text-decoration: none;">-->
+<!--                      <a :class="['nav-link', stateProp === 'domains' ? 'active' : 'text-white']">-->
+<!--                          <i class="bi bi-house"></i> <span>Domains</span>-->
+<!--                      </a>-->
+<!--                  </RouterLink>-->
+<!--              </li>-->
 
-              <li class="nav-item">
-                  <RouterLink to="/dashboard/bases" style="text-decoration: none;">
-                      <a :class="['nav-link', stateProp === 'bases' ? 'active' : 'text-white']">
-                          <i class="bi bi-house"></i> <span>Bases</span>
-                      </a>
-                  </RouterLink>
-              </li>
-            </ul>
+<!--              <li class="nav-item">-->
+<!--                  <RouterLink to="/dashboard/bases" style="text-decoration: none;">-->
+<!--                      <a :class="['nav-link', stateProp === 'bases' ? 'active' : 'text-white']">-->
+<!--                          <i class="bi bi-house"></i> <span>Bases</span>-->
+<!--                      </a>-->
+<!--                  </RouterLink>-->
+<!--              </li>-->
+<!--            </ul>-->
           </li>
 
           <!-- Dropdown group -->
