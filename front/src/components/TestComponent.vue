@@ -12,6 +12,14 @@
         <!-- Status form -->
         <div v-if="formType === 'main'">
             <div>
+                <div class="col-lg-12">
+                    <p>Debug</p>
+                    <div id="console-output">
+                        <template v-for="item in mailing_logs" :key="item.timestamp">
+                            <span :class="item.level.toLowerCase()">{{ item.message }}<br/></span>
+                        </template>
+                    </div>
+                </div>
                 <h3 style="text-align: center; margin-top: 1em;">Select material</h3>
                 <div class="row">
                     <div class="col-lg-6">
@@ -90,14 +98,6 @@
                                 <input v-model="emails_per_check" type="text" class="form-control" aria-label="Small" placeholder="Number of emails per check">
                                 <input v-model="count_of_material" type="text" class="form-control" aria-label="Small" placeholder="Count of emails to validate">
                                 <input v-model="threads_number" type="text" class="form-control" aria-label="Small" placeholder="Count of threads">
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <p>Debug</p>
-                            <div id="console-output">
-                                <template v-for="item in mailing_logs" :key="item.timestamp">
-                                    <span :class="item.level.toLowerCase()">{{ item.message }}<br/></span>
-                                </template>
                             </div>
                         </div>
                     </div>
@@ -253,7 +253,7 @@ export default {
                 { title: 'ID', data: 'id',className: 'data-cell' },
                 { title: 'Server', data: 'server' ,className: 'data-cell'},
                 { title: 'STATUS', data: 'status', render: (data) => `<a href="#" class="btn btn-${data}">${data}</a>`,className: 'data-cell' },
-                
+
             ],
             proxiesColumns: [
                 {
@@ -682,7 +682,7 @@ export default {
        this.loadSelectionTemplates();
        this.loadSelectionBase();
 
-       
+
 
 
     },
@@ -889,7 +889,7 @@ export default {
     background-color: var(--primary) !important;
     color: #000;
     width: 100px;
-    
+
 }
 /deep/ .btn-junk{
     background-color: var(--primary) !important;
@@ -948,5 +948,9 @@ p {
 
 .text-danger {
   color: red !important;
+}
+
+.form-control{
+  margin: 5px 0 5px 0;
 }
 </style>

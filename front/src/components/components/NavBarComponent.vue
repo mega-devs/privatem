@@ -336,13 +336,7 @@
             <hr>
         </ul>
     <div class="table_current_session">
-      <div class="table_current_session_header" style="border-radius: 10px 10px 0 0;">
-        <p class="table_current_session_header_p">Loaded Session:</p>
-      </div>
-      <div class="table_current_session_header">
-        <p class="table_current_session_header_p">{{ currentSessionName }}</p>
-      </div>
-      <div class="table_current_session_row">
+      <div class="table_current_session_row" style="border-radius: 10px 10px 0 0;">
         <p class="table_current_session_item">Total SMTPs</p>
         <p class="table_current_session_item">{{ totalSmtps }}</p>
       </div>
@@ -598,16 +592,6 @@ hr {
   height: auto;
   border-radius: 10px;
   //overflow: hidden;
-}
-.table_current_session_header {
-  background-color: #3a3a3a;
-  width: 100%;
-  //border-radius: 10px 10px 0 0;
-}
-.table_current_session_header_p {
-  font-weight: 600;
-  padding: 4px 12px;
-  margin: 0;
 }
 .table_current_session_row {
   width: 100%;

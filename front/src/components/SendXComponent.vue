@@ -78,7 +78,8 @@
             </div>
             <div class="row">
                 <div class="col-lg-6">
-                    <p class="text-success">Sended emails: {{ log_valid }}</p><p class="text-danger">Errors: {{ log_error }}</p>
+                    <p class="text-success bordered">Sended emails: {{ log_valid }}</p>
+                    <p class="text-danger bordered">Errors: {{ log_error }}</p>
                 </div>
                 <div class="col-lg-6">
                     <button style="margin-top: 1em;" type="button" class="btn btn-primary">Stop</button>
@@ -750,4 +751,12 @@ label {
   margin-top: 1em;
   margin-bottom: 1em;
 }
+
+.bordered {
+    border: 1px solid grey; /* Change color as needed */
+    padding: 10px;
+    margin: 10px 0 10px 0;
+    background-color: #2c2c2c;
+}
+
 </style>

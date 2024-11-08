@@ -4,10 +4,7 @@
         <div class="container-fluid" style="text-align: center;">
             <!-- <button @click.prevent="reset" class="btn btn-primary">Reset</button> -->
             <!-- <p>{{ resetInfo }}</p> -->
-            <template v-if="currentSessionName">
-                    <h3 style="">LOADED SESSION: {{ currentSessionName }}</h3>
-            </template>
-            <template v-else>
+            <template v-if="!currentSessionName">
                 <h3 class="text-danger" style="color: red;">Please load a session first</h3>
             </template>
             <hr>
