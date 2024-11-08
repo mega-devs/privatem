@@ -14,7 +14,7 @@
             <div>
                 <div class="col-lg-12">
                     <p>Debug</p>
-                    <div id="console-output">
+                    <div id="console-output" ref="consoleOutput">
                         <template v-for="item in mailing_logs" :key="item.timestamp">
                             <span :class="item.level.toLowerCase()">{{ item.message }}<br/></span>
                         </template>
@@ -343,6 +343,11 @@ export default {
 
         };
     },
+    watch: {
+        mailing_logs() {
+           this.scrollToBottom();
+        }
+    },
     methods: {
         saveSelectionSMTP() {
             localStorage.setItem('selectedSmtps', JSON.stringify(this.selectedSmtps));
@@ -665,6 +670,14 @@ export default {
                 .catch(error => {
                     console.error('Failed to delete logs:', error);
                 });
+        },
+        scrollToBottom() {
+            setTimeout(() => {
+                const consoleOutput = this.$refs.consoleOutput;
+                if (consoleOutput) {
+                  consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                }
+            }, 50); // Adjust delay if needed
         }
     },
     mounted() {
@@ -681,7 +694,7 @@ export default {
        this.getMaterialsDomain();
        this.loadSelectionTemplates();
        this.loadSelectionBase();
-
+       this.scrollToBottom();
 
 
 

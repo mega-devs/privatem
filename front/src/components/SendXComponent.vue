@@ -52,7 +52,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <p>Debug</p>
-                            <div id="console-output">
+                            <div id="console-output" ref="consoleOutput">
                                 <template v-for="item in logs">
                                     <span :class="item['status']">{{item['data']}}<br/></span>
                                 </template>
@@ -201,6 +201,11 @@ export default {
             imapDropdownOpen: false,
             proxyDropdownOpen: false,
             allowedStatuses: ['all','inbox', 'junk', 'dead', 'none', 'checked']
+        }
+    },
+    watch: {
+        logs() {
+            this.scrollToBottom();
         }
     },
     methods: {
@@ -524,6 +529,14 @@ export default {
                 .catch(error => {
                     console.error('Failed to delete logs:', error);
                 });
+        },
+        scrollToBottom() {
+            setTimeout(() => {
+                const consoleOutput = this.$refs.consoleOutput;
+                if (consoleOutput) {
+                  consoleOutput.scrollTop = consoleOutput.scrollHeight;
+                }
+            }, 50); // Adjust delay if needed
         }
     },
     mounted() {
@@ -544,6 +557,7 @@ export default {
                 this.saveSelectionSMTP();
             }
         });
+        this.scrollToBottom();
 
     },
     beforeDestroy() {
