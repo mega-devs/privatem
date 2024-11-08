@@ -50,10 +50,10 @@
         </div>
         <div class="row">
             <div class="col-lg-6">
-                <p class="text-success">Valid: {{ log_valid }}</p>
+                <p class="text-success bordered">Valid: {{ log_valid }}</p>
             </div>
             <div class="col-lg-6">
-                <p class="text-danger">Errors: {{ log_error }}</p>
+                <p class="text-danger bordered">Errors: {{ log_error }}</p>
             </div>
         </div>
         <div>
@@ -680,5 +680,12 @@ label {
 
 .text-danger {
   color: red !important;
+}
+
+.bordered {
+    border: 1px solid grey; /* Change color as needed */
+    padding: 10px;
+    margin: 10px 0 10px 0;
+    background-color: #2c2c2c;
 }
 </style>
