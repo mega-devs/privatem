@@ -1,26 +1,29 @@
 <template>
     <NavBarComponent stateProp="templates"/>
-    <div class="container-fluid dummy-form">
-        <div>
-            <div class="row">
-                <h2 class="text-center headerzn" style="color: white;">Templates</h2>
-                <hr>
-                <p class="text-danger text-center"><b>{{errorSubTemplates}}</b></p>
-                <div class="col-lg-6">
-                    <!-- <input class="form-control" type="text" v-model="nameTemplates" placeholder="Input templates name" readonly> -->
-                    <div class="mb-3">
-                        <label for="formFile" class="form-label labelnew" style="color: white;">Input templates.zip</label>
-                        <input class="form-control" type="file" id="formFile" @change="fileUploadTemplates">
+    <div id="main-part">
+        <HorizontalNavBar state-prop="templates"/>
+        <div class="container-fluid dummy-form">
+            <div>
+                <div class="row">
+                    <h2 class="text-center headerzn" style="color: white;">Templates</h2>
+                    <hr>
+                    <p class="text-danger text-center"><b>{{errorSubTemplates}}</b></p>
+                    <div class="col-lg-6">
+                        <!-- <input class="form-control" type="text" v-model="nameTemplates" placeholder="Input templates name" readonly> -->
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label labelnew" style="color: white;">Input templates.zip</label>
+                            <input class="form-control" type="file" id="formFile" @change="fileUploadTemplates">
+                        </div>
+                        <div class="mb-3">
+                            <label for="formLink" class="form-label labelnew" style="color: white">Input zip link</label>
+                            <input ref="inputEl4" class="form-control" type="text" id="formLink" v-model="zipLink">
+                        </div>
+                        <button type="button" @click.prevent="submitTemplates" class="btn btn-primary">Submit</button>
                     </div>
-                    <div class="mb-3">
-                        <label for="formLink" class="form-label labelnew" style="color: white">Input zip link</label>
-                        <input ref="inputEl4" class="form-control" type="text" id="formLink" v-model="zipLink">
+                    <div class="col-lg-6">
+                        <DataTable :data="templatesdata" :columns="templatescolumns" :style="{color: 'red !important'}" class="table table-striped" @click="handleClick">
+                        </DataTable>
                     </div>
-                    <button type="button" @click.prevent="submitTemplates" class="btn btn-primary">Submit</button>
-                </div>
-                <div class="col-lg-6">
-                    <DataTable :data="templatesdata" :columns="templatescolumns" :style="{color: 'red !important'}" class="table table-striped" @click="handleClick">
-                    </DataTable>
                 </div>
             </div>
         </div>
@@ -31,12 +34,14 @@
 <script>
 import axios from 'axios';
 import NavBarComponent from './components/NavBarComponent.vue';
+import HorizontalNavBar from "./components/HorizontalNavBar.vue";
 import JSZip from 'jszip';
 import DataTable from 'datatables.net-vue3';
 
 export default {
     components: {
         NavBarComponent,
+        HorizontalNavBar,
         DataTable
     },
     data() {
@@ -222,6 +227,12 @@ export default {
 
 
 <style scoped>
+#main-part {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .dummy-form {
     overflow: auto;
     margin-top: 2em;

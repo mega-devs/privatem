@@ -1,69 +1,72 @@
 <template>
     <NavBarComponent stateProp="domains"/>
-    <div class="container-fluid dummy-form">
-        <div class="row">
-            <h2 class="text-center headerzn text-light">Domains</h2>
-            <hr class="bg-light">
-            <div class="col-lg-8">
-                <div class="row">
-                    <div class="col-lg-6 mb-3">
-                        <label for="formFile1" class="form-label labelnew text-light">Input domains.txt</label>
-                        <input ref="inputEl1" class="form-control bg-dark text-light border-secondary" type="file" id="formFile1" @change="fileUpload">
+    <div id="main-part">
+        <HorizontalNavBar state-prop="domains"/>
+        <div class="container-fluid dummy-form">
+            <div class="row">
+                <h2 class="text-center headerzn text-light">Domains</h2>
+                <hr class="bg-light">
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-lg-6 mb-3">
+                            <label for="formFile1" class="form-label labelnew text-light">Input domains.txt</label>
+                            <input ref="inputEl1" class="form-control bg-dark text-light border-secondary" type="file" id="formFile1" @change="fileUpload">
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                              <label for="formText" class="form-label labelnew text-light">Input domains</label>
+                              <textarea ref="inputEl3" class="form-control bg-dark text-light border-secondary" id="formText" v-model="domainTextInput" placeholder="Enter multiple domains separated by new lines"></textarea>
+                        </div>
                     </div>
-                    <div class="col-lg-6 mb-3">
-                          <label for="formText" class="form-label labelnew text-light">Input domains</label>
-                          <textarea ref="inputEl3" class="form-control bg-dark text-light border-secondary" id="formText" v-model="domainTextInput" placeholder="Enter multiple domains separated by new lines"></textarea>
+                    <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>&nbsp;
+                    <button type="button" @click.prevent="exportData" class="btn btn-primary">Export to TXT</button>
+                    <p class="text-danger">{{ errorSub }}</p>
+                </div>
+                <hr class="bg-light">
+                <div class="col-lg-12">
+                    <DataTable :data="domainsData" :columns="domainsColumns" :class="tableClasses" @click="handleClick">
+                    </DataTable>
+                </div>
+            </div>
+            <div>
+                <hr class="bg-light">
+                <p class="headerzn text-light">Check Domains</p>
+                <hr class="bg-light">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <select v-model="check_file" class="form-select bg-dark text-light border-secondary">
+                            <option v-for="item in allowedStatuses" :key="item" :value="item">{{ item }}</option>
+                        </select>
                     </div>
                 </div>
-                <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>&nbsp;
-                <button type="button" @click.prevent="exportData" class="btn btn-primary">Export to TXT</button>
-                <p class="text-danger">{{ errorSub }}</p>
             </div>
-            <hr class="bg-light">
-            <div class="col-lg-12">
-                <DataTable :data="domainsData" :columns="domainsColumns" :class="tableClasses" @click="handleClick">
-                </DataTable>
+            <div v-if="can_check">
+                <button style="margin-top: 1em;" type="button" @click.prevent="checkSubmit2" class="btn btn-primary">Submit</button>
             </div>
-        </div>
-        <div>
-            <hr class="bg-light">
-            <p class="headerzn text-light">Check Domains</p>
-            <hr class="bg-light">
+            <div v-else>
+                <p class="text-light">Please wait!</p>
+            </div>
+            <p class="text-danger">{{ errorCheck }}</p>
+            <h3 class="headerzn text-light">Progress</h3>
+            <div class="progress">
+                <div class="progress-bar bg-primary" role="progressbar" :style="'width: '+log_progress+'%'" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
             <div class="row">
                 <div class="col-lg-6">
-                    <select v-model="check_file" class="form-select bg-dark text-light border-secondary">
-                        <option v-for="item in allowedStatuses" :key="item" :value="item">{{ item }}</option>
-                    </select>
+                    <p class="text-success bordered">Valid: {{ log_valid }}</p>
+                </div>
+                <div class="col-lg-6">
+                    <p class="text-danger bordered">Errors: {{ log_error }}</p>
                 </div>
             </div>
-        </div>
-        <div v-if="can_check">
-            <button style="margin-top: 1em;" type="button" @click.prevent="checkSubmit2" class="btn btn-primary">Submit</button>
-        </div>
-        <div v-else>
-            <p class="text-light">Please wait!</p>
-        </div>
-        <p class="text-danger">{{ errorCheck }}</p>
-        <h3 class="headerzn text-light">Progress</h3>
-        <div class="progress">
-            <div class="progress-bar bg-primary" role="progressbar" :style="'width: '+log_progress+'%'" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <p class="text-success">Valid: {{ log_valid }}</p>
+            <div>
+                <h3 class="headerzn text-light">Console</h3>
+                <div id="console-output">
+                    <template v-for="item in logs">
+                        <span :class="item['status']">{{ item['TEXT'] }}<br/></span>
+                    </template>
+                </div>
+                <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
             </div>
-            <div class="col-lg-6">
-                <p class="text-danger">Errors: {{ log_error }}</p>
-            </div>
-        </div>
-        <div>
-            <h3 class="headerzn text-light">Console</h3>
-            <div id="console-output">
-                <template v-for="item in logs">
-                    <span :class="item['status']">{{ item['TEXT'] }}<br/></span>
-                </template>
-            </div>
-            <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
         </div>
     </div>
     <ModalViewComponent ref="modal"></ModalViewComponent>
@@ -72,6 +75,7 @@
 <script>
 import axios from 'axios';
 import NavBarComponent from './components/NavBarComponent.vue';
+import HorizontalNavBar from "./components/HorizontalNavBar.vue";
 import ModalViewComponent from './components/ModalViewComponent.vue';
 import DataTable from 'datatables.net-vue3';
 import JSZip from 'jszip';
@@ -80,6 +84,7 @@ import { io } from "socket.io-client";
 export default {
     components: {
         NavBarComponent,
+        HorizontalNavBar,
         ModalViewComponent,
         DataTable
     },
@@ -489,6 +494,11 @@ export default {
     --light: #6C7293;
     --dark: #000000;
 }
+#main-part {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
 .dummy-form {
     overflow: auto;
     margin-top: 2em;
@@ -680,5 +690,12 @@ label {
 
 .text-danger {
   color: red !important;
+}
+
+.bordered {
+    border: 1px solid grey; /* Change color as needed */
+    padding: 10px;
+    margin: 10px 0 10px 0;
+    background-color: #2c2c2c;
 }
 </style>
