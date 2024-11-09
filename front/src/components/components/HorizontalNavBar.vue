@@ -54,9 +54,6 @@ export default {
 </script>
 
 <style scoped>
-.navbar {
-    margin-bottom: 20px; /* Space below the navbar */
-}
 
 .nav-link {
   margin: 0 10px;

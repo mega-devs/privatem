@@ -361,8 +361,12 @@
         <p class="table_current_session_item">{{ templatesLoaded }}</p>
       </div>
       <div class="table_current_session_row">
-        <p class="table_current_session_item">DOMAINS</p>
-        <p class="table_current_session_item">{{ domainsLoaded }}</p>
+        <p class="table_current_session_item">IMG DOMAINS</p>
+        <p class="table_current_session_item">{{ IMGdomainsLoaded }}</p>
+      </div>
+      <div class="table_current_session_row">
+        <p class="table_current_session_item">URL DOMAINS</p>
+        <p class="table_current_session_item">{{ URLdomainsLoaded }}</p>
       </div>
       <div class="table_current_session_row">
         <p class="table_current_session_item">SOCKS</p>
@@ -402,7 +406,8 @@ export default {
             inboxSmtps: 'X',
             junkSmtps: 'X',
             templatesLoaded: 'X', // Replace 'X' with actual value or bind it dynamically
-            domainsLoaded: 'X', // Replace 'X' with actual value or bind it dynamically
+            IMGdomainsLoaded: 'X', // Replace 'X' with actual value or bind it dynamically
+            URLdomainsLoaded: 'X', // Replace 'X' with actual value or bind it dynamically
             socksLoaded: 'X', // Replace 'X' with actual value or bind it dynamically
             mailerStatus: 'STOPPED',
             currentSessionName: this.getCurrentSessionName()
@@ -439,7 +444,9 @@ export default {
                     this.inboxSmtps = res.data.count['inbox'];
                     this.junkSmtps = res.data.count['junk'];
                     this.templatesLoaded = res.data.count['templates'];
-                    this.domainsLoaded = res.data.count['domains'];
+                    // this.domainsLoaded = res.data.count['domains'];
+                    this.IMGdomainsLoaded = res.data.count['imgDomains'];
+                    this.URLdomainsLoaded = res.data.count['urlDomains'];
                     this.socksLoaded = res.data.count['socks'];
                 })
                 .catch(error => {
