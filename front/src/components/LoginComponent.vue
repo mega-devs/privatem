@@ -66,7 +66,7 @@ export default {
                 this.setAuth()
                 router.push('/dashboard')
             }).catch(errors => {
-                this.error = 'User not found or password is incorrect!'
+                this.error = 'User not found or password is incorrect!';
             })
         }
     },

@@ -178,7 +178,7 @@ export default {
 .dummy-form {
   overflow: auto;
   width: 80%;
-  margin: 25px auto 0 auto;
+  margin: 50px auto 0 auto;
   height: fit-content;
 
   background-color: #313131;

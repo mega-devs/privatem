@@ -235,7 +235,7 @@ export default {
 
 .dummy-form {
     overflow: auto;
-    margin-top: 2em;
+    margin-top: 1em;
     width: auto;
 }
 
