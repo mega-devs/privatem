@@ -876,7 +876,9 @@ def get_counts(session):
         'inbox': 0,
         'junk': 0,
         'templates': 0,
-        'domains': 0,
+        # 'domains': 0,
+        'urlDomains': 0,
+        'imgDomains': 0,
         'socks': 0
     }
     try:
@@ -945,6 +947,20 @@ def get_counts(session):
         if result:
             counts['socks'] = result[0]
 
+        # Counting URL Domains
+        query = f"SELECT COUNT(*) as count FROM domains WHERE session = %s;"
+        cursor.execute(query, (session,))
+        result = cursor.fetchone()
+        if result:
+            counts['urlDomains'] = result[0]  # Count of all domains
+
+        # Counting IMG Domains
+        query = f"SELECT COUNT(*) as count FROM domains WHERE session = %s AND (url LIKE '%.jpg' OR url LIKE '%.jpeg' OR url LIKE '%.png' OR url LIKE '%.gif' OR url LIKE '%.bmp' OR url LIKE '%.tiff');"
+        cursor.execute(query, (session,))
+        result = cursor.fetchone()
+        if result:
+            counts['imgDomains'] = result[0]  # Count of image domains
+
         logger.info(f'Counts for session {session}: {counts}')
     except mysql.connector.Error as err:
         logger.error(f"Error getting counts for session {session}: {err}")
@@ -1000,7 +1016,6 @@ def get_counts(session):
 #             counts['junk'] = result[0]
 #         query = f"SELECT COUNT(*) as count FROM templates WHERE session = %s"
 #         cursor.execute(query, (session,))
-#         result = cursor.fetchone()
 #
 #         if result:
 #             counts['templates'] = result[0]
