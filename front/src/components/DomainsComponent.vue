@@ -68,8 +68,8 @@
                 <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
             </div>
         </div>
+        <ModalViewComponent ref="modal"></ModalViewComponent>
     </div>
-    <ModalViewComponent ref="modal"></ModalViewComponent>
 </template>
 
 <script>

@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-<!--        <ModalViewComponent ref="modal"></ModalViewComponent>-->
+        <ModalViewComponent ref="modal"></ModalViewComponent>
     </div>
 </template>
 

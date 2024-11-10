@@ -1,86 +1,91 @@
 <template>
     <NavBarComponent stateProp="resetz"/>
-    <header>
-        <div class="container-fluid dummy-form">
-            <div class="form-group mt-3">
-                <label>Full Reset</label>&nbsp;&nbsp;
-                <button @click.prevent="fullReset" class="btn btn-primary">Delete all sessions and clean all</button>
-            </div>
-            
-            <div class="form-group mt-3">
-                <label for="resetTemplates">Reset templates</label>
-                <select id="resetTemplates" class="form-control" v-model="resetTemplates">
-                    <option value="all">Reset all templates</option>
-                    <option value="status">Reset templates by status</option>
-                </select>
-                <div v-if="resetTemplates === 'status'" class="mt-2">
-                    <label for="templateStatus">Select Status</label>
-                    <select id="templateStatus" class="form-control" v-model="templateStatus">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
+    <div id="main-part">
+        <HorizontalNavBar stateProp="resetz"/>
+        <header>
+            <div class="container-fluid dummy-form">
+                <div class="form-group mt-3">
+                    <label>Full Reset</label>&nbsp;&nbsp;
+                    <button @click.prevent="fullReset" class="btn btn-primary">Delete all sessions and clean all</button>
                 </div>
-                <button @click.prevent="resetTemplatesAction" class="btn btn-primary mt-2">Execute</button>
-            </div>
-            
-            <div class="form-group mt-3">
-                <label for="resetSmtp">Reset SMTP</label>
-                <select id="resetSmtp" class="form-control" v-model="resetSmtp">
-                    <option value="all">Reset all SMTP status</option>
-                    <option value="status">Reset SMTP by status</option>
-                </select>
-                <div v-if="resetSmtp === 'status'" class="mt-2">
-                    <label for="smtpStatus">Select Status</label>
-                    <select id="smtpStatus" class="form-control" v-model="smtpStatus">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+
+                <div class="form-group mt-3">
+                    <label for="resetTemplates">Reset templates</label>
+                    <select id="resetTemplates" class="form-control" v-model="resetTemplates">
+                        <option value="all">Reset all templates</option>
+                        <option value="status">Reset templates by status</option>
                     </select>
+                    <div v-if="resetTemplates === 'status'" class="mt-2">
+                        <label for="templateStatus">Select Status</label>
+                        <select id="templateStatus" class="form-control" v-model="templateStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <button @click.prevent="resetTemplatesAction" class="btn btn-primary mt-2">Execute</button>
                 </div>
-                <button @click.prevent="resetSmtpAction" class="btn btn-primary mt-2">Execute</button>
-            </div>
-            
-            <div class="form-group mt-3">
-                <label for="resetDomains">Reset Domains</label>
-                <select id="resetDomains" class="form-control" v-model="resetDomains">
-                    <option value="all">Reset all DOMAINs status</option>
-                    <option value="status">Reset DOMAINs by status</option>
-                </select>
-                <div v-if="resetDomains === 'status'" class="mt-2">
-                    <label for="domainStatus">Select Status</label>
-                    <select id="domainStatus" class="form-control" v-model="domainStatus">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+
+                <div class="form-group mt-3">
+                    <label for="resetSmtp">Reset SMTP</label>
+                    <select id="resetSmtp" class="form-control" v-model="resetSmtp">
+                        <option value="all">Reset all SMTP status</option>
+                        <option value="status">Reset SMTP by status</option>
                     </select>
+                    <div v-if="resetSmtp === 'status'" class="mt-2">
+                        <label for="smtpStatus">Select Status</label>
+                        <select id="smtpStatus" class="form-control" v-model="smtpStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <button @click.prevent="resetSmtpAction" class="btn btn-primary mt-2">Execute</button>
                 </div>
-                <button @click.prevent="resetDomainsAction" class="btn btn-primary mt-2">Execute</button>
-            </div>
-            
-            <div class="form-group mt-3">
-                <label for="resetProxy">Reset proxy</label>
-                <select id="resetProxy" class="form-control" v-model="resetProxy">
-                    <option value="all">Reset all proxy status</option>
-                    <option value="status">Reset proxy by status</option>
-                </select>
-                <div v-if="resetProxy === 'status'" class="mt-2">
-                    <label for="proxyStatus">Select Status</label>
-                    <select id="proxyStatus" class="form-control" v-model="proxyStatus">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+
+                <div class="form-group mt-3">
+                    <label for="resetDomains">Reset Domains</label>
+                    <select id="resetDomains" class="form-control" v-model="resetDomains">
+                        <option value="all">Reset all DOMAINs status</option>
+                        <option value="status">Reset DOMAINs by status</option>
                     </select>
+                    <div v-if="resetDomains === 'status'" class="mt-2">
+                        <label for="domainStatus">Select Status</label>
+                        <select id="domainStatus" class="form-control" v-model="domainStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <button @click.prevent="resetDomainsAction" class="btn btn-primary mt-2">Execute</button>
                 </div>
-                <button @click.prevent="resetProxyAction" class="btn btn-primary mt-2">Execute</button>
+
+                <div class="form-group mt-3">
+                    <label for="resetProxy">Reset proxy</label>
+                    <select id="resetProxy" class="form-control" v-model="resetProxy">
+                        <option value="all">Reset all proxy status</option>
+                        <option value="status">Reset proxy by status</option>
+                    </select>
+                    <div v-if="resetProxy === 'status'" class="mt-2">
+                        <label for="proxyStatus">Select Status</label>
+                        <select id="proxyStatus" class="form-control" v-model="proxyStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                    <button @click.prevent="resetProxyAction" class="btn btn-primary mt-2">Execute</button>
+                </div>
             </div>
-        </div>
-    </header>
+        </header>
+    </div>
 </template>
 
 <script>
 import NavBarComponent from '../components/NavBarComponent.vue';
+import HorizontalNavBar from "../components/HorizontalNavBar.vue";
 import axios from 'axios';
 
 export default {
     components: {
         NavBarComponent,
+        HorizontalNavBar,
     },
     data() {
         return {
@@ -144,9 +149,16 @@ export default {
 </script>
 
 <style scoped>
+
+#main-part {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .dummy-form {
     overflow: auto;
-    margin-top: 2em;
+    margin-top: 1em;
     width: auto;
 }
 .container-fluid.dummy-form {

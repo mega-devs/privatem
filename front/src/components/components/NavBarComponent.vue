@@ -12,7 +12,7 @@
 
           <!-- Dropdown group -->
           <li class="nav-item dropdown">
-            <a class="nav-link text-white" href="#" id="navbarDropdown" aria-expanded="false">
+            <a class="nav-link text-white" id="navbarDropdown" aria-expanded="false">
               {{ currentSessionName || 'Current Session' }}
             </a>
 <!--            <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="width: 100%;">-->
