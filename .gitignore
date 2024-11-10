@@ -1,3 +1,6 @@
 front/node_modules/*
 
 /.idea/
+
+front/.env.production
+front/.env
