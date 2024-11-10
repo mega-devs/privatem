@@ -1,179 +1,182 @@
 <template>
     <NavBarComponent stateProp="test"/>
-    <div class="container-fluid dummy-form">
-        <!-- Add Select Form -->
-        <div class="form-selector">
-            <label for="formType" style="margin-bottom: 1em;">Select Form Type:</label>
-            <select v-model="formType" class="form-select" id="formType">
-                <option value="main">Status Form</option>
-                <option value="placeholder">Select Form</option>
-            </select>
-        </div>
-        <!-- Status form -->
-        <div v-if="formType === 'main'">
-            <div>
-                <div class="col-lg-12">
-                    <p>Debug</p>
-                    <div id="console-output" ref="consoleOutput">
-                        <template v-for="item in mailing_logs" :key="item.timestamp">
-                            <span :class="item.level.toLowerCase()">{{ item.message }}<br/></span>
-                        </template>
-                    </div>
-                </div>
-                <h3 style="text-align: center; margin-top: 1em;">Select material</h3>
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div>
-                            <p>Templates</p>
-                            <select v-model="dummy_form" class="form-select">
-                                <option v-for="item in allowedStatuses" :key="item['id']">{{item}}</option>
-                            </select>
-                        </div>
-                        <div>
-                            <p>Bases</p>
-                            <div class="custom-select" ref="basesDropdown">
-                                <div class="select-selected" @click="toggleBasesDropdown">{{ isEmpty(selectedBase) ? 'Select Base': selectedBase }}</div>
-                                <div v-if="baseDropdownOpen" class="select-items">
-                                    <div v-for="item in allowedStatuses" :key="item.id" @click="selectBase(item)">{{ item }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <p>IMAP</p>
-                            <div class="custom-select" ref="imapDropdown">
-                                <div class="select-selected" @click="toggleImapDropdown">{{ isEmpty(selectedImap) ? 'Select IMAP': selectedImap }}</div>
-                                <div v-if="imapDropdownOpen" class="select-items">
-                                    <div v-for="item in allowedStatuses" :key="item.id" @click="selectImap(item)">{{ item }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <p>Proxy</p>
-                            <div class="custom-select" ref="proxyDropdown">
-                                <div class="select-selected" @click="toggleProxyDropdown">{{ isEmpty(selectedProxy) ? 'Select Proxy' : selectedProxy }}</div>
-                                <div v-if="proxyDropdownOpen" class="select-items">
-                                    <div v-for="item in allowedStatuses" :key="item.id" @click="selectProxy(item)">{{ item }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <p>Smtps</p>
-                            <div class="custom-select" ref="smtpDropdown">
-                                <div class="select-selected" @click="toggleSmtpDropdown">{{ isEmpty(selectedSmtp) ? 'Select SMTP': selectedSmtp }}</div>
-                                <div v-if="smtpDropdownOpen" class="select-items">
-                                    <div v-for="item in allowedStatuses" :key="item.id" @click="selectSmtp(item)">{{ item }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <p>Domains</p>
-                            <div class="custom-select" ref="domainDropdown">
-                                <div class="select-selected" @click="toggleDomainDropdown">{{ isEmpty(selectedDomain) ? 'Select Domain': selectedDomain }}</div>
-                                <div v-if="domainDropdownOpen" class="select-items">
-                                    <div v-for="item in allowedStatuses" :key="item.id" @click="selectDomain(item)">{{ item }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <p>base</p>
-                            <input v-model="base_form_imap" class="form-control" type="text" placeholder="Input email`s IMAP">
+    <div id="main-part">
+        <HorizontalNavBar state-prop="test"/>
+        <div class="container-fluid dummy-form">
+            <!-- Add Select Form -->
+            <div class="form-selector">
+                <label for="formType" style="margin-bottom: 1em;">Select Form Type:</label>
+                <select v-model="formType" class="form-select" id="formType">
+                    <option value="main">Status Form</option>
+                    <option value="placeholder">Select Form</option>
+                </select>
+            </div>
+            <!-- Status form -->
+            <div v-if="formType === 'main'">
+                <div>
+                    <div class="col-lg-12">
+                        <p>Debug</p>
+                        <div id="console-output" ref="consoleOutput">
+                            <template v-for="item in mailing_logs" :key="item.timestamp">
+                                <span :class="item.level.toLowerCase()">{{ item.message }}<br/></span>
+                            </template>
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <h4 style="margin-top: 1em;">Options</h4>
-                        <p>Leave the fields empty if you set the default settings</p>
-                        <select v-model="to_check" class="form-select">
-                            <option>proxy</option>
-                            <option>smtp</option>
-                            <option>templates</option>
-                            <option>domains</option>
-                        </select>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <input v-model="delay_form" type="text" class="form-control" aria-label="Small" placeholder="Delay">
-                                <input v-model="timeout_form" type="text" class="form-control" aria-label="Small" placeholder="Timeout">
-                                <input v-model="sending_limit" type="text" class="form-control" aria-label="Small" placeholder="Sending limit">
-                            </div>
-                            <div class="col-lg-6">
-                                <input v-model="emails_per_check" type="text" class="form-control" aria-label="Small" placeholder="Number of emails per check">
-                                <input v-model="count_of_material" type="text" class="form-control" aria-label="Small" placeholder="Count of emails to validate">
-                                <input v-model="threads_number" type="text" class="form-control" aria-label="Small" placeholder="Count of threads">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div v-if="can_run">
+                    <h3 style="text-align: center; margin-top: 1em;">Select material</h3>
                     <div class="row">
                         <div class="col-lg-6">
-                            <button style="margin-top: 1em;" type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>
-                            <p class="text-danger">{{errorCheck}}</p>
+                            <div>
+                                <p>Templates</p>
+                                <select v-model="dummy_form" class="form-select">
+                                    <option v-for="item in allowedStatuses" :key="item['id']">{{item}}</option>
+                                </select>
+                            </div>
+                            <div>
+                                <p>Bases</p>
+                                <div class="custom-select" ref="basesDropdown">
+                                    <div class="select-selected" @click="toggleBasesDropdown">{{ isEmpty(selectedBase) ? 'Select Base': selectedBase }}</div>
+                                    <div v-if="baseDropdownOpen" class="select-items">
+                                        <div v-for="item in allowedStatuses" :key="item.id" @click="selectBase(item)">{{ item }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <p>IMAP</p>
+                                <div class="custom-select" ref="imapDropdown">
+                                    <div class="select-selected" @click="toggleImapDropdown">{{ isEmpty(selectedImap) ? 'Select IMAP': selectedImap }}</div>
+                                    <div v-if="imapDropdownOpen" class="select-items">
+                                        <div v-for="item in allowedStatuses" :key="item.id" @click="selectImap(item)">{{ item }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <p>Proxy</p>
+                                <div class="custom-select" ref="proxyDropdown">
+                                    <div class="select-selected" @click="toggleProxyDropdown">{{ isEmpty(selectedProxy) ? 'Select Proxy' : selectedProxy }}</div>
+                                    <div v-if="proxyDropdownOpen" class="select-items">
+                                        <div v-for="item in allowedStatuses" :key="item.id" @click="selectProxy(item)">{{ item }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <p>Smtps</p>
+                                <div class="custom-select" ref="smtpDropdown">
+                                    <div class="select-selected" @click="toggleSmtpDropdown">{{ isEmpty(selectedSmtp) ? 'Select SMTP': selectedSmtp }}</div>
+                                    <div v-if="smtpDropdownOpen" class="select-items">
+                                        <div v-for="item in allowedStatuses" :key="item.id" @click="selectSmtp(item)">{{ item }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <p>Domains</p>
+                                <div class="custom-select" ref="domainDropdown">
+                                    <div class="select-selected" @click="toggleDomainDropdown">{{ isEmpty(selectedDomain) ? 'Select Domain': selectedDomain }}</div>
+                                    <div v-if="domainDropdownOpen" class="select-items">
+                                        <div v-for="item in allowedStatuses" :key="item.id" @click="selectDomain(item)">{{ item }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <p>base</p>
+                                <input v-model="base_form_imap" class="form-control" type="text" placeholder="Input email`s IMAP">
+                            </div>
                         </div>
                         <div class="col-lg-6">
-                            <!-- <input v-model="results_form" class="form-control" type="text" placeholder="Input name for file with results"> -->
+                            <h4 style="margin-top: 1em;">Options</h4>
+                            <p>Leave the fields empty if you set the default settings</p>
+                            <select v-model="to_check" class="form-select">
+                                <option>proxy</option>
+                                <option>smtp</option>
+                                <option>templates</option>
+                                <option>domains</option>
+                            </select>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <input v-model="delay_form" type="text" class="form-control" aria-label="Small" placeholder="Delay">
+                                    <input v-model="timeout_form" type="text" class="form-control" aria-label="Small" placeholder="Timeout">
+                                    <input v-model="sending_limit" type="text" class="form-control" aria-label="Small" placeholder="Sending limit">
+                                </div>
+                                <div class="col-lg-6">
+                                    <input v-model="emails_per_check" type="text" class="form-control" aria-label="Small" placeholder="Number of emails per check">
+                                    <input v-model="count_of_material" type="text" class="form-control" aria-label="Small" placeholder="Count of emails to validate">
+                                    <input v-model="threads_number" type="text" class="form-control" aria-label="Small" placeholder="Count of threads">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div v-else>
-                    <p>Please wait!</p>
+                    <div v-if="can_run">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <button style="margin-top: 1em;" type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>
+                                <p class="text-danger">{{errorCheck}}</p>
+                            </div>
+                            <div class="col-lg-6">
+                                <!-- <input v-model="results_form" class="form-control" type="text" placeholder="Input name for file with results"> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <p>Please wait!</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div v-else>
-            <h3 style="text-align: center;">Select Form</h3>
-            <div class="row">
-                <div class="col-lg-6" style="margin-top: 1em;">
-                    <h4 class="text-center">Templates</h4>
-                     <DataTable :data="selectedMaterials" :columns="templatesColumns" :class="tableClasses" @click="handleClick"></DataTable>
-                </div>
-                <div class="col-lg-6">
-                    <h4 class="text-center">Bases</h4>
-                     <DataTable :data="selectedBases" :columns="basesColumns" :class="tableClasses" @click="handleClick"></DataTable>
-                </div>
-                <div class="col-lg-6">
-                    <h4 class="text-center">Selected SMTP</h4>
-                            <DataTable :data="selectedSmtps" :columns="smtpsColumns" :class="tableClasses">
-                    </DataTable>
-                </div>
-                <div class="col-lg-6">
-                    <h4 class="text-center">Selected Proxy</h4>
-                              <DataTable :data="selectedProxies" :columns="proxiesColumns" :class="tableClasses" >
-                    </DataTable>
-                </div>
-                <div class="col-lg-6">
-                     <h4 class="text-center">Selected Domains</h4>
-                              <DataTable :data="selectedDomains" :columns="domainsColumns" :class="tableClasses" @click="handleClick">
-                     </DataTable>
-                </div>
+            <div v-else>
+                <h3 style="text-align: center;">Select Form</h3>
+                <div class="row">
+                    <div class="col-lg-6" style="margin-top: 1em;">
+                        <h4 class="text-center">Templates</h4>
+                         <DataTable :data="selectedMaterials" :columns="templatesColumns" :class="tableClasses" @click="handleClick"></DataTable>
+                    </div>
+                    <div class="col-lg-6">
+                        <h4 class="text-center">Bases</h4>
+                         <DataTable :data="selectedBases" :columns="basesColumns" :class="tableClasses" @click="handleClick"></DataTable>
+                    </div>
+                    <div class="col-lg-6">
+                        <h4 class="text-center">Selected SMTP</h4>
+                                <DataTable :data="selectedSmtps" :columns="smtpsColumns" :class="tableClasses">
+                        </DataTable>
+                    </div>
+                    <div class="col-lg-6">
+                        <h4 class="text-center">Selected Proxy</h4>
+                                  <DataTable :data="selectedProxies" :columns="proxiesColumns" :class="tableClasses" >
+                        </DataTable>
+                    </div>
+                    <div class="col-lg-6">
+                         <h4 class="text-center">Selected Domains</h4>
+                                  <DataTable :data="selectedDomains" :columns="domainsColumns" :class="tableClasses" @click="handleClick">
+                         </DataTable>
+                    </div>
 
-            </div>
-        </div>
-        <div>
-            <h3>Progress</h3>
-            <div class="progress">
-                <div class="progress-bar" role="progressbar" :style=" 'background-color: #ef4444;'+'width: '+log_progress+'%'" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <p class="text-success bordered">Sended emails: {{ log_valid }}</p>
-                    <p class="text-danger bordered">Errors: {{ log_error }}</p>
-                </div>
-                <div class="col-lg-6">
-                    <p>{{ status }}</p>
-                    <button style="margin-top: 1em;" type="button" class="btn btn-primary">Stop</button>
                 </div>
             </div>
-        </div>
-        <div>
-            <h3>Console</h3>
-            <div id="console-output">
-                <template v-for="item in logs">
-                    <span :class="item['status']">{{item['TEXT']}}<br/></span>
-                </template>
+            <div>
+                <h3>Progress</h3>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" :style=" 'background-color: #ef4444;'+'width: '+log_progress+'%'" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <p class="text-success bordered">Sended emails: {{ log_valid }}</p>
+                        <p class="text-danger bordered">Errors: {{ log_error }}</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <p>{{ status }}</p>
+                        <button style="margin-top: 1em;" type="button" class="btn btn-primary">Stop</button>
+                    </div>
+                </div>
             </div>
-            <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
+            <div>
+                <h3>Console</h3>
+                <div id="console-output">
+                    <template v-for="item in logs">
+                        <span :class="item['status']">{{item['TEXT']}}<br/></span>
+                    </template>
+                </div>
+                <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
+            </div>
         </div>
+        <ModalViewComponent ref="modal"></ModalViewComponent>
     </div>
-    <ModalViewComponent ref="modal"></ModalViewComponent>
 
 </template>
 
@@ -182,6 +185,7 @@
 import axios from 'axios';
 import NavBarComponent from './components/NavBarComponent.vue';
 import ModalViewComponent from './components/ModalViewComponent.vue';
+import HorizontalNavBar from "./components/HorizontalNavBar.vue";
 import { io } from "socket.io-client";
 import DataTable from 'datatables.net-vue3';
 
@@ -190,6 +194,7 @@ export default {
     components: {
         NavBarComponent,
         ModalViewComponent,
+        HorizontalNavBar,
         DataTable
     },
     data() {
@@ -346,6 +351,13 @@ export default {
     watch: {
         mailing_logs() {
            this.scrollToBottom();
+        },
+        formType(newValue, oldValue) {
+            // Re-run margin application and scrolling down function when form type changes
+            this.$nextTick(() => {
+              this.applyMargins();
+              this.scrollToBottom();
+            });
         }
     },
     methods: {
@@ -637,10 +649,10 @@ export default {
             this.selectedDomain = item;
             this.domainDropdownOpen = false;
         },
-        getCurrentSessionName() {
-            // Logic to get current session name
-            return 'currentSession';
-        },
+        // getCurrentSessionName() {
+        //     // Logic to get current session name
+        //     return 'currentSession';
+        // },
         view(id) {
             axios.get(`${this.$store.state.back_url}/api/get/materials/${id}`).then(res => {
                 let modalData = [];
@@ -678,7 +690,21 @@ export default {
                   consoleOutput.scrollTop = consoleOutput.scrollHeight;
                 }
             }, 50); // Adjust delay if needed
-        }
+        },
+        applyMargins() {
+            const startCells = document.querySelectorAll('.dt-layout-cell.dt-start');
+            const endCells = document.querySelectorAll('.dt-layout-cell.dt-end');
+            const tableRows = document.querySelectorAll('.dt-layout-row.dt-layout-table');
+            const rows = document.querySelectorAll('.dt-layout-row');
+
+            startCells.forEach(el => el.style.marginBottom = '10px');
+            endCells.forEach(el => el.style.marginBottom = '10px');
+            tableRows.forEach(el => el.style.marginBottom = '10px');
+            rows.forEach(el => el.style.marginBottom = '10px');
+        },
+        onDataTableRendered() {
+            this.applyMargins();
+        },
     },
     mounted() {
        this.fetchLogs();
@@ -695,9 +721,6 @@ export default {
        this.loadSelectionTemplates();
        this.loadSelectionBase();
        this.scrollToBottom();
-
-
-
     },
     beforeDestroy() {
         document.removeEventListener('click', this.handleClickOutside);
@@ -733,9 +756,16 @@ export default {
     --light: #6C7293;
     --dark: #000000;
 }
+
+#main-part {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .dummy-form {
     overflow: auto;
-    margin-top: 2em;
+    margin-top: 1em;
     width: auto;
 }
 .custom-select {

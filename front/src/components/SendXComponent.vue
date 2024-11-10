@@ -1,108 +1,112 @@
 <template>
     <NavBarComponent stateProp="sendx"/>
-    <div class="container-fluid dummy-form">
-        <div>
-            <h3 style="text-align: center;">Select material to sendX</h3>
-            <hr>
-            <div class="row">
-                <div class="col-lg-6">
-                    <h4 class="text-center">Bases List</h4>
-                     <DataTable :data="basesData" :columns="basesColumns" class="table table-striped" @click="handleClick"></DataTable>
-                </div>
-                <div class="col-lg-6">
-                    <h4 class="text-center">Selected SMTP</h4>
-                            <DataTable :data="smtpsData" :columns="smtpsColumns" class="table table-striped" @click="handleClick">
-                    </DataTable>
-                </div>
-                <div class="col-lg-6" style="margin-top: 2em;">
-                    <h4 class="text-center">Selected Proxy</h4>
-                              <DataTable :data="selectedProxies" :columns="proxiesColumns" class="table table-striped" >
-                    </DataTable>
-                </div>
-                <div class="col-lg-6" style="margin-top: 2em;">
-                     <h4 class="text-center">Selected Domains</h4>
-                              <DataTable :data="domainsData" :columns="domainsColumns" class="table table-striped" @click="handleClick">
-                     </DataTable>
-                </div>
-
-            </div>
-          <hr>
-            <div class="row">
-            <div class="col-lg-4">
-                    <h4 class="text-center">Selected Template</h4>
-                           <DataTable :data="templatesdata" :columns="templatescolumns" class="table table-striped" @click="handleClick">
-                    </DataTable>
-            </div>
-            </div>
-          <hr>
-            <div class="row">
-                <div class="col-lg-12">
-                    <h4>Options</h4>
-                    <p>Leave the fields empty if you set the default settings</p>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <input v-model="threads_form" type="text" class="form-control" aria-label="Small" placeholder="Threads">
-                            <input v-model="delay_form" type="text" class="form-control" aria-label="Small" placeholder="Delay">
-                        </div>
-                        <div class="col-lg-6">
-                            <input v-model="smtp_timeout_form" type="text" class="form-control" aria-label="Small" placeholder="Smtp timeout">
-                            <input v-model="proxy_timeout_form" type="text" class="form-control" aria-label="Small" placeholder="Proxy timeout">
-                        </div>
+    <div id="main-part">
+        <HorizontalNavBar state-prop="sendx"/>
+        <div class="container-fluid dummy-form">
+            <div>
+                <h3 style="text-align: center;">Select material to sendX</h3>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h4 class="text-center">Bases List</h4>
+                         <DataTable :data="basesData" :columns="basesColumns" class="table table-striped" @click="handleClick"></DataTable>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>Debug</p>
-                            <div id="console-output" ref="consoleOutput">
-                                <template v-for="item in logs">
-                                    <span :class="item['status']">{{item['data']}}<br/></span>
-                                </template>
+                    <div class="col-lg-6">
+                        <h4 class="text-center">Selected SMTP</h4>
+                                <DataTable :data="smtpsData" :columns="smtpsColumns" class="table table-striped" @click="handleClick">
+                        </DataTable>
+                    </div>
+                    <div class="col-lg-6" style="margin-top: 2em;">
+                        <h4 class="text-center">Selected Proxy</h4>
+                                  <DataTable :data="selectedProxies" :columns="proxiesColumns" class="table table-striped" >
+                        </DataTable>
+                    </div>
+                    <div class="col-lg-6" style="margin-top: 2em;">
+                         <h4 class="text-center">Selected Domains</h4>
+                                  <DataTable :data="domainsData" :columns="domainsColumns" class="table table-striped" @click="handleClick">
+                         </DataTable>
+                    </div>
+
+                </div>
+              <hr>
+                <div class="row">
+                <div class="col-lg-4">
+                        <h4 class="text-center">Selected Template</h4>
+                               <DataTable :data="templatesdata" :columns="templatescolumns" class="table table-striped" @click="handleClick">
+                        </DataTable>
+                </div>
+                </div>
+              <hr>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h4>Options</h4>
+                        <p>Leave the fields empty if you set the default settings</p>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input v-model="threads_form" type="text" class="form-control" aria-label="Small" placeholder="Threads">
+                                <input v-model="delay_form" type="text" class="form-control" aria-label="Small" placeholder="Delay">
+                            </div>
+                            <div class="col-lg-6">
+                                <input v-model="smtp_timeout_form" type="text" class="form-control" aria-label="Small" placeholder="Smtp timeout">
+                                <input v-model="proxy_timeout_form" type="text" class="form-control" aria-label="Small" placeholder="Proxy timeout">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <p>Debug</p>
+                                <div id="console-output" ref="consoleOutput">
+                                    <template v-for="item in logs">
+                                        <span :class="item['status']">{{item['data']}}<br/></span>
+                                    </template>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div v-if="can_run">
-                <button style="margin-top: 1em;" type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>
-                <p class="text-danger">{{errorCheck}}</p>
-            </div>
-            <div v-else>
-                <p>Please wait!</p>
+                <div v-if="can_run">
+                    <button style="margin-top: 1em;" type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>
+                    <p class="text-danger">{{errorCheck}}</p>
+                </div>
+                <div v-else>
+                    <p>Please wait!</p>
+                </div>
+
             </div>
 
-        </div>
-
-        <div>
-            <h3>Progress</h3>
-            <div class="progress">
-                <div class="progress-bar" role="progressbar" :style=" 'background-color: #ef4444;'+'width: '+log_progress+'%'" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <p class="text-success bordered">Sended emails: {{ log_valid }}</p>
-                    <p class="text-danger bordered">Errors: {{ log_error }}</p>
+            <div>
+                <h3>Progress</h3>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" :style=" 'background-color: #ef4444;'+'width: '+log_progress+'%'" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <div class="col-lg-6">
-                    <button style="margin-top: 1em;" type="button" class="btn btn-primary">Stop</button>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <p class="text-success bordered">Sended emails: {{ log_valid }}</p>
+                        <p class="text-danger bordered">Errors: {{ log_error }}</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <button style="margin-top: 1em;" type="button" class="btn btn-primary">Stop</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div>
-            <h3>Console</h3>
-            <div id="console-output">
-                <template v-for="item in logs">
-                    <span :class="item['status']">{{item['TEXT']}}<br/></span>
-                </template>
+            <div>
+                <h3>Console</h3>
+                <div id="console-output">
+                    <template v-for="item in logs">
+                        <span :class="item['status']">{{item['TEXT']}}<br/></span>
+                    </template>
+                </div>
+                <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
             </div>
-            <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
         </div>
+        <ModalViewComponent ref="modal"></ModalViewComponent>
     </div>
-    <ModalViewComponent ref="modal"></ModalViewComponent>
 </template>
 
 <script>
 import axios from 'axios';
 import NavBarComponent from './components/NavBarComponent.vue';
 import ModalViewComponent from './components/ModalViewComponent.vue';
+import HorizontalNavBar from "./components/HorizontalNavBar.vue";
 import DataTable from 'datatables.net-vue3';
 import { io } from "socket.io-client";
 
@@ -110,6 +114,7 @@ export default {
     components: {
         NavBarComponent,
         ModalViewComponent,
+        HorizontalNavBar,
         DataTable
     },
     data() {
@@ -589,9 +594,16 @@ export default {
 </script>
 
 <style scoped>
+
+#main-part {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .dummy-form {
     overflow: auto;
-    margin-top: 2em;
+    margin-top: 1em;
     width: auto;
 }
 
