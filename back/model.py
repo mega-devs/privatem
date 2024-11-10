@@ -854,7 +854,7 @@ def get_logs(type, session):
             database=config.DBdatabase
         )
         cursor = connection.cursor(dictionary=True)
-        query = "SELECT TEXT,status FROM logs WHERE session = %s AND type = %s ORDER BY id ASC"
+        query = "SELECT created_at,TEXT,status FROM logs WHERE session = %s AND type = %s ORDER BY id ASC"
         cursor.execute(query, (session, type,))
         logs = cursor.fetchall()
         logger.info(f'Fetched {len(logs)} logs for session {session}, type {type}')
