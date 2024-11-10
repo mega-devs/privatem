@@ -351,6 +351,13 @@ export default {
     watch: {
         mailing_logs() {
            this.scrollToBottom();
+        },
+        formType(newValue, oldValue) {
+            // Re-run margin application and scrolling down function when form type changes
+            this.$nextTick(() => {
+              this.applyMargins();
+              this.scrollToBottom();
+            });
         }
     },
     methods: {
@@ -642,10 +649,10 @@ export default {
             this.selectedDomain = item;
             this.domainDropdownOpen = false;
         },
-        getCurrentSessionName() {
-            // Logic to get current session name
-            return 'currentSession';
-        },
+        // getCurrentSessionName() {
+        //     // Logic to get current session name
+        //     return 'currentSession';
+        // },
         view(id) {
             axios.get(`${this.$store.state.back_url}/api/get/materials/${id}`).then(res => {
                 let modalData = [];
@@ -683,7 +690,21 @@ export default {
                   consoleOutput.scrollTop = consoleOutput.scrollHeight;
                 }
             }, 50); // Adjust delay if needed
-        }
+        },
+        applyMargins() {
+            const startCells = document.querySelectorAll('.dt-layout-cell.dt-start');
+            const endCells = document.querySelectorAll('.dt-layout-cell.dt-end');
+            const tableRows = document.querySelectorAll('.dt-layout-row.dt-layout-table');
+            const rows = document.querySelectorAll('.dt-layout-row');
+
+            startCells.forEach(el => el.style.marginBottom = '10px');
+            endCells.forEach(el => el.style.marginBottom = '10px');
+            tableRows.forEach(el => el.style.marginBottom = '10px');
+            rows.forEach(el => el.style.marginBottom = '10px');
+        },
+        onDataTableRendered() {
+            this.applyMargins();
+        },
     },
     mounted() {
        this.fetchLogs();
@@ -700,9 +721,6 @@ export default {
        this.loadSelectionTemplates();
        this.loadSelectionBase();
        this.scrollToBottom();
-
-
-
     },
     beforeDestroy() {
         document.removeEventListener('click', this.handleClickOutside);

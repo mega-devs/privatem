@@ -370,6 +370,13 @@ export default {
   watch: {
     mailing_logs() {
       this.scrollToBottom();
+    },
+    formType(newValue, oldValue) {
+      // Re-run margin application and scrolling down function when form type changes
+      this.$nextTick(() => {
+        this.applyMargins();
+        this.scrollToBottom();
+      });
     }
   },
   methods: {
@@ -697,7 +704,21 @@ export default {
             consoleOutput.scrollTop = consoleOutput.scrollHeight;
           }
       }, 50); // Adjust delay if needed
-    }
+    },
+    applyMargins() {
+      const startCells = document.querySelectorAll('.dt-layout-cell.dt-start');
+      const endCells = document.querySelectorAll('.dt-layout-cell.dt-end');
+      const tableRows = document.querySelectorAll('.dt-layout-row.dt-layout-table');
+      const rows = document.querySelectorAll('.dt-layout-row');
+
+      startCells.forEach(el => el.style.marginBottom = '10px');
+      endCells.forEach(el => el.style.marginBottom = '10px');
+      tableRows.forEach(el => el.style.marginBottom = '10px');
+      rows.forEach(el => el.style.marginBottom = '10px');
+    },
+    onDataTableRendered() {
+      this.applyMargins();
+    },
   },
   mounted() {
     this.fetchDebugs();
@@ -714,8 +735,6 @@ export default {
     this.getMaterialsDomain();
     this.loadSelectionBase();
     this.scrollToBottom();
-
-
   },
   beforeDestroy() {
     document.removeEventListener('click', this.handleClickOutside);
@@ -1011,4 +1030,5 @@ export default {
 .form-control {
   margin: 5px 0 5px 0;
 }
+
 </style>
