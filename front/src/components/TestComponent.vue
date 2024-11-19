@@ -1,16 +1,8 @@
 <template>
-    <NavBarComponent stateProp="test"/>
+    <NavBarComponent :state-prop="($route.query.mode === 'special' ? 'specialtest' : 'normaltest')" />
     <div id="main-part">
-        <HorizontalNavBar state-prop="test"/>
+        <HorizontalNavBar :state-prop="($route.query.mode === 'special' ? 'specialtest' : 'normaltest')" />
         <div class="container-fluid dummy-form">
-            <!-- Add Select Form -->
-            <div class="form-selector">
-                <label for="formType" style="margin-bottom: 1em;">Select Form Type:</label>
-                <select v-model="formType" class="form-select" id="formType">
-                    <option value="main">Normal Settings</option>
-                    <option value="placeholder">Special Settings</option>
-                </select>
-            </div>
             <div>
                 <h3>Console</h3>
                 <div id="console-output" ref="consoleOutput2">
@@ -19,18 +11,17 @@
                     </template>
                 </div>
                 <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
-            </div>
-            <!-- Status form -->
-            <div v-if="formType === 'main'">
-                <div>
-                    <div class="col-lg-12">
-                        <p>Debug</p>
-                        <div id="console-output" ref="consoleOutput1">
-                            <template v-for="item in mailing_logs" :key="item.timestamp">
-                                <span :class="item.level.toLowerCase()"><span :style="{ color: 'orange' }">{{ formatTime(item.timestamp) }}</span> | {{ item.message }}<br/></span>
-                            </template>
-                        </div>
+                <div class="col-lg-12">
+                    <p>Debug</p>
+                    <div id="console-output" ref="consoleOutput1">
+                        <template v-for="item in mailing_logs" :key="item.timestamp">
+                            <span :class="item.level.toLowerCase()"><span :style="{ color: 'orange' }">{{ formatTime(item.timestamp) }}</span> | {{ item.message }}<br/></span>
+                        </template>
                     </div>
+                </div>
+            </div>
+            <div v-if="$route.query.mode === 'normal'">
+                <div>
                     <h3 style="text-align: center; margin-top: 1em;">Select material</h3>
                     <div class="row">
                         <div class="col-lg-6">
@@ -355,7 +346,7 @@ export default {
         mailing_logs() {
            this.scrollToBottom();
         },
-        formType(newValue, oldValue) {
+        '$route.query.mode'(newValue, oldValue) {
             // Re-run margin application and scrolling down function when form type changes
             this.$nextTick(() => {
               this.applyMargins();

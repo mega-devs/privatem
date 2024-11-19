@@ -60,7 +60,7 @@ export default {
   },
   data() {
     return {
-      currentTime: '00:00:00' // To hold the current server time
+      currentTime: '00.00.0000, 00:00:00' // To hold the current server time
     };
   },
   methods: {
@@ -91,9 +91,7 @@ export default {
 </script>
 
 <style scoped>
-.nav-link {
-  margin: 0 10px;
-}
+
 
 .nav-link {
   color: white; /* Default link color */
