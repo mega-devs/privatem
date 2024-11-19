@@ -14,6 +14,14 @@
                         </template>
                     </div>
                     <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
+                    <div class="col-lg-12">
+                      <p>Debug</p>
+                      <div id="console-output" ref="consoleOutput1">
+                        <template v-for="item in mailing_logs" :key="item.timestamp">
+                          <span :class="item.level.toLowerCase()"><span :style="{ color: 'orange' }">{{ formatTime(item.timestamp) }}</span> | {{item.message }}<br/></span>
+                        </template>
+                      </div>
+                    </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="row">
