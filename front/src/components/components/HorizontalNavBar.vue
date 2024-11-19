@@ -71,7 +71,7 @@ export default {
     fetchServerTime() {
       axios.get(`${this.$store.state.back_url}/api/server_time`)
         .then(response => {
-          this.currentTime = new Date(response.data.timestamp).toLocaleString(); // Format as needed
+          this.currentTime = new Date(response.data.server_time).toLocaleString(); // Format as needed
         })
         .catch(error => {
           console.error('Error fetching server time:', error);
