@@ -88,7 +88,7 @@
                 <h3 class="headerzn">Console</h3>
                 <div id="console-output" ref="consoleOutput">
                     <template v-for="(item, index) in logs" :key="index">
-                        <span :class="item['status']">{{ item['TEXT'] }}<br/></span>
+                        <span :class="item['status']"><span :style="{ color: 'orange' }">{{ formatTime(item['created_at']) }}</span> | {{ item['TEXT'] }}<br/></span>
                     </template>
                 </div>
                 <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
@@ -160,7 +160,6 @@ export default {
             tableClasses: 'table text-start align-middle table-bordered table-hover mb-0',
             selectedSmtp: {},
             selectedProxy: {},
-            selectedImap: {},
             imapDropdownOpen: false,
             dropdownOpen: false,
             proxyDropdownOpen: false,
@@ -548,8 +547,13 @@ export default {
             .catch(error => {
                 console.error('Ошибка при отправке тестового письма:', error);
             });
-        }
-
+        },
+        formatTime(timestamp) {
+          // Split the timestamp to get the time part
+          const timePart = timestamp.split(' ')[1]; // Get the part after the date
+          const [time] = timePart.split(','); // Remove milliseconds if present
+          return time; // Return only hh:mm:ss
+        },
     },
     mounted() {
         this.fetchImaps();

@@ -16,9 +16,9 @@
         <div>
           <div class="col-lg-12">
             <p>Debug</p>
-            <div id="console-output" ref="consoleOutput">
+            <div id="console-output" ref="consoleOutput1">
               <template v-for="item in mailing_logs" :key="item.timestamp">
-                <span :class="item.level.toLowerCase()">{{ item.message }}<br/></span>
+                <span :class="item.level.toLowerCase()"><span :style="{ color: 'orange' }">{{ formatTime(item.timestamp) }}</span> | {{item.message }}<br/></span>
               </template>
             </div>
           </div>
@@ -161,6 +161,7 @@
       </div>
       <div>
         <h3>Progress</h3>
+        <h3>Progress</h3>
         <div class="progress">
           <div class="progress-bar" role="progressbar" :style=" 'background-color: #ef4444;'+'width: '+log_progress+'%'"
                aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -178,9 +179,9 @@
       </div>
       <div>
         <h3>Console</h3>
-        <div id="console-output">
+        <div id="console-output" ref="consoleOutput2">
           <template v-for="item in logs">
-            <span :class="item['status']">{{ item['TEXT'] }}<br/></span>
+            <span :class="item['status']"><span :style="{ color: 'orange' }">{{ formatTime(item['created_at']) }}</span> | {{ item['TEXT'] }}<br/></span>
           </template>
         </div>
         <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
@@ -368,6 +369,9 @@ export default {
     };
   },
   watch: {
+    logs() {
+      this.scrollToBottom();
+    },
     mailing_logs() {
       this.scrollToBottom();
     },
@@ -699,9 +703,13 @@ export default {
     },
     scrollToBottom() {
       setTimeout(() => {
-          const consoleOutput = this.$refs.consoleOutput;
-          if (consoleOutput) {
-            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+          const consoleOutput1 = this.$refs.consoleOutput1;
+          const consoleOutput2 = this.$refs.consoleOutput2;
+          if (consoleOutput1) {
+            consoleOutput1.scrollTop = consoleOutput1.scrollHeight;
+          }
+          if (consoleOutput2) {
+            consoleOutput2.scrollTop = consoleOutput2.scrollHeight;
           }
       }, 50); // Adjust delay if needed
     },
@@ -719,6 +727,12 @@ export default {
     onDataTableRendered() {
       this.applyMargins();
     },
+    formatTime(timestamp) {
+      // Split the timestamp to get the time part
+      const timePart = timestamp.split(' ')[1]; // Get the part after the date
+      const [time] = timePart.split(','); // Remove milliseconds if present
+      return time; // Return only hh:mm:ss
+    }
   },
   mounted() {
     this.fetchDebugs();

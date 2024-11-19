@@ -139,6 +139,7 @@ def init():
         `type` varchar(255) DEFAULT NULL,
         `session` varchar(255) DEFAULT NULL,
         `status` varchar(255) DEFAULT NULL,
+        `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (ID)
         )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
     ''')
