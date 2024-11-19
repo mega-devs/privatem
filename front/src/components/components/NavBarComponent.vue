@@ -11,10 +11,10 @@
         <ul class="nav nav-pills flex-column">
 
           <!-- Dropdown group -->
-          <li class="nav-item dropdown">
-            <a class="nav-link text-white" id="navbarDropdown" aria-expanded="false">
-              {{ currentSessionName || 'Current Session' }}
-            </a>
+<!--          <li class="nav-item dropdown">-->
+<!--            <a class="nav-link text-white" id="navbarDropdown" aria-expanded="false">-->
+<!--              {{ currentSessionName || 'Current Session' }}-->
+<!--            </a>-->
 <!--            <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="width: 100%;">-->
 <!--              <li class="nav-item">-->
 <!--                  <RouterLink to="/dashboard" style="text-decoration: none;">-->
@@ -70,7 +70,7 @@
 <!--                  </RouterLink>-->
 <!--              </li>-->
 <!--            </ul>-->
-          </li>
+<!--          </li>-->
 
           <!-- Dropdown group -->
           <li class="nav-item dropdown">
@@ -409,8 +409,7 @@ export default {
             IMGdomainsLoaded: 'X', // Replace 'X' with actual value or bind it dynamically
             URLdomainsLoaded: 'X', // Replace 'X' with actual value or bind it dynamically
             socksLoaded: 'X', // Replace 'X' with actual value or bind it dynamically
-            mailerStatus: 'STOPPED',
-            currentSessionName: this.getCurrentSessionName()
+            mailerStatus: 'STOPPED'
         }
     },
     computed: {

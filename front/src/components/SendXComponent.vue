@@ -7,6 +7,25 @@
                 <h3 style="text-align: center;">Select material to sendX</h3>
                 <hr>
                 <div class="row">
+                    <div class="col-lg-12">
+                        <p>Debug</p>
+                        <div id="console-output" ref="consoleOutput1">
+                            <template v-for="item in logs">
+                                <span :class="item['status']">{{item['data']}}<br/></span>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3>Console</h3>
+                    <div id="console-output" ref="consoleOutput2">
+                        <template v-for="item in logs">
+                            <span :class="item['status']"><span :style="{ color: 'orange' }">{{ formatTime(item['created_at']) }}</span> | {{item['TEXT']}}<br/></span>
+                        </template>
+                    </div>
+                    <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
+                </div>
+                <div class="row">
                     <div class="col-lg-6">
                         <h4 class="text-center">Bases List</h4>
                          <DataTable :data="basesData" :columns="basesColumns" class="table table-striped" @click="handleClick"></DataTable>
@@ -51,16 +70,6 @@
                                 <input v-model="proxy_timeout_form" type="text" class="form-control" aria-label="Small" placeholder="Proxy timeout">
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <p>Debug</p>
-                                <div id="console-output" ref="consoleOutput1">
-                                    <template v-for="item in logs">
-                                        <span :class="item['status']">{{item['data']}}<br/></span>
-                                    </template>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div v-if="can_run">
@@ -87,15 +96,6 @@
                         <button style="margin-top: 1em;" type="button" class="btn btn-primary">Stop</button>
                     </div>
                 </div>
-            </div>
-            <div>
-                <h3>Console</h3>
-                <div id="console-output" ref="consoleOutput2">
-                    <template v-for="item in logs">
-                        <span :class="item['status']"><span :style="{ color: 'orange' }">{{ formatTime(item['created_at']) }}</span> | {{item['TEXT']}}<br/></span>
-                    </template>
-                </div>
-                <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
             </div>
         </div>
         <ModalViewComponent ref="modal"></ModalViewComponent>

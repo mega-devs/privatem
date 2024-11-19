@@ -6,6 +6,15 @@
             <div class="row">
                 <h2 class="text-center headerzn text-light">Domains</h2>
                 <hr class="bg-light">
+                <div>
+                    <h3 class="headerzn text-light">Console</h3>
+                    <div id="console-output" ref="consoleOutput">
+                        <template v-for="item in logs">
+                            <span :class="item['status']"><span :style="{ color: 'orange' }">{{ formatTime(item['created_at']) }}</span> | {{ item['TEXT'] }}<br/></span>
+                        </template>
+                    </div>
+                    <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
+                </div>
                 <div class="col-lg-8">
                     <div class="row">
                         <div class="col-lg-6 mb-3">
@@ -58,15 +67,7 @@
                     <p class="text-danger bordered">Errors: {{ log_error }}</p>
                 </div>
             </div>
-            <div>
-                <h3 class="headerzn text-light">Console</h3>
-                <div id="console-output" ref="consoleOutput">
-                    <template v-for="item in logs">
-                        <span :class="item['status']"><span :style="{ color: 'orange' }">{{ formatTime(item['created_at']) }}</span> | {{ item['TEXT'] }}<br/></span>
-                    </template>
-                </div>
-                <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
-            </div>
+
         </div>
         <ModalViewComponent ref="modal"></ModalViewComponent>
     </div>

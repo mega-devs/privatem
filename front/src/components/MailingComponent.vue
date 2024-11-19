@@ -7,9 +7,18 @@
       <div class="form-selector">
         <label for="formType" style="margin-bottom: 1em;">Select Form Type:</label>
         <select v-model="formType" class="form-select" id="formType">
-          <option value="main">Status Form</option>
-          <option value="placeholder">Select Form</option>
+          <option value="main">Normal Settings</option>
+          <option value="placeholder">Special Settings</option>
         </select>
+      </div>
+      <div>
+        <h3>Console</h3>
+        <div id="console-output" ref="consoleOutput2">
+          <template v-for="item in logs">
+            <span :class="item['status']"><span :style="{ color: 'orange' }">{{ formatTime(item['created_at']) }}</span> | {{ item['TEXT'] }}<br/></span>
+          </template>
+        </div>
+        <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
       </div>
       <!-- Status form -->
       <div v-if="formType === 'main'">
@@ -176,15 +185,6 @@
             <button style="margin-top: 1em;" type="button" class="btn btn-primary">Stop</button>
           </div>
         </div>
-      </div>
-      <div>
-        <h3>Console</h3>
-        <div id="console-output" ref="consoleOutput2">
-          <template v-for="item in logs">
-            <span :class="item['status']"><span :style="{ color: 'orange' }">{{ formatTime(item['created_at']) }}</span> | {{ item['TEXT'] }}<br/></span>
-          </template>
-        </div>
-        <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
       </div>
     </div>
     <ModalViewComponent ref="modal"></ModalViewComponent>
