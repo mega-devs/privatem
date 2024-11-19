@@ -69,7 +69,7 @@ export default {
       return name ? name.split('=')[1] : null;
     },
     fetchServerTime() {
-      axios.get(`${this.$store.state.back_url}/api/server_time`)
+      axios.get(`${this.$store.state.back_url}/server_time`)
         .then(response => {
           this.currentTime = new Date(response.data.server_time).toLocaleString(); // Format as needed
         })
