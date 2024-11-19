@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_file
 import requests
 import utils
 import model
+import datetime
 import init
 from flask_cors import CORS
 from flask_socketio import SocketIO, send
@@ -22,6 +23,13 @@ log_file_path = os.path.join(log_dir, 'app.log')
 # Настройка логирования
 logger = log_config.setup_logging()
 app.logger = logger
+
+
+# for getting server time
+@app.route('/server_time')
+def get_server_time():
+    server_time = datetime.datetime.now().isoformat()
+    return jsonify({'server_time': server_time})
 
 
 @app.route('/api/login', methods=['POST'])

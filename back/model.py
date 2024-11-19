@@ -947,12 +947,23 @@ def get_counts(session):
         if result:
             counts['socks'] = result[0]
 
-        # Counting URL Domains
-        query = f"SELECT COUNT(*) as count FROM domains WHERE session = %s;"
+        # # Counting URL Domains
+        # query = f"SELECT COUNT(*) as count FROM domains WHERE session = %s;"
+        # cursor.execute(query, (session,))
+        # result = cursor.fetchone()
+        # if result:
+        #     counts['urlDomains'] = result[0]  # Count of all domains
+
+
+        query = f"""
+            SELECT COUNT(DISTINCT SUBSTRING_INDEX(url, '.', 1)) AS count 
+            FROM domains 
+            WHERE session = %s;
+        """
         cursor.execute(query, (session,))
         result = cursor.fetchone()
         if result:
-            counts['urlDomains'] = result[0]  # Count of all domains
+            counts['urlDomains'] = result[0]  # Count of main domains
 
         # Counting IMG Domains
         query = f"SELECT COUNT(*) as count FROM domains WHERE session = %s AND (url LIKE '%.jpg' OR url LIKE '%.jpeg' OR url LIKE '%.png' OR url LIKE '%.gif' OR url LIKE '%.bmp' OR url LIKE '%.tiff');"
