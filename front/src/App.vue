@@ -30,3 +30,21 @@ export default {
 </script>
 <style>
 </style>
+
+<template>
+  <div>
+    <h1>Welcome</h1>
+    <button @click="throwError">Trigger Sentry Error</button>
+  </div>
+</template>
+
+<script>
+export default {
+  methods: {
+    throwError() {
+      // Trigger a test error to see if Sentry catches it
+      throw new Error("Test error for Sentry!");
+    }
+  }
+};
+</script>
