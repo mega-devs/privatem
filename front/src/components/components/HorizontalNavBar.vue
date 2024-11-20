@@ -68,24 +68,24 @@ export default {
       const name = document.cookie.split('; ').find(row => row.startsWith('currentSessionName='));
       return name ? name.split('=')[1] : null;
     },
-    fetchServerTime() {
-      axios.get(`${this.$store.state.back_url}/server_time`)
-        .then(response => {
-          this.currentTime = new Date(response.data.server_time).toLocaleString(); // Format as needed
-        })
-        .catch(error => {
-          console.error('Error fetching server time:', error);
-        });
-    },
-    updateTime() {
-      this.fetchServerTime(); // Fetch server time initially
-      setInterval(() => {
-        this.fetchServerTime(); // Fetch server time every second
-      }, 1000);
-    }
+    // fetchServerTime() {
+    //   axios.get(`${this.$store.state.back_url}/server_time`)
+    //     .then(response => {
+    //       this.currentTime = new Date(response.data.server_time).toLocaleString(); // Format as needed
+    //     })
+    //     .catch(error => {
+    //       console.error('Error fetching server time:', error);
+    //     });
+    // },
+    // updateTime() {
+    //   this.fetchServerTime(); // Fetch server time initially
+    //   setInterval(() => {
+    //     this.fetchServerTime(); // Fetch server time every second
+    //   }, 1000);
+    // }
   },
   mounted() {
-    this.updateTime(); // Start updating time when component is mounted
+    // this.updateTime(); // Start updating time when component is mounted
   }
 };
 </script>

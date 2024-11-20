@@ -33,6 +33,13 @@
           </a>
         </RouterLink>
       </li>
+      <li class="nav-item">
+        <RouterLink to="/dashboard/dummy" style="text-decoration: none;">
+          <a :class="['nav-link', stateProp === 'dummy' ? 'active' : 'text-white']">
+            <span>Dummy</span>
+          </a>
+        </RouterLink>
+      </li>
     </ul>
     <br>
     <ul class="nav nav-pills flex-column">
@@ -57,7 +64,7 @@
     <br>
     <ul class="nav nav-pills flex-column">
       <li class="nav-item">
-        <RouterLink to="/dashboard/resetz" style="text-decoration: none;">
+        <RouterLink to="/dashboard/settings" style="text-decoration: none;">
           <a :class="['nav-link', stateProp === 'settings' ? 'active' : 'text-white']">
             <i class="bi bi-gear"></i> <span>Settings</span>
           </a>
@@ -100,8 +107,8 @@
         <p class="table_current_session_item">{{ IMGdomainsLoaded }}</p>
       </div>
       <div class="table_current_session_row">
-        <p class="table_current_session_item">URL DOMAINS</p>
-        <p class="table_current_session_item">{{ URLdomainsLoaded }}</p>
+        <p class="table_current_session_item">DOMAINS</p>
+        <p class="table_current_session_item">{{ ALLdomainsLoaded}}({{URLdomainsLoaded}} links)</p>
       </div>
       <div class="table_current_session_row">
         <p class="table_current_session_item">SOCKS</p>
@@ -142,6 +149,7 @@ export default {
       inboxSmtps: 'X',
       junkSmtps: 'X',
       templatesLoaded: 'X', // Replace 'X' with actual value or bind it dynamically
+      ALLdomainsLoaded: 'X', // Replace 'X' with actual value or bind it dynamically
       IMGdomainsLoaded: 'X', // Replace 'X' with actual value or bind it dynamically
       URLdomainsLoaded: 'X', // Replace 'X' with actual value or bind it dynamically
       socksLoaded: 'X', // Replace 'X' with actual value or bind it dynamically
@@ -179,7 +187,7 @@ export default {
             this.inboxSmtps = res.data.count['inbox'];
             this.junkSmtps = res.data.count['junk'];
             this.templatesLoaded = res.data.count['templates'];
-            // this.domainsLoaded = res.data.count['domains'];
+            this.ALLdomainsLoaded = res.data.count['allDomains'];
             this.IMGdomainsLoaded = res.data.count['imgDomains'];
             this.URLdomainsLoaded = res.data.count['urlDomains'];
             this.socksLoaded = res.data.count['socks'];

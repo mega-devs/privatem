@@ -1,54 +1,59 @@
 <template>
-    <NavBarComponent stateProp="settings"/>
-    <div class="container-fluid dummy-form">
-        <div>
-            <div class="row">
-                <h2 class="text-center headerzn">Dummy</h2>
-                <hr>
-                <div class="col-lg-6">
-                    <div>
-                        <input class="form-control" type="text" v-model="nameDummy" placeholder="Input dummy name">
-                        <div class="mb-3">
-                            <label for="formFile" class="form-label labelnew">Input template.html</label>
-                            <input class="form-control" type="file" id="formFile" @change="fileUploadDummy($event, 'fileTmp')">
-                        </div>
-                        <div class="mb-3">
-                            <label for="formFileMultiple" class="form-label labelnew">Input from.txt</label>
-                            <input class="form-control" type="file" id="formFile" @change="fileUploadDummy($event, 'fileFrom')">
-                        </div>
-                        <div class="mb-3">
-                            <label for="formFileDisabled" class="form-label labelnew">Input links.txt</label>
-                            <input class="form-control" type="file" id="formFile" @change="fileUploadDummy($event, 'fileLinks')">
-                        </div>
-                        <div class="mb-3">
-                            <label for="formFileSm" class="form-label labelnew">Input sentences.txt</label>
-                            <input class="form-control" id="formFile" type="file" @change="fileUploadDummy($event, 'fileSent')">
-                        </div>
-                        <div>
-                            <label for="formFileLg" class="form-label labelnew">Input subjects.txt</label>
-                            <input class="form-control" id="formFile" type="file" @change="fileUploadDummy($event, 'fileSubj')">
-                        </div>
-                    </div>
-                    <button style="margin-top: 1em;" type="button" @click.prevent="submitDummy" class="btn btn-primary">Submit</button>
-                    <p class="text-danger">{{errorSubDummy}}</p>
-                </div>
-                <div class="col-lg-6">
-                    <DataTable :data="dummyData" :columns="dummyColumns" class="table table-striped" @click="handleClick">
-                    </DataTable>
-                </div>
-            </div>
-        </div>
+    <NavBarComponent stateProp="dummy"/>
+    <div id="main-part">
+      <HorizontalNavBar state-prop="dummy"/>
+      <div class="container-fluid dummy-form">
+          <div>
+              <div class="row">
+                  <h2 class="text-center headerzn">Dummy</h2>
+                  <hr>
+                  <div class="col-lg-6">
+                      <div>
+                          <input class="form-control" type="text" v-model="nameDummy" placeholder="Input dummy name">
+                          <div class="mb-3">
+                              <label for="formFile" class="form-label labelnew">Input template.html</label>
+                              <input class="form-control" type="file" id="formFile" @change="fileUploadDummy($event, 'fileTmp')">
+                          </div>
+                          <div class="mb-3">
+                              <label for="formFileMultiple" class="form-label labelnew">Input from.txt</label>
+                              <input class="form-control" type="file" id="formFile" @change="fileUploadDummy($event, 'fileFrom')">
+                          </div>
+                          <div class="mb-3">
+                              <label for="formFileDisabled" class="form-label labelnew">Input links.txt</label>
+                              <input class="form-control" type="file" id="formFile" @change="fileUploadDummy($event, 'fileLinks')">
+                          </div>
+                          <div class="mb-3">
+                              <label for="formFileSm" class="form-label labelnew">Input sentences.txt</label>
+                              <input class="form-control" id="formFile" type="file" @change="fileUploadDummy($event, 'fileSent')">
+                          </div>
+                          <div>
+                              <label for="formFileLg" class="form-label labelnew">Input subjects.txt</label>
+                              <input class="form-control" id="formFile" type="file" @change="fileUploadDummy($event, 'fileSubj')">
+                          </div>
+                      </div>
+                      <button style="margin-top: 1em;" type="button" @click.prevent="submitDummy" class="btn btn-primary">Submit</button>
+                      <p class="text-danger">{{errorSubDummy}}</p>
+                  </div>
+                  <div class="col-lg-6">
+                      <DataTable :data="dummyData" :columns="dummyColumns" class="table table-striped" @click="handleClick">
+                      </DataTable>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <AdvancedModalViewComponent ref="modal"></AdvancedModalViewComponent>
     </div>
-    <AdvancedModalViewComponent ref="modal"></AdvancedModalViewComponent>
 </template>
 <script>
 import axios from 'axios';
 import NavBarComponent from './components/NavBarComponent.vue';
 import AdvancedModalViewComponent from './components/AdvancedModalViewComponent.vue';
 import DataTable from 'datatables.net-vue3';
+import HorizontalNavBar from "@/components/components/HorizontalNavBar.vue";
 
 export default {
     components: {
+      HorizontalNavBar,
         NavBarComponent,
         AdvancedModalViewComponent,
         DataTable
@@ -189,9 +194,16 @@ export default {
 }
 </script>
 <style scoped>
+
+#main-part {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .dummy-form {
     overflow: auto;
-    margin-top: 2em;
+    margin-top: 1em;
     width: auto;
 }
 </style>
