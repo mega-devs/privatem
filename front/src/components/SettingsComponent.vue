@@ -155,7 +155,6 @@ import axios from 'axios';
 import NavBarComponent from './components/NavBarComponent.vue';
 import HorizontalNavBar from "./components/HorizontalNavBar.vue";
 import {io} from "socket.io-client";
-import {getElementById} from "../../../venv/Lib/site-packages/flasgger/ui2/static/swagger-ui.js";
 
 
 export default {
@@ -363,11 +362,30 @@ export default {
               newPassword: this.newPassword
             });
             this.resetpasswordForm(); // Example of a reusable reset form method
+            alert('Password succesfully changed!')
           }
         }).catch(err => {
           console.error('Request failed', err);
-          this.errorCheck = 'Something went wrong, please try again.';
+          // Check if the error has a response and extract the error message
+          if (err.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            const errorMessage = err.response.data.error || 'Something went wrong!';
+            if (errorMessage === 'Incorrect password') {
+              alert('Password is not changed. Wrong password!');
+            } else {
+              alert(errorMessage); // Display any other error messages from the server
+            }
+          } else if (err.request) {
+            // The request was made but no response was received
+            alert('No response from server. Please try again later!');
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            alert('Error in sending request: ' + err.message);
+          }
         });
+      } else {
+        alert('Invalid input!')
       }
     },
     loadSelectionSMTP() {

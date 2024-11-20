@@ -41,7 +41,7 @@
         </RouterLink>
       </li>
     </ul>
-    <br>
+    <hr>
     <ul class="nav nav-pills flex-column">
       <li class="nav-item">
         <i class="bi bi-envelope"></i> <span>Mailing:</span>
@@ -61,7 +61,7 @@
         </RouterLink>
       </li>
     </ul>
-    <br>
+    <hr>
     <ul class="nav nav-pills flex-column">
       <li class="nav-item">
         <RouterLink to="/dashboard/settings" style="text-decoration: none;">
