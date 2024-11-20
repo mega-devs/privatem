@@ -22,6 +22,7 @@ import Dummy from "../components/DummyComponent.vue";
 import SingleTPL from "../components/singlepages/TplComponent.vue";
 import SinglePRX from "../components/singlepages/PrxComponent.vue";
 import store from "../store"
+import SettingsComponent from "@/components/SettingsComponent.vue";
 
 const routes = [
     {
@@ -255,6 +256,19 @@ const routes = [
         path: "/dashboard/dummy",
         name: "Dummy",
         component: Dummy,
+        beforeEnter: (to, from, next) => {
+            if (!store.state.auth) {
+                return next({
+                    name: "Login"
+                })
+            }
+            next()
+        }
+    },
+    {
+        path: "/dashboard/settings",
+        name: "Settings",
+        component: SettingsComponent,
         beforeEnter: (to, from, next) => {
             if (!store.state.auth) {
                 return next({
