@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_file
 import requests
 import utils
 import model
+import config
 import datetime
 import init
 from flask_cors import CORS
@@ -1468,3 +1469,47 @@ def get_debugs():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+
+
+@app.route('/change_user_password', methods=['POST'])
+def change_password_route():
+    data = request.get_json()
+    if utils.validate(data, ['token', 'current_password', 'new_password']):
+        if model.check_token(data['token']):
+            user_id = get_user_id_from_token(data['token'])
+            if user_id is None:
+                return {'error': 'Invalid token'}, 401
+
+            result = model.change_password(user_id, data['current_password'], data['new_password'])
+            if isinstance(result, str) and result.startswith("Password changed"):
+                return {'message': result}
+            else:
+                return {'error': result}, 400
+        else:
+            return {'error': 'Invalid token'}, 401
+    else:
+        return {'error': 'Missing parameters'}, 400
+
+
+def get_user_id_from_token(token):
+    connection = model.mysql.connector.connect(
+        host=config.DBhost,
+        port=config.DBport,
+        user=config.DBuser,
+        password=config.DBpassword,
+        database=config.DBdatabase
+    )
+    cursor = connection.cursor()
+    try:
+        cursor.execute("SELECT user_id FROM tokens WHERE token = %s", (token,))
+        result = cursor.fetchone()
+        if result:
+            return result[0]
+        else:
+            return None
+    except model.mysql.connector.Error as err:
+        logger.error(f"Database error in get_user_id_from_token: {err}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
