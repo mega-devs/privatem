@@ -108,7 +108,7 @@
       </div>
       <div class="table_current_session_row">
         <p class="table_current_session_item">DOMAINS</p>
-        <p class="table_current_session_item">{{ ALLdomainsLoaded}}({{URLdomainsLoaded}} links)</p>
+        <p class="table_current_session_item">{{ URLdomainsLoaded }}({{ALLdomainsLoaded}} links)</p>
       </div>
       <div class="table_current_session_row">
         <p class="table_current_session_item">SOCKS</p>
