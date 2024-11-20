@@ -908,8 +908,8 @@ def get_counts(session):
         'inbox': 0,
         'junk': 0,
         'templates': 0,
-        # 'domains': 0,
-        'urlDomains': 0,
+        'allDomains': 0, # for all domains 
+        'urlDomains': 0, # for unique domains
         'imgDomains': 0,
         'socks': 0
     }
@@ -979,12 +979,12 @@ def get_counts(session):
         if result:
             counts['socks'] = result[0]
 
-        # # Counting URL Domains
-        # query = f"SELECT COUNT(*) as count FROM domains WHERE session = %s;"
-        # cursor.execute(query, (session,))
-        # result = cursor.fetchone()
-        # if result:
-        #     counts['urlDomains'] = result[0]  # Count of all domains
+        # Counting all URL Domains
+        query = f"SELECT COUNT(*) as count FROM domains WHERE session = %s;"
+        cursor.execute(query, (session,))
+        result = cursor.fetchone()
+        if result:
+            counts['allDomains'] = result[0]  # Count of all domains
 
 
         query = f"""
