@@ -1467,10 +1467,6 @@ def get_debugs():
         logger.error(f"Error reading logs: {str(e)}")
         return {'error': str(e)}, 500
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-
-
 @app.route('/change_user_password', methods=['POST'])
 def change_password_route():
     data = request.get_json()
@@ -1513,3 +1509,6 @@ def get_user_id_from_token(token):
     finally:
         cursor.close()
         connection.close()
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)     
