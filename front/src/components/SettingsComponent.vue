@@ -155,6 +155,7 @@ import axios from 'axios';
 import NavBarComponent from './components/NavBarComponent.vue';
 import HorizontalNavBar from "./components/HorizontalNavBar.vue";
 import {io} from "socket.io-client";
+import {getElementById} from "../../../venv/Lib/site-packages/flasgger/ui2/static/swagger-ui.js";
 
 
 export default {
@@ -333,29 +334,40 @@ export default {
     }
   },
   methods: {
+    resetpasswordForm() {
+      this.currentPassword = '';
+      this.newPassword = '';
+      this.confirmPassword = '';
+    },
     changePassword() {
       if (this.isPasswordChangeValid) {
-        // TODO: Implement actual password change logic
-        // This might involve calling an API or Vuex action
-        console.log('Password change initiated')
-
-        // Optional: Add error handling and success notification
-        this.$store.dispatch('changeUserPassword', {
-          currentPassword: this.currentPassword,
-          newPassword: this.newPassword
+        let token = ''
+        let cookies = document.cookie.split(";")
+        cookies.forEach(cookie => {
+          if (cookie.includes('authToken')) {
+            token = cookie.split("=")[1];
+          }
         })
-            .then(() => {
-              // Reset form and show success message
-              this.currentPassword = ''
-              this.newPassword = ''
-              this.confirmPassword = ''
-              // Optionally show a success toast/notification
-            })
-            .catch((error) => {
-              // Handle password change error
-              console.error('Password change failed', error)
-              // Optionally show an error message to the user
-            })
+        axios.post(`${this.$store.state.back_url}/change_user_password`, {
+          token: token,
+          current_password: this.currentPassword,
+          new_password: this.newPassword
+        }).then(res => {
+          if (res.data.error) { // Adjusted check
+            this.can_run = true;
+            this.errorCheck = res.data.error;
+          } else {
+            // Handle success
+            this.$store.dispatch('changeUserPassword', {
+              currentPassword: this.currentPassword,
+              newPassword: this.newPassword
+            });
+            this.resetpasswordForm(); // Example of a reusable reset form method
+          }
+        }).catch(err => {
+          console.error('Request failed', err);
+          this.errorCheck = 'Something went wrong, please try again.';
+        });
       }
     },
     loadSelectionSMTP() {
@@ -612,13 +624,10 @@ export default {
     this.getMaterialsSMTP();
     this.getMaterialsDomain();
     this.loadSelectionBase();
-    this.scrollToBottom();
-  }
-  ,
+  },
   beforeDestroy() {
     document.removeEventListener('click', this.handleClickOutside);
-  }
-  ,
+  },
   created() {
     this.connection = io.connect(this.$store.state.back_url);
     this.connection.on('message', (data) => {
@@ -771,7 +780,7 @@ export default {
   cursor: not-allowed;
 }
 
-.password-change-section{
+.password-change-section {
   margin-bottom: 25px;
 }
 
