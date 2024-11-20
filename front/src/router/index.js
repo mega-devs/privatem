@@ -18,7 +18,7 @@ import DOMAINsDB from "../components/db/DOMAINsDB.vue";
 import TemplatesDB from "../components/db/TemplatesDB.vue";
 import BasesDB from "../components/db/BasesDB.vue";
 import ResetDB from "../components/db/ResetDB.vue";
-import Settings from "../components/SettingsComponent.vue";
+import Dummy from "../components/DummyComponent.vue";
 import SingleTPL from "../components/singlepages/TplComponent.vue";
 import SinglePRX from "../components/singlepages/PrxComponent.vue";
 import store from "../store"
@@ -252,9 +252,9 @@ const routes = [
         }
     },
     {
-        path: "/dashboard/settings",
-        name: "Settings",
-        component: Settings,
+        path: "/dashboard/dummy",
+        name: "Dummy",
+        component: Dummy,
         beforeEnter: (to, from, next) => {
             if (!store.state.auth) {
                 return next({
