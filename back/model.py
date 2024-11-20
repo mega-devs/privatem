@@ -722,6 +722,38 @@ def change_status(ar, type, status):
             connection.commit()
 
 
+def change_password(user_id, current_password, new_password):
+    try:
+        connection = mysql.connector.connect(
+            host=config.DBhost,
+            port=config.DBport,
+            user=config.DBuser,
+            password=config.DBpassword,
+            database=config.DBdatabase
+        )
+        cursor = connection.cursor()
+
+        cursor.execute("SELECT password FROM users WHERE id = %s", (user_id,))
+        result = cursor.fetchone()
+        if not result:
+            return "User not found"
+
+        current_stored_password = result[0]
+
+        if current_password != current_stored_password:
+            return "Incorrect password"
+
+        cursor.execute("UPDATE users SET password = %s WHERE id = %s", (new_password, user_id))
+        connection.commit()
+
+        return "Password changed successfully"
+    except mysql.connector.Error as err:
+        return f"Database error: {err}"
+    finally:
+        cursor.close()
+        connection.close()
+
+
 def get_material_to_mailing(id, type, session):
     logger.info(f'Starting get_material_to_mailing for session {session}, type {type}, id {id}')
 
