@@ -237,7 +237,7 @@ body, html {
   /* margin: 11vh; */
   margin-bottom: 0;
   padding-top: 10vh;
-  border: 2px solid red;
+  //border: 2px solid red;
 }
 
 .bg_images {
