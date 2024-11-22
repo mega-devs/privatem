@@ -151,7 +151,6 @@ export default {
       log_progress: null,
       errorCheck: null,
       smtpTextInput: '',
-      mailing_logs: [],
       logs: [],
       imapsData: [],
       selectedImap: {},
@@ -590,35 +589,12 @@ export default {
       const [time] = timePart.split(','); // Remove milliseconds if present
       return time; // Return only hh:mm:ss
     },
-    fetchDebugs() {
-      axios.get(`${this.$store.state.back_url}/api/debug`)
-          .then(response => {
-            this.mailing_logs = response.data.logs;
-          })
-          .catch(error => {
-            console.error('Error fetching logs:', error);
-          });
-    },
-    scrollToBottom() {
-      setTimeout(() => {
-        const consoleOutput1 = this.$refs.consoleOutput1;
-        const consoleOutput2 = this.$refs.consoleOutput2;
-        if (consoleOutput1) {
-          consoleOutput1.scrollTop = consoleOutput1.scrollHeight;
-        }
-        if (consoleOutput2) {
-          consoleOutput2.scrollTop = consoleOutput2.scrollHeight;
-        }
-      }, 50); // Adjust delay if needed
-    },
   },
   mounted() {
     this.fetchImaps();
     this.loadSelection();
     this.getMaterials();
     this.fetchLogs();
-    this.fetchDebugs();
-    this.scrollToBottom();
     console.log(this.selectedSmtps)
     document.querySelector('.table').addEventListener('change', (event) => {
       if (event.target.classList.contains('form-check-input')) {
