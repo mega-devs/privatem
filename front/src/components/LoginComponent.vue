@@ -22,7 +22,14 @@
                         <label for="floatingPassword">Password</label>
                     </div>
                     <p class="mt-4">{{ error }}</p>
-                    <button class="btn btn-info mt-4 w-100 btn-primary" type="submit" @click.prevent="submit">Submit</button>
+                    <ButtonComponent 
+                        button-type="submit"
+                        @click-handler="submit"
+                        button-text="Submit"
+                        is-info
+                        is-full
+                        class-names="mt-4 mb-10"
+                    />
                 </div>
             </div>
         </div>
@@ -32,6 +39,7 @@
 <script>
 import router from "../router";
 import axios from "axios";
+import ButtonComponent from "../ui/ButtonComponent.vue";
 
 function createCookie(name, value, days) {
     let date = new Date();
@@ -41,6 +49,9 @@ function createCookie(name, value, days) {
 }
 
 export default {
+    components: {
+        ButtonComponent,
+    },
     data() {
         return {
             name: null,
@@ -60,6 +71,7 @@ export default {
             this.$store.dispatch('setAuth', token)
         },
         submit() {
+            console.log('here')
             axios.post(`${this.$store.state.back_url}/api/login`, { name: this.name, password: this.password }).then(res => {
                 this.error = ''
                 createCookie("authToken", res.data.token, 30)

@@ -18,6 +18,7 @@
                                 <textarea ref="inputEl3" class="form-control" id="formText" v-model="baseTextInput" placeholder="Enter multiple bases separated by new lines"></textarea>
                             </div>
                         </div>
+                        <ButtonComponent @click-handler="submit" button-text="Submit" />
                         <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>
                         <p class="text-danger">{{ errorSub }}</p>
                     </div>
@@ -45,6 +46,7 @@ import axios from 'axios';
 import NavBarComponent from './components/NavBarComponent.vue';
 import HorizontalNavBar from "./components/HorizontalNavBar.vue";
 import ModalViewComponent from './components/ModalViewComponent.vue';
+import ButtonComponent from '../ui/ButtonComponent.vue';
 import DataTable from 'datatables.net-vue3';
 
 export default {
@@ -52,7 +54,8 @@ export default {
         NavBarComponent,
         HorizontalNavBar,
         ModalViewComponent,
-        DataTable
+        DataTable,
+        ButtonComponent,
     },
     data() {
         return {
