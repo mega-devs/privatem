@@ -47,12 +47,10 @@ def check_token(token):
         database=config.DBdatabase
     )
     cursor = connection.cursor()
-    cursor.execute(f"SELECT * FROM `tokens` WHERE token='{token}';")
+    cursor.execute("SELECT * FROM `tokens` WHERE token = %s;", (token,))
     result = cursor.fetchall()
-    if len(result) == 0:
-        return False
-    else:
-        return True
+    return len(result) > 0
+
 
 
 def check_session_name(name):
