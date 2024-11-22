@@ -41,7 +41,7 @@
         </RouterLink>
       </li>
     </ul>
-    <br>
+    <hr>
     <ul class="nav nav-pills flex-column">
       <li class="nav-item">
         <i class="bi bi-envelope"></i> <span>Mailing:</span>
@@ -61,7 +61,7 @@
         </RouterLink>
       </li>
     </ul>
-    <br>
+    <hr>
     <ul class="nav nav-pills flex-column">
       <li class="nav-item">
         <RouterLink to="/dashboard/settings" style="text-decoration: none;">
@@ -237,7 +237,7 @@ body, html {
   /* margin: 11vh; */
   margin-bottom: 0;
   padding-top: 10vh;
-  border: 2px solid red;
+  //border: 2px solid red;
 }
 
 .bg_images {
