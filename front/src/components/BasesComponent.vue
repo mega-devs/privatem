@@ -19,7 +19,6 @@
                             </div>
                         </div>
                         <ButtonComponent @click-handler="submit" button-text="Submit" />
-                        <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>
                         <p class="text-danger">{{ errorSub }}</p>
                     </div>
                 </div>
@@ -27,12 +26,12 @@
                     <div class="col-lg-5 bases-list">
                         <h4 class="text-center">Bases List</h4>
                         <DataTable :data="basesData" :columns="basesColumns" :class="tableClasses" @click="handleClick"></DataTable>
-                        <button @click="exportBasesToTxt" class="btn btn-primary mt-3">Export Bases to TXT</button>
+                        <ButtonComponent @click-handler="exportBasesToTxt" class-names="mt-3" button-text="Export Bases to TXT" />
                     </div>
                     <div class="col-lg-7 base-view">
                         <h4 class="text-center">Base View</h4>
                         <DataTable :data="materials" :columns="columns" :class="tableClasses"></DataTable>
-                        <button @click="exportMaterialsToTxt" class="btn btn-primary mt-3">Export Materials to TXT</button>
+                        <ButtonComponent @click-handler="exportMaterialsToTxt" class-names="mt-3" button-text="Export Materials to TXT" />
                     </div>
                 </div>
             </div>
