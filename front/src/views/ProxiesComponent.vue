@@ -1,11 +1,8 @@
 <template>
-  <NavBarComponent stateProp="proxies"/>
-  <div id="main-part">
-    <HorizontalNavBar state-prop="proxies"/>
-    <div class="container-fluid dummy-form">
+  <LayoutComponent title="Proxies">
+    <template #content>
+      <div class="container-fluid dummy-form">
       <div class="row">
-        <h2 class="text-center headerzn">Proxies</h2>
-        <hr>
         <div>
           <h3 class="headerzn">Console</h3>
           <div id="console-output" ref="consoleOutput">
@@ -97,24 +94,23 @@
       </div>
     </div>
     <ModalViewComponent ref="modal"></ModalViewComponent>
-  </div>
+    </template>
+  </LayoutComponent>
 </template>
 
 <script>
 import axios from 'axios';
-import NavBarComponent from './components/NavBarComponent.vue';
-import ModalViewComponent from './components/ModalViewComponent.vue';
-import HorizontalNavBar from "./components/HorizontalNavBar.vue";
+import ModalViewComponent from '@/components/components/ModalViewComponent.vue';
 import JSZip from 'jszip';
 import {io} from "socket.io-client";
 import DataTable from 'datatables.net-vue3';
+import LayoutComponent from '@/components/LayoutComponent.vue';
 
 export default {
   components: {
-    NavBarComponent,
     ModalViewComponent,
-    HorizontalNavBar,
-    DataTable
+    DataTable,
+    LayoutComponent
   },
   data() {
     return {

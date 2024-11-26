@@ -6,7 +6,7 @@
                     <div id="imgBgn">
                     </div>
                 </div>
-                <div class="col-sm-6 col-xs-12 text-white p-5">
+                <form method="post" @submit.prevent="submit" id="login-form" class="col-sm-6 col-xs-12 text-white p-5">
                     <div class="lead" style="color:red;">
                         <h3>Welcome Back</h3>
                     </div>
@@ -14,12 +14,12 @@
                         <p>Sign In</p>
                     </div>
                     <div class="form-floating mb-3" style="background-color: black;">
-                        <input class="form-control" id="floatingInput" type="login" name="" v-model="name" placeholder="Enter Login" style="color: white; " />
-                        <label for="floatingInput">Login</label>
+                        <input class="form-control" id="username" autocomplete="username" type="text" name="username" v-model="name" placeholder="Enter Login" style="color: white; " />
+                        <label for="login">Login</label>
                     </div>
                     <div class="form-floating mb-4" style="background-color: black;">
-                        <input class="form-control" id="floatingPassword" style="color: white;" type="password" name="" v-model="password" placeholder="Enter Password" />
-                        <label for="floatingPassword">Password</label>
+                        <input class="form-control" id="password" autocomplete="current-password" style="color: white;" type="password" name="password" v-model="password" placeholder="Enter Password" />
+                        <label for="current-password">Password</label>
                     </div>
                     <p class="mt-4">{{ error }}</p>
                     <ButtonComponent 
@@ -30,7 +30,7 @@
                         is-full
                         class-names="mt-4 mb-10"
                     />
-                </div>
+                </form>
             </div>
         </div>
     </div>

@@ -1,65 +1,63 @@
 <template>
-    <NavBarComponent stateProp="templates"/>
-    <div id="main-part">
-        <HorizontalNavBar state-prop="templates"/>
-        <div class="container-fluid dummy-form">
-            <div>
-                <div class="row">
-                    <h2 class="text-center headerzn" style="color: white;">Templates</h2>
-                    <hr>
-                    <p class="text-danger text-center"><b>{{errorSubTemplates}}</b></p>
-                    <div class="col-lg-6">
-                        <!-- <input class="form-control" type="text" v-model="nameTemplates" placeholder="Input templates name" readonly> -->
-                        <div class="mb-3">
-                            <label for="formFile" class="form-label labelnew" style="color: white;">Input templates.zip</label>
-                            <input class="form-control" type="file" id="formFile" @change="fileUploadTemplates">
-                        </div>
-                        <div class="mb-3">
-                            <label for="formLink" class="form-label labelnew" style="color: white">Input zip link</label>
-                            <input ref="inputEl4" class="form-control" type="text" id="formLink" v-model="zipLink">
-                        </div>
+    <LayoutComponent title="Templates">
+        <template #content>
+            <div class="container-fluid dummy-form">
+                <p class="text-danger text-center"><b>{{errorSubTemplates}}</b></p>
+                <div class="table-two">
+                    <div>
+                        <v-file-input clearable label="Input templates.zip" accept="archive/zip" @change="fileUploadTemplates"></v-file-input>
+                        <v-text-field v-model="zipLink" label="Input zip link" variant="outlined"></v-text-field>
                         <button type="button" @click.prevent="submitTemplates" class="btn btn-primary">Submit</button>
                     </div>
-                    <div class="col-lg-6">
-                        <DataTable :data="templatesdata" :columns="templatescolumns" :style="{color: 'red !important'}" class="table table-striped" @click="handleClick">
-                        </DataTable>
-                    </div>
+                    <v-data-table
+                        class="tables"
+                        v-model:items-per-page="itemsPerPage"
+                        :headers="templatescolumns"
+                        :items="templatesdata"
+                        :items-length="templatesdata.length"
+                        :loading="isLoadingSessions"
+                        item-value="name"
+                    >
+                        <template v-slot:item.view="{ item }">
+                            <button @click="visitz(item.id)" class="btn btn-primary">Open</button>
+                        </template>
+                        <template v-slot:item.delete="{ item }">
+                            <button @click="del(item.id)" class="btn btn-danger">Delete</button>
+                        </template>
+                    </v-data-table>
                 </div>
             </div>
-        </div>
-    </div>
+        </template>
+    </LayoutComponent>
 </template>
 
 
 <script>
 import axios from 'axios';
-import NavBarComponent from './components/NavBarComponent.vue';
-import HorizontalNavBar from "./components/HorizontalNavBar.vue";
+import HorizontalNavBar from "@/components/components/HorizontalNavBar.vue";
 import JSZip from 'jszip';
 import DataTable from 'datatables.net-vue3';
+import LayoutComponent from '@/components/LayoutComponent.vue';
 
 export default {
     components: {
-        NavBarComponent,
         HorizontalNavBar,
-        DataTable
+        DataTable,
+        LayoutComponent
     },
     data() {
         return {
+            isLoadingSessions: false,
             nameTemplates: null,
             materialsTemplates: null,
-            fileTemplates: [],  // Initialize as an empty array
+            fileTemplates: [],
             errorSubTemplates: null,
             templatesdata: [],
-            zipLink: '',  // Add this line
+            zipLink: '',  
             templatescolumns: [
-                { title: 'NAME', data: 'name' },
-                { title: 'VIEW', data: 'id', render: (data) => {
-                    return `<button class="btn btn-primary" data-action="view" data-id="${data}">Open</button>`;
-                }},
-                { title: 'DELETE', data: 'id', render: (data) => {
-                    return `<button class="btn btn-danger" data-action="delete" data-id="${data}">Delete</button>`;
-                }}
+                { title: 'NAME', key: 'name' },
+                { title: 'VIEW', key: 'view' },
+                { title: 'DELETE', data: 'key' }
             ],
         }
     },
@@ -70,7 +68,7 @@ export default {
                 this.errorSubTemplates = 'No session loaded';
                 return;
             }
-
+            this.isLoadingSessions = true;
             axios.get(`${this.$store.state.back_url}/api/get/list/templates/${currentSessionName}`)
                 .then(res => {
                     this.templatesdata = res.data.map(item => ({
@@ -81,6 +79,7 @@ export default {
                 .catch(error => {
                     console.error('Error fetching templates:', error);
                 });
+            this.isLoadingSessions = false;
         },
         submitTemplates() {
             const currentSessionName = this.getCurrentSessionName();
@@ -226,37 +225,45 @@ export default {
 </script>
 
 
-<style scoped>
-#main-part {
-  display: flex;
-  flex-direction: column;
+<style lang="scss" scoped>
+.tables {
   width: 100%;
+  background-color: #313131 !important;
+}
+
+.table-two {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 16px;
+    @media(max-width: 1000px) {
+        grid-template-columns: repeat(1, 1fr);
+    }
 }
 
 .dummy-form {
     overflow: auto;
-    margin-top: 1em;
+    margin: 1em;
     width: auto;
 }
 
-/deep/ .table tbody {
+.table tbody {
   background-color: red;
 }
 
-/deep/ label {
+label {
   padding: 1em 1em 1em 0;
 }
 
-/deep/ .dt-input {
+.dt-input {
   margin-right: 1em;
 }
 
-/deep/ .dt-info {
+.dt-info {
   padding: 1em 1em 1em 0;
   margin-bottom: 1%;
 }
 
-/deep/ .dt-paging-button {
+.dt-paging-button {
   border: 1px solid white;
   background-color: transparent;
   margin: 1%;
@@ -264,16 +271,16 @@ export default {
   transition: background-color 0.2s linear;
 }
 
-/deep/ .dt-paging-button:hover {
+.dt-paging-button:hover {
   background-color: red;
   color: white;
 }
 
-/deep/ tbody {
+tbody {
   color: black;
 }
 
-/deep/ .btn-primary {
+.btn-primary {
   background-color: var(--primary) !important;
   border: none;
   transition: background-color 0.2s linear;

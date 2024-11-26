@@ -7,9 +7,25 @@ import "bootstrap"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap-icons/font/bootstrap-icons.css"
 
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+
 let app = createApp(App)
 // app.config.globalProperties.back_url = "http://127.0.0.1:5000"
-app.use(store).use(router).mount('#app')
+
+
+const vuetify = createVuetify({
+  components,
+  directives,
+})
+
+app.use(store)
+app.use(router)
+app.use(vuetify)
+app.mount('#app')
 
 
 

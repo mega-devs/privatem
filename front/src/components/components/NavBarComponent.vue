@@ -1,13 +1,12 @@
 <template>
   <div class=" d-flex flex-column flex-shrink-0 p-3 start-0 top-0 content" style="overflow: auto">
     <div class="bg_images">
-      <img class="bg_image_logo" src="/prviatem.webp" width="50px" height="50px" alt="i"/>
       <img class="bg_image_1" src="/ui-red-dark.png" width="200px" height="10px" alt="i"/>
       <img class="bg_image_2" src="/ui-red-dark.png" width="200px" height="10px" alt="i"/>
+      <img class="bg_image_logo" src="/prviatem.webp" width="50px" height="50px" alt="i"/>
       <img class="bg_image_3" src="/ui-red-dark.png" width="200px" height="10px" alt="i"/>
       <img class="bg_image_4" src="/ui-red-dark.png" width="200px" height="10px" alt="i"/>
     </div>
-
     <ul class="nav nav-pills flex-column">
       <li class="nav-item">
         <i class="bi bi-list-check"></i> <span>TestModes:</span>
@@ -140,7 +139,6 @@
 import axios from 'axios';
 
 export default {
-  props: ['stateProp'],
   data() {
     return {
       totalSmtps: 'X',
@@ -159,6 +157,9 @@ export default {
   computed: {
     mailerStatusClass() {
       return this.mailerStatus === 'STOPPED' ? 'text-danger' : 'text-success';
+    },
+    stateProp() {
+      return this.$route.name.toLowerCase();
     }
   },
   methods: {
@@ -199,7 +200,6 @@ export default {
   },
   mounted() {
     this.fetchcounts();
-    console.log('Current stateProp:', this.stateProp);
   },
 
   watch: {

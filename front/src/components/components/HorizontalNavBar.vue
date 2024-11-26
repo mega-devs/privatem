@@ -63,6 +63,11 @@ export default {
       currentTime: '00.00.0000, 00:00:00' // To hold the current server time
     };
   },
+  computed: {
+    stateProp() {
+      return this.$route.name;
+    }
+  },
   methods: {
     getCurrentSessionName() {
       const name = document.cookie.split('; ').find(row => row.startsWith('currentSessionName='));

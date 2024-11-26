@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 import NotFoundComponent from "../components/NotFoundComponent.vue";
 import LoginComponent from "../components/LoginComponent.vue";
-import DashboardComponent from "../components/DashboardComponent.vue";
-import TemplatesComponent from "../components/TemplatesComponent.vue";
-import ProxiesComponent from "../components/ProxiesComponent.vue";
+import DashboardComponent from "../views/DashboardComponent.vue";
+import TemplatesComponent from "../views/TemplatesComponent.vue";
+import ProxiesComponent from "../views/ProxiesComponent.vue";
 import SMTPsComponent from "../components/SMTPsComponent.vue";
 import BasesComponent from "../components/BasesComponent.vue";
 import TestComponent from "../components/TestComponent.vue";
@@ -30,7 +30,7 @@ const routes = [
         component: NotFoundComponent,
         beforeEnter: (to, from, next) => {
             return next({
-                name: "Dashboard"
+                name: "home"
             })
         }
     },
@@ -41,12 +41,12 @@ const routes = [
     },
     {
         path: "/dashboard",
-        name: "Dashboard",
+        name: "home",
         component: DashboardComponent,
     },
     {
         path: "/dashboard/templates",
-        name: "Templates",
+        name: "templates",
         component: TemplatesComponent,
         beforeEnter: (to, from, next) => {
             if (!store.state.auth) {
@@ -59,7 +59,7 @@ const routes = [
     },
     {
         path: "/dashboard/proxies",
-        name: "Proxies",
+        name: "proxies",
         component: ProxiesComponent,
         beforeEnter: (to, from, next) => {
             if (!store.state.auth) {
@@ -98,7 +98,7 @@ const routes = [
     },
     {
         path: "/dashboard/domains",
-        name: "Domains",
+        name: "domains",
         component: DomainsComponent,
         beforeEnter: (to, from, next) => {
             if (!store.state.auth) {
@@ -111,7 +111,7 @@ const routes = [
     },
     {
         path: "/dashboard/bases",
-        name: "Bases",
+        name: "bases",
         component: BasesComponent,
         beforeEnter: (to, from, next) => {
             if (!store.state.auth) {
