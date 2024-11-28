@@ -56,7 +56,7 @@ export default {
                     token = cookie.split("=")[1];
                 }
             })
-            axios.post(`${this.$store.state.back_url}/api/del/material/id`, {token: token, id: id}).then(res => {
+            axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/material/id`, {token: token, id: id}).then(res => {
                 let toDel
                 for (let i = 0; i < this.data.length; i++) {
                     if (this.data[i][0] == id) {

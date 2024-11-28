@@ -37,14 +37,15 @@ export default {
         justify-self: center;
         align-self: center;
         border-radius: 16px;
+        padding: 20px;
         background-color: #313131;
         overflow-y: auto;
-        height: 80dvh;
+        height: fit-content;
+        max-height: 80dvh;
         // padding: 20px;
         width: fit-content;
         &__title {
             margin: 0;
-            padding-top: 20px;
             color: white;
             text-align: center;
         }

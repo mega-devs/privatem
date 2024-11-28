@@ -52,12 +52,6 @@
 import axios from 'axios';
 
 export default {
-  props: {
-    stateProp: {
-      type: String,
-      required: true
-    }
-  },
   data() {
     return {
       currentTime: '00.00.0000, 00:00:00' // To hold the current server time
@@ -74,7 +68,7 @@ export default {
       return name ? name.split('=')[1] : null;
     },
     // fetchServerTime() {
-    //   axios.get(`${this.$store.state.back_url}/server_time`)
+    //   axios.get(`${import.meta.env.VITE_BACK_URL}/server_time`)
     //     .then(response => {
     //       this.currentTime = new Date(response.data.server_time).toLocaleString(); // Format as needed
     //     })

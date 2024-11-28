@@ -64,7 +64,7 @@ export default {
             this.templateId = id;
             const type = 'templates';
 
-            axios.get(`${this.$store.state.back_url}/api/get/materials/${id}/${type}/*`)
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/materials/${id}/${type}/*`)
                 .then(res => {
                     const data = res.data;
                     const uniqueData = Array.from(new Set(data.map(item => JSON.stringify(item)))).map(item => JSON.parse(item));
@@ -96,7 +96,7 @@ export default {
             }
         },
         viewFroms(name) {
-            axios.get(`${this.$store.state.back_url}/api/get/manifest/${name}`).then(res => {
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/manifest/${name}`).then(res => {
                 let modalData = []
                 res.data.forEach(el => {
                     if (el[2] == 'templatesTmp' || el[2] == 'dummyTmp') {

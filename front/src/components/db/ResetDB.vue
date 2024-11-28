@@ -114,35 +114,35 @@ export default {
         },
         fullReset() {
             let token = this.getToken();
-            axios.post(`${this.$store.state.back_url}/api/reset`, { token })
+            axios.post(`${import.meta.env.VITE_BACK_URL}/api/reset`, { token })
                 .then(res => { console.log('Full reset success'); })
                 .catch(err => { console.log('Full reset error', err); });
         },
         resetTemplatesAction() {
             let token = this.getToken();
             let payload = { token, type: 'templates', status: this.templateStatus };
-            axios.post(`${this.$store.state.back_url}/api/reset/status`, payload)
+            axios.post(`${import.meta.env.VITE_BACK_URL}/api/reset/status`, payload)
                 .then(res => { console.log('Reset templates success'); })
                 .catch(err => { console.log('Reset templates error', err); });
         },
         resetSmtpAction() {
             let token = this.getToken();
             let payload = { token, type: 'smtps', status: this.smtpStatus };
-            axios.post(`${this.$store.state.back_url}/api/reset/status`, payload)
+            axios.post(`${import.meta.env.VITE_BACK_URL}/api/reset/status`, payload)
                 .then(res => { console.log('Reset SMTP success'); })
                 .catch(err => { console.log('Reset SMTP error', err); });
         },
         resetDomainsAction() {
             let token = this.getToken();
             let payload = { token, type: 'domains', status: this.domainStatus };
-            axios.post(`${this.$store.state.back_url}/api/reset/status`, payload)
+            axios.post(`${import.meta.env.VITE_BACK_URL}/api/reset/status`, payload)
                 .then(res => { console.log('Reset domains success'); })
                 .catch(err => { console.log('Reset domains error', err); });
         },
         resetProxyAction() {
             let token = this.getToken();
             let payload = { token, type: 'proxies', status: this.proxyStatus };
-            axios.post(`${this.$store.state.back_url}/api/reset/status`, payload)
+            axios.post(`${import.meta.env.VITE_BACK_URL}/api/reset/status`, payload)
                 .then(res => { console.log('Reset proxy success'); })
                 .catch(err => { console.log('Reset proxy error', err); });
         },

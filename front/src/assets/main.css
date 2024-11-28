@@ -1,0 +1,46 @@
+body {
+  background-color: black;
+}
+
+.btn-success {
+    background-color: blue;
+    padding: 10px 20px;
+}
+
+.table {
+    width: 100%;
+    background-color: #313131 !important;
+}
+
+.table thead th {
+  color: rgb(241, 117, 117);
+}
+
+.color {
+  color: rgb(241, 117, 117);
+}
+
+.btn-primary,
+.btn-danger {
+  padding: 5px 10px;
+  background-color: var(--primary) !important;
+  color: white;
+}
+
+.text-danger {
+  color: red;
+}
+
+.text-success {
+  color: green;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border: none;
+  transition: background-color 0.2s linear;
+}
+
+.btn:hover {
+  background-color: #cc0000;
+}

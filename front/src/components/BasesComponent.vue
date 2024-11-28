@@ -105,7 +105,7 @@ export default {
                 this.errorSubTemplates = 'No session loaded';
                 return;
             }
-            axios.get(`${this.$store.state.back_url}/api/get/list/bases/${currentSessionName}`)
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/bases/${currentSessionName}`)
                 .then(res => {
                     this.basesData = res.data.map(item => ({
                         id: item.id,
@@ -148,7 +148,7 @@ export default {
             if (this.file || this.baseTextInput) {
                 let baseArray = this.baseTextInput.split('\n').map(base => base.trim()).filter(base => base);
                 let fileContent = this.file ? this.file : baseArray.join('\n');
-                axios.post(`${this.$store.state.back_url}/api/input/material`, {
+                axios.post(`${import.meta.env.VITE_BACK_URL}/api/input/material`, {
                     token: token,
                     session: currentSessionName,
                     type: 'bases',
@@ -176,7 +176,7 @@ export default {
                     token = cookie.split("=")[1].trim();
                 }
             });
-            axios.post(`${this.$store.state.back_url}/api/del/material`, {
+            axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/material`, {
                 token: token,
                 id: id,
                 type: 'bases'
@@ -228,7 +228,7 @@ export default {
         },
         view(id) {
             const type = 'bases';
-            axios.get(`${this.$store.state.back_url}/api/get/materials/${id}/${type}/*`)
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/materials/${id}/${type}/*`)
                 .then(res => {
                     this.materials = res.data.map(item => ({
                         id: item[0],

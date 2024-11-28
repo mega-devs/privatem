@@ -1,14 +1,7 @@
 <template>
-  <NavBarComponent stateProp="home"/>
-  <PanelComponent>
+  <LayoutComponent :title="currentSessionName || 'Please load a session first'">
     <template #content>
       <div class="dummy-form">
-        <div class="container-fluid" style="text-align: center;">
-          <template v-if="!currentSessionName">
-            <h3 class="text-danger" style="color: red;">Please load a session first</h3>
-          </template>
-          <hr>
-        </div>
         <div class="top-bar">
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Session's name..." v-model="sessionName"/>
@@ -16,6 +9,7 @@
           </div>
           <v-data-table-virtual
             class="table"
+            style="margin-top: 20px;"
             v-model:items-per-page="itemsPerPage"
             :headers="tableHeader"
             :items="tableDatas"
@@ -36,18 +30,16 @@
         </div>
       </div>
     </template>
-  </PanelComponent>
+  </LayoutComponent>
 </template>
 
 <script>
-import NavBarComponent from '@/components/components/NavBarComponent.vue';
 import axios from 'axios';
-import PanelComponent from '@/components/PanelComponent.vue';
+import LayoutComponent from '@/components/LayoutComponent.vue';
 
 export default {
   components: {
-    NavBarComponent,
-    PanelComponent,
+    LayoutComponent,
   },
   data() {
     return {
@@ -93,7 +85,7 @@ export default {
   methods: {
     async fetchRequest(url, data, headers, method = 'post') {
       try {
-        const res = await axios[method](`${this.$store.state.back_url}${url}`, data, headers);
+        const res = await axios[method](`${import.meta.env.VITE_BACK_URL}${url}`, data, headers);
         this.resetInfo = 'Success';
         return res;
       } catch (e) {
@@ -177,71 +169,15 @@ export default {
     border-radius: 5px;
   }
 
-
-.v-pagination__list {
-  margin-bottom: 0 !important;
-}
-
-.dummy-form {
-  overflow: auto;
-  // width: 80%;
-  // margin: 50px auto 0 auto;
-  height: fit-content;
-
-  background-color: #313131;
-  border-radius: 10px;
-  padding: 20px;
-}
-
-.top-bar {
-  display: flex;
-  margin-top: 1%;
-  margin-bottom: 1%;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 10px;
-  border-radius: 5px;
-  color: white;
-}
-
-.btn-success {
-  background-color: blue;
-  padding: 10px 20px;
-}
-
-.table {
-  width: 100%;
-  margin-top: 20px;
-  background-color: #313131 !important;
-}
-
-.table thead th {
-  color: rgb(241, 117, 117);
-}
-
-.btn-primary,
-.btn-danger {
-  padding: 5px 10px;
-  background-color: var(--primary);
-  color: white;
-}
-
-.text-danger {
-  color: red;
-}
-
-.text-success {
-  color: green;
-}
-
-.btn-primary {
-  background-color: var(--primary);
-  border: none;
-  transition: background-color 0.2s linear;
-}
-
-.btn:hover {
-  background-color: #cc0000;
-}
+  .top-bar {
+    display: flex;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+  }
 
 </style>

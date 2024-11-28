@@ -267,7 +267,7 @@ export default {
                 },className: 'data-cell'},
             ],
             fetchDebugs() {
-            axios.get(`${this.$store.state.back_url}/api/debug`)
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/debug`)
                 .then(response => {
                     this.mailing_logs = response.data.logs;
                 })
@@ -390,7 +390,7 @@ export default {
                 return;
             }
 
-            axios.get(`${this.$store.state.back_url}/api/logs/${logType}/${currentSessionName}`)
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/logs/${logType}/${currentSessionName}`)
                 .then(response => {
                     if (response.data && response.data.status === 'success') {
                         this.logs = response.data.logs;
@@ -401,7 +401,7 @@ export default {
                 });
         },
         fetchImaps() {
-            axios.get(`${this.$store.state.back_url}/api/imaps`)
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/imaps`)
                 .then(response => {
                     if (response.data && response.data.status === 'success') {
                         this.imaps = response.data.imaps;
@@ -412,7 +412,7 @@ export default {
                 });
         },
         fetchProxies() {
-            axios.get(`${this.$store.state.back_url}/api/proxies`)
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/proxies`)
                 .then(response => {
                     if (response.data && response.data.status === 'success') {
                         this.proxies = response.data.proxies;
@@ -423,7 +423,7 @@ export default {
                 });
         },
         fetchSmtps() {
-            axios.get(`${this.$store.state.back_url}/api/smtps`)
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/smtps`)
                 .then(response => {
                     if (response.data && response.data.status === 'success') {
                         this.smtps = response.data.smtps;
@@ -434,7 +434,7 @@ export default {
                 });
         },
         fetchDomains() {
-            axios.get(`${this.$store.state.back_url}/api/domains`)
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/domains`)
                 .then(response => {
                     if (response.data && response.data.status === 'success') {
                         this.domains = response.data.domains;
@@ -456,10 +456,10 @@ export default {
                 this.errorSubTemplates = 'No session loaded';
                 return;
             }
-            axios.get(`${this.$store.state.back_url}/api/get/list/proxies/${currentSessionName}`).then(res => {
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/proxies/${currentSessionName}`).then(res => {
                 this.proxies = res.data;
             });
-            axios.get(`${this.$store.state.back_url}/api/get/list/smtps/${currentSessionName}`).then(res => {
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/smtps/${currentSessionName}`).then(res => {
                 this.smtpsData = res.data.map(item => ({
                     id: item.id,
                     server: item.server,
@@ -475,7 +475,7 @@ export default {
                 this.errorSubTemplates = 'No session loaded';
                 return;
             }
-            axios.get(`${this.$store.state.back_url}/api/get/list/proxies/${currentSessionName}`)
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/proxies/${currentSessionName}`)
                 .then(res => {
                     this.proxiesData = res.data.map(item => ({
                         id: item.id,
@@ -494,7 +494,7 @@ export default {
                 this.errorSub = 'No session loaded';
                 return;
             }
-            axios.get(`${this.$store.state.back_url}/api/get/list/domains/${currentSessionName}`)
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/domains/${currentSessionName}`)
                 .then(res => {
                     this.domainsData = res.data.map(item => ({
                         id: item.id,
@@ -582,7 +582,7 @@ export default {
             this.errorCheck = null
             if (this.dummy_form && this.proxies_form && this.smtps_form && this.base_form && this.results_form && this.selectedBase && this.to_check) {
                 this.can_run = false
-                axios.post(`${this.$store.state.back_url}/api/start/test_mode`, {
+                axios.post(`${import.meta.env.VITE_BACK_URL}/api/start/test_mode`, {
                     token: token,
                     socket: socket,
                     session: this.getCurrentSessionName(),
@@ -648,7 +648,7 @@ export default {
         //     return 'currentSession';
         // },
         view(id) {
-            axios.get(`${this.$store.state.back_url}/api/get/materials/${id}`).then(res => {
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/materials/${id}`).then(res => {
                 let modalData = [];
                 res.data.forEach(el => {
                     delete el[1];
@@ -667,7 +667,7 @@ export default {
                 return;
             }
 
-            axios.delete(`${this.$store.state.back_url}/api/logs/${logType}/${currentSessionName}`)
+            axios.delete(`${import.meta.env.VITE_BACK_URL}/api/logs/${logType}/${currentSessionName}`)
                 .then(response => {
                     if (response.data && response.data.status === 'success') {
                         this.logs = [];
@@ -730,7 +730,7 @@ export default {
         document.removeEventListener('click', this.handleClickOutside);
     },
     created() {
-        this.connection = io.connect(this.$store.state.back_url);
+        this.connection = io.connect(import.meta.env.VITE_BACK_URL);
         this.connection.on('message', (data) => {
             data = data.split(':');
             if (data[0] == 'progress_test_mode') {

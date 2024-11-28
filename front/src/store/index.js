@@ -1,30 +1,39 @@
-import { createStore } from "vuex";
+import { defineStore } from 'pinia';
 import axios from "axios";
+import { ref, computed } from 'vue';
 
-const store = createStore({
-    state: {
-        back_url: import.meta.env.VITE_BACK_URL,
-        sock_url: import.meta.env.VITE_SOCK_URL,
-        auth: null,
-      },
-    mutations: {
-        setAuth_(state, isAuth) {
-            state.auth = isAuth
-          },
-    },
-    actions: {
-        setAuth({dispatch}, token) {
-            axios.post(`${this.state.back_url}/api/check/token`, {token: token}).then(res => {
-                dispatch('attemptAuth', true);
-            })
-            .catch(error => {
-                dispatch('attemptAuth', false);
-            })
-        },
-        attemptAuth({commit}, isAuth) {
-            commit('setAuth_', isAuth);
-        },  
-    }  
+export const useAuth = defineStore("auth", () => {
+    const back_url = import.meta.env.VITE_BACK_URL;
+    const sock_url = import.meta.env.VITE_SOCK_URL;
+    const auth = computed(async ()=>{
+        const token = document.cookie.split(";").filter(cookie => cookie.includes('authToken'))[0].split("=")[1];
+        console.log(token);
+        try {
+            const res = await axios.post(`${back_url}/api/check/token`, {token: token});
+            return res.data.data == "success";
+        } catch {
+            return false;
+        }
+    })
+
+    const setAuth = () => {
+        let token = ''
+        let cookies = document.cookie.split(";")
+        cookies.forEach(cookie => {
+            if (cookie.includes('authToken')) {
+                token = cookie.split("=")[1];
+            }
+        })
+    }
+
+    const createCookie = (name, value, days) => {
+        let date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`
+    }
+
+    return {
+        back_url, auth, sock_url,
+        setAuth, createCookie, createCookie
+    }
 })
-
-export default store;

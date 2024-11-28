@@ -1,31 +1,29 @@
 <template>
     <LayoutComponent title="Templates">
         <template #content>
-            <div class="container-fluid dummy-form">
-                <p class="text-danger text-center"><b>{{errorSubTemplates}}</b></p>
-                <div class="table-two">
-                    <div>
-                        <v-file-input clearable label="Input templates.zip" accept="archive/zip" @change="fileUploadTemplates"></v-file-input>
-                        <v-text-field v-model="zipLink" label="Input zip link" variant="outlined"></v-text-field>
-                        <button type="button" @click.prevent="submitTemplates" class="btn btn-primary">Submit</button>
-                    </div>
-                    <v-data-table
-                        class="tables"
-                        v-model:items-per-page="itemsPerPage"
-                        :headers="templatescolumns"
-                        :items="templatesdata"
-                        :items-length="templatesdata.length"
-                        :loading="isLoadingSessions"
-                        item-value="name"
-                    >
-                        <template v-slot:item.view="{ item }">
-                            <button @click="visitz(item.id)" class="btn btn-primary">Open</button>
-                        </template>
-                        <template v-slot:item.delete="{ item }">
-                            <button @click="del(item.id)" class="btn btn-danger">Delete</button>
-                        </template>
-                    </v-data-table>
+            <p class="text-danger text-center"><b>{{errorSubTemplates}}</b></p>
+            <div class="table-two">
+                <div>
+                    <v-file-input clearable label="Input templates.zip" accept="archive/zip" @change="fileUploadTemplates"></v-file-input>
+                    <v-text-field v-model="zipLink" label="Input zip link" variant="outlined"></v-text-field>
+                    <button type="button" @click.prevent="submitTemplates" class="btn btn-primary">Submit</button>
                 </div>
+                <v-data-table
+                    class="table"
+                    v-model:items-per-page="itemsPerPage"
+                    :headers="templatescolumns"
+                    :items="templatesdata"
+                    :items-length="templatesdata.length"
+                    :loading="isLoadingSessions"
+                    item-value="name"
+                >
+                    <template v-slot:item.view="{ item }">
+                        <button @click="visitz(item.id)" class="btn btn-primary">Open</button>
+                    </template>
+                    <template v-slot:item.delete="{ item }">
+                        <button @click="del(item.id)" class="btn btn-danger">Delete</button>
+                    </template>
+                </v-data-table>
             </div>
         </template>
     </LayoutComponent>
@@ -69,7 +67,7 @@ export default {
                 return;
             }
             this.isLoadingSessions = true;
-            axios.get(`${this.$store.state.back_url}/api/get/list/templates/${currentSessionName}`)
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/templates/${currentSessionName}`)
                 .then(res => {
                     this.templatesdata = res.data.map(item => ({
                         id: item.id,
@@ -104,7 +102,7 @@ export default {
                     htmlbodies: fileData.name
                 }));
 
-                axios.post(`${this.$store.state.back_url}/api/input/material`, {
+                axios.post(`${import.meta.env.VITE_BACK_URL}/api/input/material`, {
                     token: token,
                     session: currentSessionName,
                     type: 'templates',
@@ -129,7 +127,7 @@ export default {
                     token = cookie.split("=")[1];
                 }
             });
-            axios.post(`${this.$store.state.back_url}/api/del/material`, {token: token, id: id, type: 'templates'})
+            axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/material`, {token: token, id: id, type: 'templates'})
                 .then(res => {
                     this.getTemplates();
                 });
@@ -169,7 +167,7 @@ export default {
             }
         },
         fetchAndProcessZipFromLink(link, currentSessionName, token) {
-            const proxyUrl = `${this.$store.state.back_url}/api/proxy?url=${encodeURIComponent(link)}`;
+            const proxyUrl = `${import.meta.env.VITE_BACK_URL}/api/proxy?url=${encodeURIComponent(link)}`;
 
             axios.get(proxyUrl, { responseType: 'arraybuffer' }).then(response => {
                 const zip = new JSZip();
@@ -183,7 +181,7 @@ export default {
                         htmlbodies: fileData.name
                     }));
 
-                    axios.post(`${this.$store.state.back_url}/api/input/material`, {
+                    axios.post(`${import.meta.env.VITE_BACK_URL}/api/input/material`, {
                         token: token,
                         session: currentSessionName,
                         type: 'templates',
@@ -240,12 +238,6 @@ export default {
     }
 }
 
-.dummy-form {
-    overflow: auto;
-    margin: 1em;
-    width: auto;
-}
-
 .table tbody {
   background-color: red;
 }
@@ -254,27 +246,6 @@ label {
   padding: 1em 1em 1em 0;
 }
 
-.dt-input {
-  margin-right: 1em;
-}
-
-.dt-info {
-  padding: 1em 1em 1em 0;
-  margin-bottom: 1%;
-}
-
-.dt-paging-button {
-  border: 1px solid white;
-  background-color: transparent;
-  margin: 1%;
-  border-radius: 7px;
-  transition: background-color 0.2s linear;
-}
-
-.dt-paging-button:hover {
-  background-color: red;
-  color: white;
-}
 
 tbody {
   color: black;

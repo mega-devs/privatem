@@ -55,7 +55,7 @@ export default {
         },
         view(id) {
             this.closeModal()
-            // axios.get(`${this.$store.state.back_url}/api/get/materials/${id}`).then(res => {
+            // axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/materials/${id}`).then(res => {
             //     let modalData = []
             //     res.data.forEach(el => {
             //         delete el[1]

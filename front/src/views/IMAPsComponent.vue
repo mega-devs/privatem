@@ -1,38 +1,14 @@
 <template>
-  <NavBarComponent stateProp="IMAPs"/>
-  <div id="main-part">
-    <HorizontalNavBar state-prop="IMAPs"/>
-    <div class="container-fluid dummy-form">
+  <LayoutComponent title="IMAPs">
+    <template #content>
+      <TwoConsoleComponent :logs="logs" :mailing_logs="mailing_logs" @delete-log="deleteLog()" />
+      <PanelInputFileTextButtonComponent @submit="submit" @export="exportToTxt" @upload="fileUpload" v-model="imapTextInput" what="IMAPs"/>
+      <p class="text-danger">{{ errorSub }}</p>
+      <div class="container-fluid dummy-form">
       <div class="row">
-        <h2 class="text-center headerzn">IMAPs</h2>
-        <hr>
-        <div>
-          <h3 class="headerzn">Console</h3>
-          <div id="console-output" ref="consoleOutput">
-            <template v-for="(item, index) in logs" :key="index">
-              <span :class="item['status']"><span :style="{ color: 'orange' }">{{
-                  formatTime(item['created_at'])
-                }}</span> | {{ item['TEXT'] }}<br/></span>
-            </template>
-          </div>
-          <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
-          <div class="col-lg-12">
-            <p>Debug</p>
-            <div id="console-output" ref="consoleOutput1">
-              <template v-for="item in mailing_logs" :key="item.timestamp">
-                <span :class="item.level.toLowerCase()"><span :style="{ color: 'orange' }">{{
-                    formatTime(item.timestamp)
-                  }}</span> | {{ item.message }}<br/></span>
-              </template>
-            </div>
-          </div>
-        </div>
         <div class="col-lg-6">
           <div class="row">
-            <div class="col-lg-6 mb-3">
-              <label for="formFile" class="form-label labelnew">Input IMAPs.txt</label>
-              <input ref="inputEl1" class="form-control" type="file" id="formFile1" @change="fileUpload">
-            </div>
+            
             <div class="col-lg-6 mb-3">
               <label for="formText" class="form-label labelnew">Input IMAPs</label>
               <textarea ref="inputEl3" class="form-control" id="formText" v-model="imapTextInput"
@@ -41,7 +17,7 @@
           </div>
           <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>&nbsp;
           <button type="button" @click.prevent="exportToTxt" class="btn btn-primary">Export to TXT</button>
-          <p class="text-danger">{{ errorSub }}</p>
+          
         </div>
         <div class="col-lg-12">
           <DataTable :data="imapsData" :columns="imapsColumns" :class="tableClasses" @click="handleClick">
@@ -104,24 +80,26 @@
       </div>
     </div>
     <ModalViewComponent ref="modal"></ModalViewComponent>
-  </div>
+    </template>
+  </LayoutComponent>
 </template>
 
 <script>
 import axios from 'axios';
-import NavBarComponent from './components/NavBarComponent.vue';
-import HorizontalNavBar from "./components/HorizontalNavBar.vue";
-import ModalViewComponent from './components/ModalViewComponent.vue';
-import JSZip from 'jszip';
+import ModalViewComponent from '@/components/components/ModalViewComponent.vue';
 import {io} from 'socket.io-client';
 import DataTable from 'datatables.net-vue3';
+import LayoutComponent from '@/components/LayoutComponent.vue';
+import TwoConsoleComponent from '@/components/TwoConsoleComponent.vue';
+import PanelInputFileTextButtonComponent from '@/components/PanelInputFileTextButtonComponent.vue';
 
 export default {
   components: {
-    NavBarComponent,
-    HorizontalNavBar,
     ModalViewComponent,
-    DataTable
+    LayoutComponent,
+    DataTable,
+    TwoConsoleComponent,
+    PanelInputFileTextButtonComponent
   },
   data() {
     return {
@@ -202,10 +180,10 @@ export default {
         this.errorSubTemplates = 'No session loaded';
         return;
       }
-      axios.get(`${this.$store.state.back_url}/api/get/list/proxies/${currentSessionName}`).then(res => {
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/proxies/${currentSessionName}`).then(res => {
         this.proxies = res.data
       });
-      axios.get(`${this.$store.state.back_url}/api/get/list/imaps/${currentSessionName}`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/imaps/${currentSessionName}`)
           .then(res => {
             this.materials = res.data;
             this.imapsData = res.data.map(item => ({
@@ -248,7 +226,7 @@ export default {
         return;
       }
 
-      axios.post(`${this.$store.state.back_url}/api/del/log`, {
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/log`, {
         token: token,
         session: session,
         type: 'imaps'
@@ -302,7 +280,7 @@ export default {
       if (this.file || this.imapTextInput) {
         let imapArray = this.imapTextInput.split('\n').map(imap => imap.trim()).filter(imap => imap);
         let fileContent = this.file ? this.file : imapArray.join('\n');
-        axios.post(`${this.$store.state.back_url}/api/input/material`, {
+        axios.post(`${import.meta.env.VITE_BACK_URL}/api/input/material`, {
           token: token,
           session: currentSessionName,
           type: 'imaps',
@@ -331,7 +309,7 @@ export default {
           token = cookie.split('=')[1];
         }
       });
-      axios.post(`${this.$store.state.back_url}/api/del/material`, {token: token, id: id, type: 'imaps'})
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/material`, {token: token, id: id, type: 'imaps'})
           .then(res => {
             if (res.data.data === 'success') {
               this.getMaterials();
@@ -365,7 +343,7 @@ export default {
       }
     },
     view(id) {
-      axios.get(`${this.$store.state.back_url}/api/get/materials/${id}`).then(res => {
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/materials/${id}`).then(res => {
         let modalData = [];
         res.data.forEach(el => {
           delete el[1];
@@ -399,7 +377,7 @@ export default {
           timeout: this.timeout
         };
 
-        axios.post(`${this.$store.state.back_url}/api/check/imap`, postData)
+        axios.post(`${import.meta.env.VITE_BACK_URL}/api/check/imap`, postData)
             .then(res => {
               if (res.data.data == 'error') {
                 this.can_check = true;
@@ -430,7 +408,7 @@ export default {
       if (id) {
         this.can_check = false;
 
-        axios.post(`${this.$store.state.back_url}/api/check/imapp`, {
+        axios.post(`${import.meta.env.VITE_BACK_URL}/api/check/imapp`, {
           token: token,
           session: this.getCurrentSessionName(),
           imap_id: id,
@@ -458,7 +436,7 @@ export default {
         return;
       }
 
-      axios.get(`${this.$store.state.back_url}/api/logs/${logType}/${currentSessionName}`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/logs/${logType}/${currentSessionName}`)
           .then(res => {
             console.log(res.data);
             this.logs = res.data.data;
@@ -507,7 +485,7 @@ export default {
         }
       });
 
-      axios.post(`${this.$store.state.back_url}/api/input/log/imaps/${currentSessionName}`, {
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/input/log/imaps/${currentSessionName}`, {
         token: token,
         logtext: logText,
         status: status,
@@ -536,7 +514,7 @@ export default {
       return time; // Return only hh:mm:ss
     },
     fetchDebugs() {
-      axios.get(`${this.$store.state.back_url}/api/debug`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/debug`)
           .then(response => {
             this.mailing_logs = response.data.logs;
           })
@@ -564,20 +542,20 @@ export default {
     this.fetchDebugs();
     this.scrollToBottom();
     console.log(this.selectedImaps);
-    document.querySelector('.table').addEventListener('change', (event) => {
-      if (event.target.classList.contains('form-check-input')) {
-        const id = parseInt(event.target.getAttribute('data-id'));
-        const server = event.target.dataset.server;
-        this.toggleSelection(id, server);
-        this.saveSelection();
-      }
-    });
+    // document.querySelector('.table').addEventListener('change', (event) => {
+    //   if (event.target.classList.contains('form-check-input')) {
+    //     const id = parseInt(event.target.getAttribute('data-id'));
+    //     const server = event.target.dataset.server;
+    //     this.toggleSelection(id, server);
+    //     this.saveSelection();
+    //   }
+    // });
   },
   beforeDestroy() {
     document.removeEventListener('click', this.handleClickOutside);
   },
   created() {
-    this.connection = io.connect(this.$store.state.back_url);
+    this.connection = io.connect(import.meta.env.VITE_BACK_URL);
     this.connection.on('message', (data) => {
       data = data.split(':');
       if (data[0] == 'progress_check_imaps') {
@@ -603,12 +581,9 @@ export default {
 </script>
 
 
-<style scoped>
-#main-part {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
+<style lang="scss" scoped>
+
+
 
 .dummy-form {
   overflow: auto;
@@ -739,11 +714,11 @@ export default {
   margin-top: 2px;
 }
 
-/deep/ .data-cell {
+.data-cell {
   color: #6C7293 !important;
 }
 
-/deep/ .table th {
+.table th {
   color: #fff !important;
 }
 
@@ -756,7 +731,7 @@ export default {
   color: #ddd;
 }
 
-/deep/ .form-check-input {
+.form-check-input {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -768,12 +743,12 @@ export default {
   background-color: var(--da);
 }
 
-/deep/ .form-check-input:checked {
+.form-check-input:checked {
   background-color: var(--primary);
   border-color: var(--primary);
 }
 
-/deep/ .form-check-input:checked::after {
+.form-check-input:checked::after {
 
   display: block;
   color: white;
@@ -782,38 +757,38 @@ export default {
   line-height: 20px;
 }
 
-/deep/ .btn-dead {
+.btn-dead {
   background-color: var(--primary) !important;
   color: #000;
   width: 100px;
 
 }
 
-/deep/ .btn-junk {
+.btn-junk {
   background-color: var(--primary) !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .btn-inbox {
+.btn-inbox {
   background-color: #2bff00 !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .btn-none {
+.btn-none {
   background-color: var(--primary) !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .btn-checked {
+.btn-checked {
   background-color: #2bff00 !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .dt-paging-button {
+.dt-paging-button {
   border: 1px solid white;
   background-color: transparent;
   margin: 1%;
@@ -821,20 +796,20 @@ export default {
   transition: background-color 0.2s linear;
 }
 
-/deep/ .dt-paging-button:hover {
+.dt-paging-button:hover {
   background-color: red;
   color: white;
 }
 
-/deep/ label {
+label {
   padding: 1em 1em 1em 0;
 }
 
-/deep/ .dt-input {
+.dt-input {
   margin-right: 1em;
 }
 
-/deep/ .dt-info {
+.dt-info {
   padding: 1em 1em 1em 0;
   margin-bottom: 1%;
 }
@@ -843,7 +818,7 @@ label {
   color: white;
 }
 
-/deep/ .btn-primary {
+.btn-primary {
   background-color: var(--primary) !important;
   border: none;
   transition: background-color 0.2s linear;

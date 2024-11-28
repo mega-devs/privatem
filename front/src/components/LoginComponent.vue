@@ -40,13 +40,8 @@
 import router from "../router";
 import axios from "axios";
 import ButtonComponent from "../ui/ButtonComponent.vue";
+import { useAuth } from "@/store";
 
-function createCookie(name, value, days) {
-    let date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = name + "=" + value + "; " + expires + "; path=/";
-}
 
 export default {
     components: {
@@ -57,46 +52,26 @@ export default {
             name: null,
             password: null,
             error: null,
+            uAuth: useAuth(),
         }
     },
     methods: {
-        setAuth() {
-            let token = ''
-            let cookies = document.cookie.split(";")
-            cookies.forEach(cookie => {
-                if (cookie.includes('authToken')) {
-                    token = cookie.split("=")[1];
-                }
-            })
-            this.$store.dispatch('setAuth', token)
-        },
-        submit() {
-            console.log('here')
-            axios.post(`${this.$store.state.back_url}/api/login`, { name: this.name, password: this.password }).then(res => {
-                this.error = ''
-                createCookie("authToken", res.data.token, 30)
-                this.setAuth()
+        async submit() {
+            try {
+                const res = await axios.post(`${import.meta.env.VITE_BACK_URL}/api/login`, { name: this.name, password: this.password })
+                this.uAuth.createCookie("authToken", res.data.token, 30);
+                this.uAuth.setAuth()
                 router.push('/dashboard')
-            }).catch(errors => {
+            } catch (error) {
                 this.error = 'User not found or password is incorrect!';
-            })
+            }
         }
     },
 	beforeMount() {
-    this.setAuth();
-    let el = document.querySelector('body');
-    el.setAttribute("data-bs-theme", "dark");
-    el.style.backgroundColor = "black";
-
+        let el = document.querySelector('body');
+        el.setAttribute("data-bs-theme", "dark");
+        el.style.backgroundColor = "black";
 	},
-
-    mounted() {
-        setTimeout(() => {
-            if (this.$store.state.auth) {
-                router.back()
-            }
-        }, 500)
-    }
 };
 </script>
 

@@ -21,6 +21,7 @@
     "datatables.net-vue3": "^3.0.1",
     "jquery": "^3.7.1",
     "jszip": "^3.10.1",
+    "pinia": "^2.2.6",
     "socket.io-client": "^4.7.5",
     "vue": "^3.4.21",
     "vue-datatables-net": "^2.0.1",

@@ -1,52 +1,22 @@
 <template>
-  <NavBarComponent stateProp="SMTPs"/>
-  <div id="main-part">
-    <HorizontalNavBar state-prop="SMTPs"/>
-    <div class="container-fluid dummy-form">
+  <LayoutComponent title="SMTPs">
+    <template #content>
+      <TwoConsoleComponent :logs="logs" :mailing_logs="mailing_logs" @delete-log="deleteLog()" />
+      <div class="smtp-panel">
+        <v-file-input class="smtp-panel__txt" clearable label="Input SMTPs.txt or csv" accept="text file/txt" @change="fileUpload"></v-file-input>
+        <v-file-input class="smtp-panel__zip" clearable label="Input SMTPs.zip" accept="archive file/zip" @change="fileUpload"></v-file-input>
+        <v-textarea class="smtp-panel__input " label="Enter multiple SMTPs separated by new lines" v-model="smtpTextInput" variant="outlined"></v-textarea>
+        <div class="smtp-panel__btns">
+          <v-btn @click="submit()" class="btn btn-primary">Submit</v-btn>
+          <v-btn @click="exportToTxt()" class="btn btn-primary">Export to TXT</v-btn>
+        </div>
+      </div>
+      <p class="text-danger">{{ errorSub }}</p>
+
+      <div class="container-fluid dummy-form">
+
       <div class="row">
-        <h2 class="text-center headerzn">SMTPs</h2>
-        <hr>
-        <div>
-          <h3 class="headerzn">Console</h3>
-          <div id="console-output" ref="consoleOutput">
-            <template v-for="(item, index) in logs" :key="index">
-              <span :class="item['status']"><span :style="{ color: 'orange' }">{{
-                  formatTime(item['created_at'])
-                }}</span> | {{ item['TEXT'] }}<br/></span>
-            </template>
-          </div>
-          <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
-          <div class="col-lg-12">
-            <p>Debug</p>
-            <div id="console-output" ref="consoleOutput1">
-              <template v-for="item in mailing_logs" :key="item.timestamp">
-                <span :class="item.level.toLowerCase()"><span :style="{ color: 'orange' }">{{
-                    formatTime(item.timestamp)
-                  }}</span> | {{ item.message }}<br/></span>
-              </template>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="row">
-            <div class="col-lg-6 mb-3">
-              <label for="formFile1" class="form-label labelnew">Input SMTPs.txt or csv</label>
-              <input ref="inputEl1" class="form-control" type="file" id="formFile1" @change="fileUpload">
-            </div>
-            <div class="col-lg-6 mb-3">
-              <label for="formFile2" class="form-label labelnew">Input SMTPs.zip</label>
-              <input ref="inputEl2" class="form-control" type="file" id="formFile2" @change="fileUpload">
-            </div>
-            <div class="col-lg-6 mb-3">
-              <label for="formText" class="form-label labelnew">Input SMTPs</label>
-              <textarea ref="inputEl3" class="form-control" id="formText" v-model="smtpTextInput"
-                        placeholder="Enter multiple SMTPs separated by new lines"></textarea>
-            </div>
-          </div>
-          <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>&nbsp;
-          <button type="button" @click.prevent="exportToTxt" class="btn btn-primary">Export to TXT</button>
-          <p class="text-danger">{{ errorSub }}</p>
-        </div>
+        
         <div class="col-lg-12">
           <DataTable :data="smtpsData" :columns="smtpsColumns" :class="tableClasses" class="data-cell"
                      @click="handleClick">
@@ -118,24 +88,25 @@
       </div>
     </div>
     <ModalViewComponent ref="modal"></ModalViewComponent>
-  </div>
+    </template>
+  </LayoutComponent>
 </template>
 
 <script>
 import axios from 'axios';
-import NavBarComponent from './components/NavBarComponent.vue';
-import ModalViewComponent from './components/ModalViewComponent.vue';
-import HorizontalNavBar from "./components/HorizontalNavBar.vue";
+import ModalViewComponent from '../components/components/ModalViewComponent.vue';
 import DataTable from 'datatables.net-vue3';
 import JSZip from 'jszip';
 import {io} from "socket.io-client";
+import LayoutComponent from '@/components/LayoutComponent.vue';
+import TwoConsoleComponent from '@/components/TwoConsoleComponent.vue';
 
 export default {
   components: {
-    NavBarComponent,
-    HorizontalNavBar,
     ModalViewComponent,
-    DataTable
+    DataTable,
+    LayoutComponent,
+    TwoConsoleComponent
   },
   data() {
     return {
@@ -210,7 +181,7 @@ export default {
       return Object.keys(obj).length === 0;
     },
     fetchImaps() {
-      axios.get(`${this.$store.state.back_url}/api/imaps`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/imaps`)
           .then(response => {
             if (response.data && response.data.status === 'success') {
               this.imaps = response.data.imaps;
@@ -226,10 +197,10 @@ export default {
         this.errorSubTemplates = 'No session loaded';
         return;
       }
-      axios.get(`${this.$store.state.back_url}/api/get/list/proxies/${currentSessionName}`).then(res => {
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/proxies/${currentSessionName}`).then(res => {
         this.proxies = res.data;
       });
-      axios.get(`${this.$store.state.back_url}/api/get/list/smtps/${currentSessionName}`).then(res => {
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/smtps/${currentSessionName}`).then(res => {
         this.smtpsData = res.data.map(item => ({
           id: item.id,
           server: item.server,
@@ -283,7 +254,7 @@ export default {
       if (this.file || this.smtpTextInput) {
         let smtpArray = this.smtpTextInput.split('\n').map(smtp => smtp.trim()).filter(smtp => smtp);
         let fileContent = this.file ? this.file : smtpArray.join('\n');
-        axios.post(`${this.$store.state.back_url}/api/input/material`, {
+        axios.post(`${import.meta.env.VITE_BACK_URL}/api/input/material`, {
           token: token,
           session: currentSessionName,
           type: 'smtps',
@@ -311,7 +282,7 @@ export default {
           token = cookie.split('=')[1].trim();
         }
       });
-      axios.post(`${this.$store.state.back_url}/api/del/material`, {token: token, id: id, type: 'smtps'}).then(res => {
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/material`, {token: token, id: id, type: 'smtps'}).then(res => {
         this.getMaterials();
       }).catch(error => {
         console.error('Error deleting material:', error);
@@ -354,7 +325,7 @@ export default {
       }
     },
     view(id) {
-      axios.get(`${this.$store.state.back_url}/api/get/materials/${id}`).then(res => {
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/materials/${id}`).then(res => {
         let modalData = [];
         res.data.forEach(el => {
           delete el[1];
@@ -380,7 +351,7 @@ export default {
         }
       });
 
-      axios.post(`${this.$store.state.back_url}/api/input/log/smtps/${currentSessionName}`, {
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/input/log/smtps/${currentSessionName}`, {
         token: token,
         logtext: logText,
         status: status,
@@ -399,7 +370,7 @@ export default {
         return;
       }
 
-      axios.get(`${this.$store.state.back_url}/api/logs/${logType}/${currentSessionName}`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/logs/${logType}/${currentSessionName}`)
           .then(res => {
             console.log(res.data);
             this.logs = res.data.data;
@@ -422,7 +393,7 @@ export default {
         return;
       }
 
-      axios.post(`${this.$store.state.back_url}/api/del/log`, {
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/log`, {
         token: token,
         session: session,
         type: 'smtps'
@@ -466,7 +437,7 @@ export default {
       if (this.check_file && this.timeout && this.proxy_form) {
         this.can_check = false;
 
-        axios.post(`${this.$store.state.back_url}/api/check/smtp`, {
+        axios.post(`${import.meta.env.VITE_BACK_URL}/api/check/smtp`, {
           token: token,
           session: this.getCurrentSessionName(),
           smtp_id: this.check_file,
@@ -504,7 +475,7 @@ export default {
       if (id) {
         this.can_check = false;
 
-        axios.post(`${this.$store.state.back_url}/api/check/smtpp`, {
+        axios.post(`${import.meta.env.VITE_BACK_URL}/api/check/smtpp`, {
           token: token,
           session: this.getCurrentSessionName(),
           smtp_id: id,
@@ -591,7 +562,7 @@ export default {
       return time; // Return only hh:mm:ss
     },
     fetchDebugs() {
-      axios.get(`${this.$store.state.back_url}/api/debug`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/debug`)
           .then(response => {
             this.mailing_logs = response.data.logs;
           })
@@ -633,7 +604,7 @@ export default {
     document.removeEventListener('click', this.handleClickOutside);
   },
   created() {
-    this.connection = io.connect(this.$store.state.back_url);
+    this.connection = io.connect(import.meta.env.VITE_BACK_URL);
     this.connection.on('message', (data) => {
       data = data.split(':');
       if (data[0] == 'progress_check_smtps') {
@@ -659,7 +630,33 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+.smtp-panel {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-areas: "txt input"
+    "zip input"
+    "btns btns";
+  grid-gap: 16px;
+  &__txt {
+    grid-area: txt;
+  }
+  &__zip {
+    grid-area: zip;
+  }
+  &__input {
+    grid-area: input;
+  }
+  &__btns {
+    grid-area: btns;
+    display: flex;
+    grid-gap: 16px;
+    justify-content: center;
+  }
+}
+
+
 #main-part {
   display: flex;
   flex-direction: column;
@@ -797,7 +794,7 @@ export default {
   margin-right: 100px;
 }
 
-/deep/ .dt-input {
+.dt-input {
   border: 1px solid #ccc;
   padding: 5px;
   border-radius: 4px;
@@ -805,25 +802,25 @@ export default {
   color: #ffffff;
 }
 
-/deep/ .dt-input:focus {
+.dt-input:focus {
   border-color: #66afe9;
   outline: none;
 }
 
-/deep/ .dt-length label {
+.dt-length label {
 
   margin-left: 10px;
 }
 
-/deep/ .dt-search input {
+.dt-search input {
   margin-left: 10px;
 }
 
-/deep/ .data-cell {
+.data-cell {
   color: #ff0000 !important;
 }
 
-/deep/ .table th {
+.table th {
   color: white !important;
 }
 
@@ -836,7 +833,7 @@ export default {
   color: #ddd;
 }
 
-/deep/ .form-check-input {
+.form-check-input {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -848,12 +845,12 @@ export default {
   background-color: var(--da);
 }
 
-/deep/ .form-check-input:checked {
+.form-check-input:checked {
   background-color: var(--primary);
   border-color: var(--primary);
 }
 
-/deep/ .form-check-input:checked::after {
+.form-check-input:checked::after {
 
   display: block;
   color: white;
@@ -862,38 +859,38 @@ export default {
   line-height: 20px;
 }
 
-/deep/ .btn-dead {
+.btn-dead {
   background-color: var(--primary) !important;
   color: #000;
   width: 100px;
 
 }
 
-/deep/ .btn-junk {
+.btn-junk {
   background-color: var(--primary) !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .btn-inbox {
+.btn-inbox {
   background-color: #2bff00 !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .btn-none {
+.btn-none {
   background-color: var(--primary) !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .btn-checked {
+.btn-checked {
   background-color: #2bff00 !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .dt-paging-button {
+.dt-paging-button {
   border: 1px solid white;
   background-color: transparent;
   margin: 1%;
@@ -901,20 +898,20 @@ export default {
   transition: background-color 0.2s linear;
 }
 
-/deep/ .dt-paging-button:hover {
+.dt-paging-button:hover {
   background-color: red;
   color: white;
 }
 
-/deep/ label {
+label {
   padding: 1em 1em 1em 0;
 }
 
-/deep/ .dt-input {
+.dt-input {
   margin-right: 1em;
 }
 
-/deep/ .dt-info {
+.dt-info {
   padding: 1em 1em 1em 0;
   margin-bottom: 1%;
 }
@@ -923,7 +920,7 @@ label {
   color: white;
 }
 
-/deep/ .btn-primary {
+.btn-primary {
   background-color: var(--primary) !important;
   border: none;
   transition: background-color 0.2s linear;

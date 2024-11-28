@@ -258,7 +258,7 @@ export default {
         return;
       }
 
-      axios.get(`${this.$store.state.back_url}/api/get/list/templates/${currentSessionName}`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/templates/${currentSessionName}`)
           .then(res => {
             this.templatesdata = res.data.map(item => ({
               id: item.id,
@@ -275,10 +275,10 @@ export default {
         this.errorSubTemplates = 'No session loaded';
         return;
       }
-      axios.get(`${this.$store.state.back_url}/api/get/list/proxies/${currentSessionName}`).then(res => {
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/proxies/${currentSessionName}`).then(res => {
         this.proxies = res.data;
       });
-      axios.get(`${this.$store.state.back_url}/api/get/list/smtps/${currentSessionName}`).then(res => {
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/smtps/${currentSessionName}`).then(res => {
         this.smtpsData = res.data.map(item => ({
           id: item.id,
           server: item.server,
@@ -294,7 +294,7 @@ export default {
         this.errorSubTemplates = 'No session loaded';
         return;
       }
-      axios.get(`${this.$store.state.back_url}/api/get/list/proxies/${currentSessionName}`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/proxies/${currentSessionName}`)
           .then(res => {
             this.proxiesData = res.data.map(item => ({
               id: item.id,
@@ -313,7 +313,7 @@ export default {
         this.errorSub = 'No session loaded';
         return;
       }
-      axios.get(`${this.$store.state.back_url}/api/get/list/domains/${currentSessionName}`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/domains/${currentSessionName}`)
           .then(res => {
             this.domainsData = res.data.map(item => ({
               id: item.id,
@@ -331,7 +331,7 @@ export default {
         this.errorSubTemplates = 'No session loaded';
         return;
       }
-      axios.get(`${this.$store.state.back_url}/api/get/list/bases/${currentSessionName}`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/bases/${currentSessionName}`)
           .then(res => {
             this.basesData = res.data.map(item => ({
               id: item.id,
@@ -383,7 +383,7 @@ export default {
         return;
       }
 
-      axios.get(`${this.$store.state.back_url}/api/logs/${logType}/${currentSessionName}`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/logs/${logType}/${currentSessionName}`)
           .then(res => {
             console.log(res.data);
             this.logs = res.data.data;
@@ -426,7 +426,7 @@ export default {
       this.errorCheck = null
       if (this.threads_form && this.smtp_timeout_form && this.proxy_timeout_form && this.delay_form) {
         this.can_run = false
-        axios.post(`${this.$store.state.back_url}/api/start/sendx`, {
+        axios.post(`${import.meta.env.VITE_BACK_URL}/api/start/sendx`, {
           token: token,
           bases: this.basesData,
           smtps: selectedSmtpIds,
@@ -457,7 +457,7 @@ export default {
           token = cookie.split('=')[1];
         }
       });
-      axios.post(`${this.$store.state.back_url}/api/del/material`, {token: token, id: id, type: 'smtps'})
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/material`, {token: token, id: id, type: 'smtps'})
           .then(res => {
             if (res.data.data === 'success') {
               this.getMaterialsSMTP();
@@ -470,7 +470,7 @@ export default {
           });
     },
     view(id) {
-      axios.get(`${this.$store.state.back_url}/api/get/materials/${id}`).then(res => {
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/materials/${id}`).then(res => {
         let modalData = [];
         res.data.forEach(el => {
           delete el[1];
@@ -521,7 +521,7 @@ export default {
         }
       });
 
-      axios.post(`${this.$store.state.back_url}/api/input/log/sendx/${currentSessionName}`, {
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/input/log/sendx/${currentSessionName}`, {
         token: token,
         logtext: logText,
         status: status,
@@ -540,7 +540,7 @@ export default {
         return;
       }
 
-      axios.delete(`${this.$store.state.back_url}/api/logs/${logType}/${currentSessionName}`)
+      axios.delete(`${import.meta.env.VITE_BACK_URL}/api/logs/${logType}/${currentSessionName}`)
           .then(response => {
             if (response.data && response.data.status === 'success') {
               this.logs = [];
@@ -569,7 +569,7 @@ export default {
       return time; // Return only hh:mm:ss
     },
     fetchDebugs() {
-      axios.get(`${this.$store.state.back_url}/api/debug`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/debug`)
           .then(response => {
             this.mailing_logs = response.data.logs;
           })
@@ -605,7 +605,7 @@ export default {
     document.removeEventListener('click', this.handleClickOutside);
   },
   created() {
-    this.connection = io.connect(this.$store.state.back_url);
+    this.connection = io.connect(import.meta.env.VITE_BACK_URL);
     this.connection.on('message', (data) => {
       data = data.split(":");
       if (data[0] == 'progress_sendx_send') {

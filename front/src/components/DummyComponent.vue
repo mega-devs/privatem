@@ -91,7 +91,7 @@ export default {
                 this.errorSubTemplates = 'No session loaded';
                 return;
             }
-            axios.get(`${this.$store.state.back_url}/api/get/list/dummy/${currentSessionName}`)
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/dummy/${currentSessionName}`)
             .then(res => {
                     this.dummyData = res.data.map(item => ({
                         id: item.id,
@@ -126,7 +126,7 @@ export default {
             })
             this.errorSubDummy = ''
             if (this.filesDummy && this.nameDummy) {
-                axios.post(`${this.$store.state.back_url}/api/input/material`, {token: token, session:currentSessionName, name: this.nameDummy, type: 'dummy', file: this.filesDummy}).then(res => {
+                axios.post(`${import.meta.env.VITE_BACK_URL}/api/input/material`, {token: token, session:currentSessionName, name: this.nameDummy, type: 'dummy', file: this.filesDummy}).then(res => {
                     this.getDummy()
                     if ( res.data.data == 'error' ) {
                         this.errorSubDummy = res.data.error
@@ -144,10 +144,10 @@ export default {
                     token = cookie.split("=")[1];
                 }
             })
-            axios.post(`${this.$store.state.back_url}/api/del/material`, {token: token, type:'dummy', id: id}).then(res => {this.getDummy();this.getTemplates()})
+            axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/material`, {token: token, type:'dummy', id: id}).then(res => {this.getDummy();this.getTemplates()})
         },
         view(name) {
-            axios.get(`${this.$store.state.back_url}/api/get/manifest/${name}`).then(res => {
+            axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/manifest/${name}`).then(res => {
                 let modalData = []
                 res.data.forEach(el => {
                     if (el[2] == 'templatesTmp' || el[2] == 'dummyTmp') {

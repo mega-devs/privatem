@@ -179,7 +179,7 @@ export default {
         return;
       }
 
-      axios.get(`${this.$store.state.back_url}/api/count/${currentSessionName}`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/count/${currentSessionName}`)
           .then(res => {
             console.log(res.data);
             this.totalSmtps = res.data.count['count'];

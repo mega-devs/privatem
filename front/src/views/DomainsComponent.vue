@@ -1,48 +1,12 @@
 <template>
-  <NavBarComponent stateProp="domains"/>
-  <div id="main-part">
-    <HorizontalNavBar state-prop="domains"/>
+  <LayoutComponent title="Domains">
+    <template #content>
+      <TwoConsoleComponent @delete-log="deleteLog()" :logs="logs" :mailing_logs="mailing_logs" />
+      <PanelInputFileTextButtonComponent @submit="submit" @export="exportData" @upload="fileUpload" v-model="domainTextInput" what="domains"/>
+      <div id="main-part">
     <div class="container-fluid dummy-form">
       <div class="row">
-        <h2 class="text-center headerzn text-light">Domains</h2>
-        <hr class="bg-light">
-        <div>
-          <h3 class="headerzn text-light">Console</h3>
-          <div id="console-output" ref="consoleOutput2">
-            <template v-for="item in logs">
-              <span :class="item['status']"><span :style="{ color: 'orange' }">{{
-                  formatTime(item['created_at'])
-                }}</span> | {{ item['TEXT'] }}<br/></span>
-            </template>
-          </div>
-          <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
-          <div class="col-lg-12">
-            <p>Debug</p>
-            <div id="console-output" ref="consoleOutput1">
-              <template v-for="item in mailing_logs" :key="item.timestamp">
-                <span :class="item.level.toLowerCase()"><span :style="{ color: 'orange' }">{{
-                    formatTime(item.timestamp)
-                  }}</span> | {{ item.message }}<br/></span>
-              </template>
-            </div>
-          </div>
-        </div>
         <div class="col-lg-8">
-          <div class="row">
-            <div class="col-lg-6 mb-3">
-              <label for="formFile1" class="form-label labelnew text-light">Input domains.txt</label>
-              <input ref="inputEl1" class="form-control bg-dark text-light border-secondary" type="file" id="formFile1"
-                     @change="fileUpload">
-            </div>
-            <div class="col-lg-6 mb-3">
-              <label for="formText" class="form-label labelnew text-light">Input domains</label>
-              <textarea ref="inputEl3" class="form-control bg-dark text-light border-secondary" id="formText"
-                        v-model="domainTextInput"
-                        placeholder="Enter multiple domains separated by new lines"></textarea>
-            </div>
-          </div>
-          <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>&nbsp;
-          <button type="button" @click.prevent="exportData" class="btn btn-primary">Export to TXT</button>
           <p class="text-danger">{{ errorSub }}</p>
         </div>
         <hr class="bg-light">
@@ -88,23 +52,27 @@
     </div>
     <ModalViewComponent ref="modal"></ModalViewComponent>
   </div>
+    </template>
+  </LayoutComponent>
 </template>
 
 <script>
 import axios from 'axios';
-import NavBarComponent from './components/NavBarComponent.vue';
-import HorizontalNavBar from "./components/HorizontalNavBar.vue";
-import ModalViewComponent from './components/ModalViewComponent.vue';
+import ModalViewComponent from '@/components/components/ModalViewComponent.vue';
 import DataTable from 'datatables.net-vue3';
 import JSZip from 'jszip';
 import {io} from "socket.io-client";
+import LayoutComponent from '@/components/LayoutComponent.vue';
+import TwoConsoleComponent from '@/components/TwoConsoleComponent.vue';
+import PanelInputFileTextButtonComponent from '@/components/PanelInputFileTextButtonComponent.vue';
 
 export default {
   components: {
-    NavBarComponent,
-    HorizontalNavBar,
+    LayoutComponent,
+    TwoConsoleComponent,
     ModalViewComponent,
-    DataTable
+    DataTable,
+    PanelInputFileTextButtonComponent
   },
   data() {
     return {
@@ -182,7 +150,7 @@ export default {
         this.errorSub = 'No session loaded';
         return;
       }
-      axios.get(`${this.$store.state.back_url}/api/get/list/domains/${currentSessionName}`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/domains/${currentSessionName}`)
           .then(res => {
             this.domainsData = res.data.map(item => ({
               id: item.id,
@@ -238,7 +206,7 @@ export default {
       this.errorCheck = null;
       this.can_check = false;
 
-      axios.post(`${this.$store.state.back_url}/api/check/domain`, {
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/check/domain`, {
         token: token,
         session: currentSessionName,
         socket: this.connection.id,
@@ -270,7 +238,7 @@ export default {
       if (this.file || this.domainTextInput) {
         let domainArray = this.domainTextInput.split('\n').map(domain => domain.trim()).filter(domain => domain);
         let fileContent = this.file ? this.file : domainArray.join('\n');
-        axios.post(`${this.$store.state.back_url}/api/input/material`, {
+        axios.post(`${import.meta.env.VITE_BACK_URL}/api/input/material`, {
           token: token,
           session: currentSessionName,
           type: 'domains',
@@ -299,7 +267,7 @@ export default {
           token = cookie.split("=")[1];
         }
       })
-      axios.post(`${this.$store.state.back_url}/api/del/material`, {
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/material`, {
         token: token,
         id: id,
         type: 'domains'
@@ -344,7 +312,7 @@ export default {
       }
     },
     view(id) {
-      axios.get(`${this.$store.state.back_url}/api/get/materials/${id}`).then(res => {
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/materials/${id}`).then(res => {
         let modalData = []
         res.data.forEach(el => {
           delete el[1]
@@ -366,7 +334,7 @@ export default {
         }
       });
 
-      axios.post(`${this.$store.state.back_url}/api/input/log/domains/${currentSessionName}`, {
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/input/log/domains/${currentSessionName}`, {
         token: token,
         logtext: logText,
         status: status,
@@ -385,7 +353,7 @@ export default {
         return;
       }
 
-      axios.get(`${this.$store.state.back_url}/api/logs/${logType}/${currentSessionName}`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/logs/${logType}/${currentSessionName}`)
           .then(res => {
             console.log(res.data);
             this.logs = res.data.data;
@@ -407,7 +375,7 @@ export default {
         return;
       }
 
-      axios.post(`${this.$store.state.back_url}/api/del/log`, {
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/log`, {
         token: token,
         session: session,
         type: 'domains'
@@ -445,7 +413,7 @@ export default {
           return;
         }
 
-        axios.post(`${this.$store.state.back_url}/api/check/domain`, {
+        axios.post(`${import.meta.env.VITE_BACK_URL}/api/check/domain`, {
           token: token,
           session: currentSessionName,
           socket: this.connection.id,  // assuming you have access to the socket ID
@@ -482,7 +450,7 @@ export default {
       return time; // Return only hh:mm:ss
     },
     fetchDebugs() {
-      axios.get(`${this.$store.state.back_url}/api/debug`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/debug`)
           .then(response => {
             this.mailing_logs = response.data.logs;
           })
@@ -521,7 +489,7 @@ export default {
     });
   },
   created() {
-    this.connection = io.connect(this.$store.state.back_url);
+    this.connection = io.connect(import.meta.env.VITE_BACK_URL);
     this.connection.on('message', (data) => {
       data = data.split(":");
       if (data[0] == 'progress_check_domain') {
@@ -634,11 +602,11 @@ export default {
   color: #ddd !important;
 }
 
-/deep/ .data-cell {
+.data-cell {
   color: #6C7293 !important;
 }
 
-/deep/ .table th {
+.table th {
   color: #fff !important;
 }
 
@@ -651,7 +619,7 @@ export default {
   color: #ddd;
 }
 
-/deep/ .form-check-input {
+.form-check-input {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -663,12 +631,12 @@ export default {
   background-color: var(--dark);
 }
 
-/deep/ .form-check-input:checked {
+.form-check-input:checked {
   background-color: var(--primary);
   border-color: var(--primary);
 }
 
-/deep/ .form-check-input:checked::after {
+.form-check-input:checked::after {
 
   display: block;
   color: white;
@@ -677,38 +645,38 @@ export default {
   line-height: 20px;
 }
 
-/deep/ .btn-dead {
+.btn-dead {
   background-color: var(--primary) !important;
   color: #000;
   width: 100px;
 
 }
 
-/deep/ .btn-junk {
+.btn-junk {
   background-color: var(--primary) !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .btn-inbox {
+.btn-inbox {
   background-color: #2bff00 !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .btn-none {
+.btn-none {
   background-color: var(--primary) !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .btn-checked {
+.btn-checked {
   background-color: #2bff00 !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .dt-paging-button {
+.dt-paging-button {
   border: 1px solid white;
   background-color: transparent;
   margin: 1%;
@@ -716,20 +684,20 @@ export default {
   transition: background-color 0.2s linear;
 }
 
-/deep/ .dt-paging-button:hover {
+.dt-paging-button:hover {
   background-color: red;
   color: white;
 }
 
-/deep/ label {
+label {
   padding: 1em 1em 1em 0;
 }
 
-/deep/ .dt-input {
+.dt-input {
   margin-right: 1em;
 }
 
-/deep/ .dt-info {
+.dt-info {
   padding: 1em 1em 1em 0;
   margin-bottom: 1%;
 }
@@ -738,7 +706,7 @@ label {
   color: white;
 }
 
-/deep/ .btn-primary {
+.btn-primary {
   background-color: var(--primary) !important;
   border: none;
   transition: background-color 0.2s linear;

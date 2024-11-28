@@ -1,96 +1,40 @@
 <template>
   <LayoutComponent title="Proxies">
     <template #content>
-      <div class="container-fluid dummy-form">
+      <div class="container-fluid dummy-form">   
       <div class="row">
-        <div>
-          <h3 class="headerzn">Console</h3>
-          <div id="console-output" ref="consoleOutput">
-            <template v-for="(item, index) in logs" :key="index">
-              <span :class="item['status']"><span :style="{ color: 'orange' }">{{
-                  formatTime(item['created_at'])
-                }}</span> | {{ item['TEXT'] }}<br/></span>
-            </template>
-          </div>
-          <button @click="deleteLog()" class="btn btn-primary btn-delete">Delete</button>
-          <div class="col-lg-12">
-            <p>Debug</p>
-            <div id="console-output" ref="consoleOutput1">
-              <template v-for="item in mailing_logs" :key="item.timestamp">
-                <span :class="item.level.toLowerCase()"><span :style="{ color: 'orange' }">{{
-                    formatTime(item.timestamp)
-                  }}</span> | {{ item.message }}<br/></span>
-              </template>
-            </div>
-          </div>
-        </div>
+        <TwoConsoleComponent :logs="logs" :mailing_logs="mailing_logs" @delete-log="deleteLog()" />
         <div class="col-lg-6">
-          <div class="row">
-            <div class="col-lg-6 mb-3">
-              <label for="formFile" class="form-label labelnew" style="color: white;">Input proxies.txt</label>
-              <input ref="inputEl1" class="form-control" type="file" id="formFile1" @change="fileUpload">
-            </div>
-            <div class="col-lg-6 mb-3">
-              <label for="formFile" class="form-label labelnew">Input proxies.zip</label>
-              <input ref="inputEl2" class="form-control" type="file" id="formFile2" @change="fileUpload">
-            </div>
-            <div class="col-lg-6 mb-3">
-              <label for="formText" class="form-label labelnew">Input Proxies</label>
-              <textarea ref="inputEl3" class="form-control" id="formText" v-model="proxyTextInput"
-                        placeholder="Enter multiple proxies separated by new lines"></textarea>
-            </div>
-            <div class="col-lg-6 mb-3">
-              <label for="formFileSettings" class="form-label labelnew">Import settings.json</label>
-              <input ref="inputElSettings" class="form-control" type="file" id="formFileSettings"
-                     @change="importSettings">
-            </div>
-            <div class="col-lg-6 mb-3">
-              <label for="formText" class="form-label labelnew">Input fetchUrl</label>
-              <textarea ref="inputElFetchUrl" class="form-control" id="formTextFetchUrl" v-model="fetchUrlInput"
-                        placeholder="Enter the fetch URL"></textarea>
+          <div class="panel-loader">
+            <v-file-input class="panel-loader__proxies-txt " clearable label="Input proxies.txt" accept="text file/txt" @change="fileUpload"></v-file-input>
+            <v-file-input class="panel-loader__proxies-zip " clearable label="Input proxies.zip" accept="Archice/zip" @change="fileUpload"></v-file-input>
+            <v-textarea class="panel-loader__proxies " label="Enter multiple proxies separated by new lines" v-model="proxyTextInput" variant="outlined"></v-textarea>
+            <v-file-input class="panel-loader__settings-json " clearable label="Input settings.json" accept="File/json" @change="importSettings"></v-file-input>
+            <v-textarea class="panel-loader__url " label="Enter the fetch URL" v-model="fetchUrlInput" variant="outlined"></v-textarea>
+            <div class="panel-loader__btns">
+              <v-btn @click="submit()" class="btn btn-primary">Submit</v-btn>
+              <v-btn @click="exportData()" class="btn btn-primary">Export to TXT</v-btn>
             </div>
           </div>
-          <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>&nbsp;
-          <button type="button" @click="exportData" class="btn btn-primary">Export to TXT</button>
           <p class="text-danger">{{ errorSub }}</p>
         </div>
         <div class="col-lg-6">
+          <!-- update -->
           <DataTable :data="proxiesData" :columns="proxiesColumns" :class="tableClasses" @click="handleClick">
           </DataTable>
         </div>
       </div>
-      <div>
-        <hr>
-        <p class="headerzn">Check proxies</p>
-        <hr>
-        <div class="row">
-          <div class="col-lg-6">
-            <select v-model="check_file" class="form-select">
-              <option v-for="item in allowedStatuses" :key="item.id" :value="item">{{ item }}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div v-if="can_check">
-        <button style="margin-top: 1em;" type="button" @click.prevent="checkSubmit" class="btn btn-primary">Submit
-        </button>
-      </div>
-      <div v-else>
-        <p>Please wait!</p>
+      <div style="display: grid; grid-template-columns: auto min-content; height: min-content; grid-gap: 16px;">
+        <v-select label="Check proxies" :items="allowedStatuses" />
+        <v-btn v-if="can_check" @click="checkSubmit" class="btn btn-primary">Submit</v-btn>
+        <p v-else>Please wait!</p>
       </div>
       <p class="text-danger">{{ errorCheck }}</p>
       <h3 class="headerzn">Progress</h3>
-      <div class="progress">
-        <div class="progress-bar" role="progressbar" :style=" 'background-color: #ef4444;'+'width: '+log_progress+'%'"
-             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-      </div>
-      <div class="row">
-        <div class="col-lg-6">
-          <p class="text-success bordered">Valid: {{ log_valid }}</p>
-        </div>
-        <div class="col-lg-6">
-          <p class="text-danger bordered">Errors: {{ log_error }}</p>
-        </div>
+      <v-progress-linear class="progress-bar" color="primary" :model-value="log_progress" :max="100" :height="11"></v-progress-linear>      
+      <div style="display: grid; grid-template-columns: repeat(2, auto); grid-gap: 16px;">
+        <p class="text-success bordered">Valid: {{ log_valid }}</p>
+        <p class="text-danger bordered">Errors: {{ log_error }}</p>
       </div>
     </div>
     <ModalViewComponent ref="modal"></ModalViewComponent>
@@ -105,12 +49,14 @@ import JSZip from 'jszip';
 import {io} from "socket.io-client";
 import DataTable from 'datatables.net-vue3';
 import LayoutComponent from '@/components/LayoutComponent.vue';
+import TwoConsoleComponent from '@/components/TwoConsoleComponent.vue';
 
 export default {
   components: {
     ModalViewComponent,
     DataTable,
-    LayoutComponent
+    LayoutComponent,
+    TwoConsoleComponent
   },
   data() {
     return {
@@ -169,11 +115,6 @@ export default {
       settingsFileContent: null,
     }
   },
-  watch: {
-    mailing_logs() {
-      this.scrollToBottom();
-    },
-  },
   methods: {
     saveSelection() {
       localStorage.setItem('selectedProxies', JSON.stringify(this.selectedProxies));
@@ -187,7 +128,7 @@ export default {
         this.errorSubTemplates = 'No session loaded';
         return;
       }
-      axios.get(`${this.$store.state.back_url}/api/get/list/proxies/${currentSessionName}`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/proxies/${currentSessionName}`)
           .then(res => {
             this.proxiesData = res.data.map(item => ({
               id: item.id,
@@ -220,7 +161,7 @@ export default {
       if (this.file || this.proxyTextInput) {
         let proxyArray = this.proxyTextInput.split('\n').map(proxy => proxy.trim()).filter(proxy => proxy);
         let fileContent = this.file ? this.file : proxyArray.join('\n');
-        axios.post(`${this.$store.state.back_url}/api/input/material`, {
+        axios.post(`${import.meta.env.VITE_BACK_URL}/api/input/material`, {
           token: token,
           session: currentSessionName,
           type: 'proxies',
@@ -242,7 +183,7 @@ export default {
           settingsData.fetch_url = this.fetchUrlInput;
         }
 
-        axios.post(`${this.$store.state.back_url}/api/update/settings_from_json`, {
+        axios.post(`${import.meta.env.VITE_BACK_URL}/api/update/settings_from_json`, {
           token: token,
           session: currentSessionName,
           json_data: settingsData
@@ -278,7 +219,7 @@ export default {
           token = cookie.split("=")[1];
         }
       });
-      axios.post(`${this.$store.state.back_url}/api/del/material`, {token: token, id: id, type: 'proxies'})
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/material`, {token: token, id: id, type: 'proxies'})
           .then(res => {
             this.getMaterials();
           });
@@ -309,7 +250,7 @@ export default {
         }
       });
 
-      axios.post(`${this.$store.state.back_url}/api/input/log/proxies/${currentSessionName}`, {
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/input/log/proxies/${currentSessionName}`, {
         token: token,
         logtext: logText,
         status: status,
@@ -344,7 +285,7 @@ export default {
       }
     },
     view(id) {
-      axios.get(`${this.$store.state.back_url}/api/get/materials/${id}`).then(res => {
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/materials/${id}`).then(res => {
         let modalData = []
         res.data.forEach(el => {
           delete el[1]
@@ -367,7 +308,7 @@ export default {
         return;
       }
 
-      axios.post(`${this.$store.state.back_url}/api/del/log`, {
+      axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/log`, {
         token: token,
         session: session,
         type: 'proxies'
@@ -385,13 +326,13 @@ export default {
           });
     },
     addLogEntry(logEntry) {
-      this.logs.push(logEntry);
-      this.$nextTick(() => {
-        const consoleOutput = this.$refs.consoleOutput;
-        if (consoleOutput) {
-          consoleOutput.scrollTop = consoleOutput.scrollHeight;
-        }
-      });
+      // this.logs.push(logEntry);
+      // this.$nextTick(() => {
+      //   const consoleOutput = this.$refs.consoleOutput;
+      //   if (consoleOutput) {
+      //     consoleOutput.scrollTop = consoleOutput.scrollHeight;
+      //   }
+      // });
     },
     handleClick(event) {
       const action = event.target.getAttribute('data-action');
@@ -410,7 +351,7 @@ export default {
         return;
       }
 
-      axios.get(`${this.$store.state.back_url}/api/logs/${logType}/${currentSessionName}`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/logs/${logType}/${currentSessionName}`)
           .then(res => {
             console.log(res.data);
             this.logs = res.data.data;
@@ -420,7 +361,7 @@ export default {
           });
     },
     fetchDebugs() {
-      axios.get(`${this.$store.state.back_url}/api/debug`)
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/debug`)
           .then(response => {
             this.mailing_logs = response.data.logs;
           })
@@ -447,7 +388,7 @@ export default {
           return;
         }
 
-        axios.post(`${this.$store.state.back_url}/api/check/proxy`, {
+        axios.post(`${import.meta.env.VITE_BACK_URL}/api/check/proxy`, {
           token: token,
           session: currentSessionName,
           socket: this.connection.id,
@@ -506,18 +447,6 @@ export default {
       const [time] = timePart.split(','); // Remove milliseconds if present
       return time; // Return only hh:mm:ss
     },
-    scrollToBottom() {
-      setTimeout(() => {
-        const consoleOutput1 = this.$refs.consoleOutput1;
-        const consoleOutput2 = this.$refs.consoleOutput2;
-        if (consoleOutput1) {
-          consoleOutput1.scrollTop = consoleOutput1.scrollHeight;
-        }
-        if (consoleOutput2) {
-          consoleOutput2.scrollTop = consoleOutput2.scrollHeight;
-        }
-      }, 50); // Adjust delay if needed
-    },
   },
   mounted() {
     this.loadSelection();
@@ -535,7 +464,7 @@ export default {
     });
   },
   created() {
-    this.connection = io.connect(this.$store.state.back_url)
+    this.connection = io.connect(import.meta.env.VITE_BACK_URL)
     this.connection.on('message', (data) => {
       data = data.split(":")
       if (data[0] == 'progress_check_proxy') {
@@ -560,7 +489,46 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss"  scoped>
+.progress-bar {
+  border-radius: 16px;
+}
+
+.panel-loader {
+  display: grid;
+  grid-gap: 16px;
+  padding: 16px 0px;
+  grid-template-areas: "proxies-txt proxies-txt"
+                       "proxies-zip proxies"
+                       "settings-json proxies"
+                       "url url"
+                       "btns btns";
+  &__proxies-txt {
+    grid-area: proxies-txt;
+  }
+  &__proxies-zip {
+    grid-area: proxies-zip;
+  }
+  &__proxies {
+    grid-area: proxies;
+  }
+  &__settings-json {
+    grid-area: settings-json;
+  }
+  &__url {
+    grid-area: url;
+  }
+  &__btns {
+    grid-area: btns;
+    display: flex;
+    grid-gap: 16px;
+    justify-content: center;
+  }
+}
+
+
+
+
 #main-part {
   display: flex;
   flex-direction: column;
@@ -587,62 +555,13 @@ label {
 }
 
 
-#console-output::-webkit-scrollbar {
-  width: 12px;
-}
 
-#console-output::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 0 10px 10px 10px;
-}
 
-#console-output::-webkit-scrollbar-track {
-  background-color: #495057;
-  border-radius: 0px 8px 8px 0px;
-}
-
-#console-output {
-  border-radius: 10px;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 200px;
-  background-color: #000;
-  color: #fff;
-  overflow: auto;
-  z-index: 9999;
-  padding-left: 1em;
-  padding-right: 1em;
-  padding-top: 5px;
-}
-
-.console-line {
-  padding: 5px;
-  margin: 0;
-  line-height: 1.5rem;
-}
-
-.console-error {
-  color: #f00;
-}
-
-.console-warn {
-  color: #ffa500;
-}
-
-.console-info {
-  color: #00f;
-}
-
-.console-debug {
-  color: #00ff00;
-}
-
-/deep/ .data-cell {
+.data-cell {
   color: #6C7293 !important;
 }
 
-/deep/ .table th {
+.table th {
   color: #fff !important;
 }
 
@@ -655,7 +574,7 @@ label {
   color: #ddd;
 }
 
-/deep/ .form-check-input {
+.form-check-input {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -667,12 +586,12 @@ label {
   background-color: var(--da);
 }
 
-/deep/ .form-check-input:checked {
+.form-check-input:checked {
   background-color: var(--primary);
   border-color: var(--primary);
 }
 
-/deep/ .form-check-input:checked::after {
+.form-check-input:checked::after {
 
   display: block;
   color: white;
@@ -681,37 +600,37 @@ label {
   line-height: 20px;
 }
 
-/deep/ .btn-dead {
+.btn-dead {
   background-color: var(--primary) !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .btn-junk {
+.btn-junk {
   background-color: var(--primary) !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .btn-inbox {
+.btn-inbox {
   background-color: #2bff00 !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .btn-none {
+.btn-none {
   background-color: var(--primary) !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .btn-checked {
+.btn-checked {
   background-color: #2bff00 !important;
   color: #000;
   width: 100px;
 }
 
-/deep/ .dt-paging-button {
+.dt-paging-button {
   border: 1px solid white;
   background-color: transparent;
   margin: 1%;
@@ -719,25 +638,25 @@ label {
   transition: background-color 0.2s linear;
 }
 
-/deep/ .dt-paging-button:hover {
+.dt-paging-button:hover {
   background-color: red;
   color: white;
 }
 
-/deep/ label {
+label {
   padding: 1em 1em 1em 0;
 }
 
-/deep/ .dt-input {
+.dt-input {
   margin-right: 1em;
 }
 
-/deep/ .dt-info {
+.dt-info {
   padding: 1em 1em 1em 0;
   margin-bottom: 1%;
 }
 
-/deep/ .btn-primary {
+.btn-primary {
   background-color: var(--primary) !important;
   border: none;
   transition: background-color 0.2s linear;
