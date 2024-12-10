@@ -21,7 +21,7 @@ services:
     expose:
       - 5000
     ports:
-      - 5001:5000
+      - '5001:5000'
     environment:
       MYSQL_HOST: db
       MYSQL_USER: root
@@ -29,7 +29,7 @@ services:
       MYSQL_DATABASE: mailer
     container_name: proto_back
     command: >
-     bash -c "./wait-for-it.sh db:3306 -- python app.py"
+      bash -c "./wait-for-it.sh db:3306 -- python app.py"
     depends_on:
       - db
     networks:
@@ -39,12 +39,25 @@ services:
     build:
       context: ./front
       dockerfile: Dockerfile
-    ports:
-      - '5173:5173'
-    container_name: proto_front
-    command: npm run dev
+    volumes:
+      - frontend_build:/proto_app/dist
+    container_name: proto_front_build
     depends_on:
+      - backend
       - db
+    networks:
+      - api
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: proto_nginx
+    ports:
+      - '80:80'
+    volumes:
+      - frontend_build:/usr/share/nginx/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
       - backend
     networks:
       - api
@@ -54,3 +67,4 @@ networks:
 
 volumes:
   mysql_data:
+  frontend_build:
