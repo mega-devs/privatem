@@ -22,4 +22,4 @@ COPY ./wait-for-it.sh .
 
 COPY . .
 
-EXPOSE 5001
+EXPOSE 5000
