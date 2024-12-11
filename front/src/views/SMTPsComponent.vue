@@ -28,40 +28,15 @@
         <hr>
         <p class="headerzn">Check SMTP</p>
         <hr>
-        <div class="row">
-          <div class="col-lg-6">
-            <p class="labelnew">SMTP</p>
-            <div class="custom-select" ref="smtpDropdown">
-              <div class="select-selected" @click="toggleDropdown">
-                {{ isEmpty(selectedSmtp) ? 'Select SMTP' : selectedSmtp }}
-              </div>
-              <div v-if="dropdownOpen" class="select-items">
-                <div v-for="item in allowedStatuses" :key="item.id" @click="selectSmtp(item)">{{ item }}</div>
-              </div>
-            </div>
-            <p class="labelnew">Proxy</p>
-            <div class="custom-select" ref="proxyDropdown">
-              <div class="select-selected" @click="toggleProxyDropdown">
-                {{ isEmpty(selectedProxy) ? 'Select Proxy' : selectedProxy }}
-              </div>
-              <div v-if="proxyDropdownOpen" class="select-items">
-                <div v-for="item in allowedStatuses" :key="item.id" @click="selectProxy(item)">{{ item }}</div>
-              </div>
-            </div>
-            <p class="labelnew">IMAP</p>
-            <div class="custom-select" ref="imapDropdown">
-              <div class="select-selected" @click="toggleImapDropdown">
-                {{ isEmpty(selectedImap) ? 'Select IMAP' : selectedImap }}
-              </div>
-              <div v-if="imapDropdownOpen" class="select-items">
-                <div v-for="item in allowedStatuses" :key="item.id" @click="selectImap(item)">{{ item }}</div>
-              </div>
-            </div>
+        <div class="panel-two">
+          <div>
+            <v-select label="Select SMTP" :items="allowedStatuses" v-model="selectedSmtp" />
+            <v-select label="Select Proxy" :items="allowedStatuses" v-model="selectedProxy" />
           </div>
-          <div class="col-lg-6">
-            <br/>
+          <div>
+            <v-select label="Select IMAP" :items="allowedStatuses" v-model="selectedImap" />
             <input v-model="timeout" style="margin-top: 1em;" type="text" class="form-control" aria-label="Small"
-                   placeholder="timeout">
+                   placeholder="timeout">            
           </div>
         </div>
       </div>
@@ -125,7 +100,7 @@ export default {
       mailing_logs: [],
       logs: [],
       imapsData: [],
-      selectedImap: {},
+      selectedImap: "",
       smtpsData: [],
       allowedStatuses: ['all', 'inbox', 'junk', 'dead', 'none', 'checked'],
       selectedSmtps: [],
@@ -163,8 +138,8 @@ export default {
 
       ],
       tableClasses: 'table text-start align-middle table-bordered table-hover mb-0',
-      selectedSmtp: {},
-      selectedProxy: {},
+      selectedSmtp: "",
+      selectedProxy: "",
       imapDropdownOpen: false,
       dropdownOpen: false,
       proxyDropdownOpen: false,

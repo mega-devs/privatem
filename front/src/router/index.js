@@ -5,7 +5,7 @@ import DashboardComponent from "../views/DashboardComponent.vue";
 import TemplatesComponent from "../views/TemplatesComponent.vue";
 import ProxiesComponent from "../views/ProxiesComponent.vue";
 import SMTPsComponent from "../views/SMTPsComponent.vue";
-import BasesComponent from "../components/BasesComponent.vue";
+import BasesComponent from "../views/BasesComponent.vue";
 import TestComponent from "../components/TestComponent.vue";
 import MailingComponent from "../components/MailingComponent.vue";
 import DomainsComponent from "../views/DomainsComponent.vue";
@@ -152,14 +152,14 @@ const router = createRouter({
     routes,
 });
 
-router.beforeEach(async (to, from, next) => {
-    const uAuth = useAuth()
-    if (to.name !== "Login" && !await uAuth.auth) {
-        return next({
-            name: "Login"
-        })
-    }
-    next()
-})
+// router.beforeEach(async (to, from, next) => {
+//     const uAuth = useAuth()
+//     if (to.name !== "Login" && !await uAuth.auth) {
+//         return next({
+//             name: "Login"
+//         })
+//     }
+//     next()
+// })
 
 export default router;

@@ -1,27 +1,26 @@
 <template>
-    <NavBarComponent stateProp="bases"/>
-    <div id="main-part">
-      <HorizontalNavBar state-prop="bases"/>
-        <div style="width:100%; overflow-y: scroll; margin-bottom: 10px">
+    <LayoutComponent title="Bases">
+        <template #content>
+            <PanelInputFileTextButtonComponent @submit="submit" @upload="fileUpload" v-model="baseTextInput" what="bases"/>
+            <p class="text-danger">{{ errorSub }}</p>
+            <div style="width:100%; overflow-y: scroll; margin-bottom: 10px">
+            <div>
+                <p class="text-center">Bases List</p>
+                <v-data-table-virtual
+                    class="table"
+                    v-model:items-per-page="tableClasses"
+                    :headers="basesColumns"
+                    :items="tableDatas"
+                    :class="tableClasses"
+                    :items-length="tableDatas.length"
+                    :loading="isLoadingSessions"
+                    item-value="name"
+                />                
+                <!-- handleClick -->
+                <ButtonComponent @click-handler="exportBasesToTxt" class-names="mt-3" button-text="Export Bases to TXT" />
+            </div>
+
             <div class="container-fluid dummy-form">
-                <div class="row">
-                    <h2 class="text-center headerzn">Bases</h2>
-                    <hr>
-                    <div class="col-lg-6">
-                        <div class="row">
-                            <div class="col-lg-6 mb-3">
-                                <label for="formFile1" class="form-label labelnew">Input bases.txt</label>
-                                <input ref="inputEl1" class="form-control" type="file" id="formFile1" @change="fileUpload">
-                            </div>
-                            <div class="col-lg-6 mb-3">
-                                <label for="formText" class="form-label labelnew">Input bases</label>
-                                <textarea ref="inputEl3" class="form-control" id="formText" v-model="baseTextInput" placeholder="Enter multiple bases separated by new lines"></textarea>
-                            </div>
-                        </div>
-                        <ButtonComponent @click-handler="submit" button-text="Submit" />
-                        <p class="text-danger">{{ errorSub }}</p>
-                    </div>
-                </div>
                 <div class="row tables-container">
                     <div class="col-lg-5 bases-list">
                         <h4 class="text-center">Bases List</h4>
@@ -37,24 +36,25 @@
             </div>
         </div>
         <ModalViewComponent ref="modal"></ModalViewComponent>
-    </div>
+        </template>
+    </LayoutComponent>
 </template>
 
 <script>
 import axios from 'axios';
-import NavBarComponent from './components/NavBarComponent.vue';
-import HorizontalNavBar from "./components/HorizontalNavBar.vue";
-import ModalViewComponent from './components/ModalViewComponent.vue';
-import ButtonComponent from '../ui/ButtonComponent.vue';
+import ModalViewComponent from '@/components/components/ModalViewComponent.vue';
+import ButtonComponent from '@/ui/ButtonComponent.vue';
 import DataTable from 'datatables.net-vue3';
+import LayoutComponent from '@/components/LayoutComponent.vue';
+import PanelInputFileTextButtonComponent from '@/components/PanelInputFileTextButtonComponent.vue';
 
 export default {
     components: {
-        NavBarComponent,
-        HorizontalNavBar,
         ModalViewComponent,
         DataTable,
         ButtonComponent,
+        LayoutComponent,
+        PanelInputFileTextButtonComponent
     },
     data() {
         return {

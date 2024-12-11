@@ -44,3 +44,9 @@ body {
 .btn:hover {
   background-color: #cc0000;
 }
+
+.panel-two {
+  display: grid;
+  grid-gap: 16px;
+  grid-template-columns: repeat(2, 1fr);
+}
