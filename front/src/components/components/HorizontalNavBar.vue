@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="border-radius: 15px 15px 0 0;">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" style="width: 100%; z-index: 1000;">
     <div class="container-fluid justify-content-center">
       <ul class="nav nav-pills">
         <li class="nav-link">
@@ -46,7 +46,7 @@
       </ul>    
     </div>
   </nav>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="border-radius: 15px 15px 0 0;">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" style="border-radius: 15px 15px 0 0; width: 100%; z-index: 1000; top: 50px;">
     <div class="container-fluid justify-content-center">
       <ul class="nav nav-pills">        
         <li class="nav-link">
@@ -219,6 +219,14 @@ export default {
 .table_current_session_item {
   margin: 0;
   font-weight: 600;
+}
+
+.navbar {
+  width: 100%; /* Ensure navbar takes full width */
+}
+
+.container-fluid {
+  width: 100%; /* Ensure container takes full width */
 }
 
 </style>

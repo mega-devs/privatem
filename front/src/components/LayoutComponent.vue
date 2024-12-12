@@ -30,6 +30,8 @@ export default {
     width: 100%;
     display: grid;
     grid-template-columns: min-content 1fr;
+    margin-top: 10x;
+    height: calc(100vh - 100px);
     &__content {
         height: 80%;
     }
