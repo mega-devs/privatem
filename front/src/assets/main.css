@@ -13,7 +13,9 @@ body {
 }
 
 .table thead th {
-  color: rgb(241, 117, 117);
+  color: rgb(255, 255, 255);
+  font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+  font-size: larger;
 }
 
 .color {

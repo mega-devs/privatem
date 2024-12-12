@@ -1130,3 +1130,32 @@ def update_setting(session, setting_type, data):
     finally:
         cursor.close()
         connection.close()
+
+
+def clear_logs(session_name):
+    try:
+        connection = mysql.connector.connect(
+            host=config.DBhost,
+            port=config.DBport,
+            user=config.DBuser,
+            password=config.DBpassword,
+            database=config.DBdatabase
+        )
+        cursor = connection.cursor()
+
+        query = "DELETE FROM logs WHERE session = %s;"
+        cursor.execute(query, (session_name,))
+
+        connection.commit()
+        logger.info(f"Logs cleared for session: {session_name}")
+
+    except mysql.connector.Error as err:
+        logger.error(f"Error clearing logs for session {session_name}: {err}")
+        raise
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+            

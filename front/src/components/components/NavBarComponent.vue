@@ -1,16 +1,17 @@
 <template>
   <div class=" d-flex flex-column flex-shrink-0 p-3 start-0 top-0 content" style="overflow: auto">
     <div class="bg_images">
-      <img class="bg_image_1" src="/ui-red-dark.png" width="200px" height="10px" alt="i"/>
-      <img class="bg_image_2" src="/ui-red-dark.png" width="200px" height="10px" alt="i"/>
-      <img class="bg_image_logo" src="/prviatem.webp" width="50px" height="50px" alt="i"/>
-      <img class="bg_image_3" src="/ui-red-dark.png" width="200px" height="10px" alt="i"/>
-      <img class="bg_image_4" src="/ui-red-dark.png" width="200px" height="10px" alt="i"/>
+      <!-- <img class="bg_image_1" src="/ui-red-dark.png" width="200px" height="10px" alt="i"/> -->
+      <!-- <img class="bg_image_2" src="/ui-red-dark.png" width="200px" height="10px" alt="i"/> -->
+      <!-- <img class="bg_image_logo" src="/prviatem.webp" width="50px" height="50px" alt="i"/> -->
+      <!-- <img class="bg_image_3" src="/ui-red-dark.png" width="200px" height="10px" alt="i"/> -->
+      <!-- <img class="bg_image_4" src="/ui-red-dark.png" width="200px" height="10px" alt="i"/> -->
     </div>
+    <nav class="navbar-expand-lg navbar-dark bg-dark" style="border-radius: 10px 10px 0 0;">
     <ul class="nav nav-pills flex-column">
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <i class="bi bi-list-check"></i> <span>TestModes:</span>
-      </li>
+      </li> -->
       <li class="nav-item">
         <RouterLink to="/dashboard/test?mode=normal" style="text-decoration: none;">
           <a :class="['nav-link', stateProp === 'normaltest' ? 'active' : 'text-white']">
@@ -42,9 +43,9 @@
     </ul>
     <hr>
     <ul class="nav nav-pills flex-column">
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <i class="bi bi-envelope"></i> <span>Mailing:</span>
-      </li>
+      </li> -->
       <li class="nav-item">
         <RouterLink to="/dashboard/mailing?mode=normal" style="text-decoration: none;">
           <a :class="['nav-link', stateProp === 'normalmailing' ? 'active' : 'text-white']">
@@ -74,10 +75,12 @@
           </a>
         </RouterLink>
       </li>
-      <hr>
+      <!-- <hr> -->
     </ul>
+    </nav>
     <div class="table_current_session">
-      <div class="table_current_session_row" style="border-radius: 10px 10px 0 0;">
+      <h1></h1>
+      <!-- <div class="table_current_session_row" style="border-radius: 10px 10px 0 0;">
         <p class="table_current_session_item">Total SMTPs</p>
         <p class="table_current_session_item">{{ totalSmtps }}</p>
       </div>
@@ -116,7 +119,7 @@
       <div class="table_current_session_row" style="border-radius: 0 0 10px 10px;">
         <p class="table_current_session_item">MAILER STATUS</p>
         <p class="table_current_session_item mailerStatusClass">{{ mailerStatus }}</p>
-      </div>
+      </div> -->
     </div>
     <button @click="reset" class="btn-reset mt-3">Reset</button>
     <!--    <ul class="nav nav-pills flex-column mb-auto fixcss">-->
@@ -352,7 +355,7 @@ hr {
   flex-direction: column;
   width: 250px;
   height: auto;
-  border-radius: 10px;
+  border-radius: 100px;
   //overflow: hidden;
 }
 
