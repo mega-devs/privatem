@@ -42,7 +42,46 @@ export default {
             return time; // Return only hh:mm:ss
         },
     },
-    emits: ['deleteLog']
+    emits: ['deleteLog'],
+            clearLogs() {
+            const currentSessionName = this.getCurrentSessionName();
+            if (!currentSessionName) {
+                // Handle the case where no session is loaded
+                console.error("No session loaded. Cannot clear logs.");
+                return;
+            }
+
+            let token = '';
+            document.cookie.split(";").forEach(cookie => {
+                if (cookie.includes('authToken')) {
+                    token = cookie.split("=")[1];
+                }
+            });
+
+            axios.post(`${import.meta.env.VITE_BACK_URL}/api/clear/logs`, {
+                session: currentSessionName,
+                token: token
+            })
+            .then(response => {
+                // Handle the successful response from the backend
+                if (response.data.status === 'success') {
+                    // Clear the logs in the frontend
+                    this.$emit('deleteLog'); // Assuming this emits an event to clear the logs array
+                    console.log("Logs cleared successfully.");
+                } else {
+                    console.error("Failed to clear logs:", response.data.message);
+                }
+            })
+            .catch(error => {
+                // Handle errors during the API request
+                console.error("Error clearing logs:", error);
+            });
+        },
+
+        getCurrentSessionName() {
+            const name = document.cookie.split('; ').find(row => row.startsWith('currentSessionName='));
+            return name ? name.split('=')[1] : null;
+        }
 };
 </script>
 <style lang="scss" scoped>

@@ -1510,5 +1510,22 @@ def get_user_id_from_token(token):
         cursor.close()
         connection.close()
 
+
+@app.route('/api/clear/logs', methods=['POST'])
+def clear_logs_route():
+    data = request.get_json()
+    session_name = data.get('session')
+    token = data.get('token')
+
+    if not session_name or not token:
+        return jsonify({'status': 'error', 'message': 'Missing session or token'}), 400
+
+    try:
+        clear_logs(session_name) # Implement this function in your model.py
+        return jsonify({'status': 'success'}), 200
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+    
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)     
