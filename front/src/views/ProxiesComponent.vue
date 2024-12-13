@@ -6,8 +6,8 @@
         <TwoConsoleComponent :logs="logs" :mailing_logs="mailing_logs" @delete-log="deleteLog()" />
         <div class="col-lg-6">
           <div class="panel-loader">
-            <v-file-input class="panel-loader__proxies-txt " clearable label="Input proxies.txt" accept="text file/txt" @change="fileUpload"></v-file-input>
-            <v-file-input class="panel-loader__proxies-zip " clearable label="Input proxies.zip" accept="Archice/zip" @change="fileUpload"></v-file-input>
+            <v-file-input id="proxiesTxtFileUpload" class="panel-loader__proxies-txt " clearable label="Input proxies.txt" accept="text file/txt" @change="fileUpload"></v-file-input>
+            <v-file-input id="proxiesZipFileUpload" class="panel-loader__proxies-zip " clearable label="Input proxies.zip" accept="Archice/zip" @change="fileUpload"></v-file-input>
             <v-textarea class="panel-loader__proxies " label="Enter multiple proxies separated by new lines" v-model="proxyTextInput" variant="outlined"></v-textarea>
             <v-file-input class="panel-loader__settings-json " clearable label="Input settings.json" accept="File/json" @change="importSettings"></v-file-input>
             <v-textarea class="panel-loader__url " label="Enter the fetch URL" v-model="fetchUrlInput" variant="outlined"></v-textarea>
@@ -200,7 +200,6 @@ export default {
       }
 
       this.getMaterials();
-      this.$refs.inputEl1.value = '';
       this.proxyTextInput = '';
     },
     toggleSelection(id, ip) {
@@ -263,15 +262,13 @@ export default {
       });
     },
     fileUpload(event) {
-      if (event.target.getAttribute('id') == 'formFile1') {
-        this.$refs.inputEl2.value = ''
+      if (event.target.getAttribute('id') === 'proxiesTxtFileUpload') {
         event.target.files[0].arrayBuffer().then((buffer) => {
           const bufferByteLength = buffer.byteLength;
           const bufferUint8Array = new Uint8Array(buffer, 0, bufferByteLength);
           this.file = new TextDecoder().decode(bufferUint8Array);
         });
-      } else if (event.target.getAttribute('id') == 'formFile2') {
-        this.$refs.inputEl1.value = ''
+      } else if (event.target.getAttribute('id') === 'proxiesZipFileUpload') {
         event.target.files[0].arrayBuffer().then((buffer) => {
           const zip = new JSZip();
           zip.loadAsync(buffer).then(zip => {

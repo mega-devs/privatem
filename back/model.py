@@ -151,7 +151,9 @@ def input_material(session, type, file, filename):
 
     elif type == 'proxies':
         for line in file.split('\n'):
-            data = line.replace(' ', '').replace('\n', '').split(':')
+            if line == '':
+                continue
+            data = line.strip().replace('\r', '').replace('\n', '').split(':')
             if len(data) == 2:
                 cursor.execute(f'INSERT INTO `proxies` (ip, port, status, session) VALUES (%s, %s, %s, %s);',
                                (data[0], data[1], 'none', session))

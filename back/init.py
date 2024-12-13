@@ -1,5 +1,6 @@
 import mysql.connector
 import config
+from connections import get_db_connection
 
 def init():
     connection = mysql.connector.connect(
@@ -10,13 +11,7 @@ def init():
     )
     cursor = connection.cursor()
     cursor.execute(f'CREATE DATABASE IF NOT EXISTS `{config.DBdatabase}`;')
-    connection = mysql.connector.connect(
-            host=config.DBhost,
-            port=config.DBport,
-            user=config.DBuser,
-            password=config.DBpassword,
-            database=config.DBdatabase
-        )
+    connection = get_db_connection()
     cursor = connection.cursor()
 
     cursor.execute('''
@@ -166,3 +161,12 @@ def init():
     ''')
 
 
+def create_user(password='privatemailer'):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute(f'''
+        INSERT INTO `users` (`name`, `password`)
+        SELECT 'admin', '{password}'
+        WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `name` = 'admin');
+    ''')
+    connection.commit()
