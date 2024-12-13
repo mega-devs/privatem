@@ -15,6 +15,7 @@ import log_config
 import os
 
 init.init()
+init.create_user()
 app = Flask(__name__)
 CORS(app)
 socket = SocketIO(app, cors_allowed_origins='*')

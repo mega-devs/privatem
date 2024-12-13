@@ -51,11 +51,11 @@ export default {
             fileTemplates: [],
             errorSubTemplates: null,
             templatesdata: [],
-            zipLink: '',  
+            zipLink: '',
             templatescolumns: [
                 { title: 'NAME', key: 'name' },
                 { title: 'VIEW', key: 'view' },
-                { title: 'DELETE', data: 'key' }
+                { title: 'DELETE', key: 'delete' }
             ],
         }
     },

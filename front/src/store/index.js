@@ -34,6 +34,6 @@ export const useAuth = defineStore("auth", () => {
 
     return {
         back_url, auth, sock_url,
-        setAuth, createCookie, createCookie
+        setAuth, createCookie
     }
 })
