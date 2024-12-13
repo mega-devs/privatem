@@ -639,7 +639,7 @@ export default {
 
 .dummy-form {
   overflow: auto;
-  margin-top: 1em;
+  margin-top: 9em;
   width: auto;
 }
 

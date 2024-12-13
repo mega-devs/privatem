@@ -178,7 +178,7 @@ export default {
 .dummy-form {
   margin-left: 20em;
   margin-right: 10em;
-  margin-top: 1em;
+  margin-top: 9em;
   width: auto;
 }
 </style>
