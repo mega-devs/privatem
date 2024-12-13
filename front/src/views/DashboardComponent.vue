@@ -23,6 +23,9 @@
           <template v-slot:item.delete="{ item }">
             <v-btn @click="deleteSession(item)" class="btn btn-danger">Delete</v-btn>
           </template>
+          <template v-slot:item.logs="{ item }">
+            <v-btn @click="viewLogs(item)" class="btn btn-primary">Logs</v-btn>
+          </template>
         </v-data-table-virtual>
 
           <p v-if="errorMessage" class="text-danger">{{ errorMessage }}</p>
@@ -55,6 +58,10 @@ export default {
         {
           title: 'Delete',
           key: 'delete',
+        },
+        {
+          title: 'Logs',
+          key: 'logs',
         },
       ],
       tableDatas: [],

@@ -30,20 +30,22 @@ export default {
     justify-content: start;
     grid-gap: 16px;
     width: 100%;
-    height: 100%;
+    height: calc(100vh - 100px); /* Adjusted height to account for horizontal bars */
+    
     &-content {
-        min-width: 80%;
+        min-width: 95%;
         max-width: 95%;
         justify-self: center;
         align-self: center;
         border-radius: 16px;
-        padding: 20px;
+        padding: 15px;
         background-color: #313131;
         overflow-y: auto;
         height: fit-content;
-        max-height: 80dvh;
-        // padding: 20px;
+        max-height: calc(80dvh - 100px); /* Adjusted max-height */
         width: fit-content;
+        margin-top: 165px; /* Added margin to move below horizontal bars */
+        
         &__title {
             margin: 0;
             color: white;

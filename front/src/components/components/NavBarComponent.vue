@@ -215,7 +215,7 @@ export default {
 
 <style>
 :root {
-  --primary: #ef4444;
+  --primary: #184dfd;
   --secondary: #191C24;
   --grey-1: #111827;
   --light: #6C7293;
@@ -239,7 +239,7 @@ body, html {
   //overflow: auto;
   /* margin: 11vh; */
   margin-bottom: 0;
-  padding-top: 10vh;
+  padding-top: 0.3vh;
   //border: 2px solid red;
 }
 
@@ -276,7 +276,6 @@ body, html {
   //right: 50%;
   right: calc(50% + 50px);
 }
-
 .bg_image_logo {
   width: 100px !important;
   height: 10vh !important;
@@ -285,10 +284,10 @@ body, html {
   transform: translate(-50%, 0);
 }
 
-
 .content {
   border-right: 1px solid grey;
-
+  margin-top: 150px;
+  height: calc(100vh - 100px);
 }
 
 hr {
