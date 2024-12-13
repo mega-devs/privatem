@@ -784,7 +784,7 @@ export default {
 
 .dummy-form {
   overflow: auto;
-  margin-top: 1em;
+  margin-top: 9em;
   width: auto;
 }
 
@@ -1004,7 +1004,7 @@ export default {
 }
 
 .btn-delete {
-  margin-top: 1em;
+  margin-top: 9em;
   margin-bottom: 1em;
 }
 
@@ -1013,7 +1013,7 @@ export default {
 }
 
 .for-input {
-  margin-top: 1em;
+  margin-top: 9em;
 }
 
 .text-success {

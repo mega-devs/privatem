@@ -285,7 +285,7 @@ body, html {
 }
 
 .content {
-  border-right: 1px solid grey;
+  border-right: 2px solid grey;
   margin-top: 150px;
   height: calc(100vh - 100px);
 }
