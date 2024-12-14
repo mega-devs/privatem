@@ -71,6 +71,10 @@
                 <p>base</p>
                 <input v-model="base_form_imap" class="form-control" type="text" placeholder="Input email`s IMAP">
               </div>
+              <div>
+                <v-file-input class="panel-loader__settings-json " clearable label="Input settings.json" accept="File/json" @change="importSettings"></v-file-input>
+                <v-textarea class="panel-loader__url " label="Enter the settings fetch URL" v-model="fetchUrlInput" variant="outlined"></v-textarea>
+              </div>
             </div>
 
           </div>
@@ -198,6 +202,7 @@ export default {
       allowedImapStatuses: ['checked'],
       imapsData: [],
       smtpsData: [],
+      settingsFileContent: null,
       proxiesData: [],
       selectedBases: {},
       domainsData: [],
@@ -320,7 +325,8 @@ export default {
       formType: 'main',
       currentPassword: '',
       newPassword: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      fetchUrlInput: '',
     };
   },
   computed: {
@@ -387,6 +393,25 @@ export default {
       } else {
         alert('Invalid input!')
       }
+    },
+    importSettings(event) {
+      const file = event.target.files[0];
+      if (!file) {
+        this.errorSub = 'No file selected';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          this.settingsFileContent = JSON.parse(e.target.result);
+        } catch (err) {
+          this.errorSub = 'Invalid JSON file';
+          console.error('JSON parse error:', err);
+        }
+      };
+
+      reader.readAsText(file);
     },
     loadSelectionSMTP() {
       this.selectedSmtps = JSON.parse(localStorage.getItem('selectedSmtps') || '[]');
@@ -550,6 +575,30 @@ export default {
         }
       })
       this.errorCheck = null
+      const currentSessionName = this.getCurrentSessionName();
+
+      if (this.settingsFileContent || this.fetchUrlInput) {
+        const settingsData = this.settingsFileContent || {};
+        if (this.fetchUrlInput) {
+          settingsData.fetch_url = this.fetchUrlInput;
+        }
+
+        axios.post(`${import.meta.env.VITE_BACK_URL}/api/update/settings_from_json`, {
+          token: token,
+          session: currentSessionName,
+          json_data: settingsData
+        }).then(res => {
+          if (res.data.status === 'success') {
+            location.reload();
+          } else {
+            this.errorSub = res.data.error;
+          }
+        }).catch(error => {
+          this.errorSub = 'An error occurred during settings import.';
+          console.error('Settings import error:', error);
+        });
+      }
+
       if (this.selectedProxy && this.selectedSmtp && this.base_form_imap) {
         this.can_run = false
         axios.post(`${import.meta.env.VITE_BACK_URL}/api/settings`, {
