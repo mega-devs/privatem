@@ -31,3 +31,4 @@ jobs:
       - name: Build and start Docker containers on server
         run: |
           ssh -o StrictHostKeyChecking=no root@192.153.57.168 'cd /root/privatem && docker-compose pull && docker-compose up -d'
+
