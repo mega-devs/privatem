@@ -12,21 +12,16 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th v-for="item in data" scope="col"></th>
-                                <th scope="col"></th>
+                                <th v-for="item in columns" scope="col">{{ item }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="item in data">
                                 <td v-for="info in item">{{info}}</td>
-                                <td><button @click.prevent="del($event, item[0])" type="button" class="btn btn-danger"><i class="bi bi-dash"></i></button></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" @click="closeModal" class="btn btn-primary">Close</button>
                 </div>
                 </div>
             </div>
@@ -42,29 +37,12 @@ export default {
         return {
             show: false,
             data: null,
+            columns: null,
         }
     },
     methods: {
         closeModal: function () {
             this.show = false
-        },
-        del(event, id) {
-            let token = ''
-            let cookies = document.cookie.split(";")
-            cookies.forEach(cookie => {
-                if (cookie.includes('authToken')) {
-                    token = cookie.split("=")[1];
-                }
-            })
-            axios.post(`${import.meta.env.VITE_BACK_URL}/api/del/material/id`, {token: token, id: id}).then(res => {
-                let toDel
-                for (let i = 0; i < this.data.length; i++) {
-                    if (this.data[i][0] == id) {
-                        toDel = this.data[i]
-                    }
-                }
-                this.data = this.data.filter(item => item !== toDel);
-            })
         }
     }
 }

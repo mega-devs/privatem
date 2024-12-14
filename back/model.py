@@ -594,7 +594,7 @@ def getTblSub(id, type, item):
         database=config.DBdatabase
     )
     cursor = connection.cursor()
-    if type not in ['templates', 'dummy', 'bases']:
+    if type not in ['templates', 'dummy', 'bases', 'proxies']:
         return 'Wrong type!'
     if type == 'templates':
         if item not in ['template', 'froms', 'subject', '*']:
@@ -611,6 +611,11 @@ def getTblSub(id, type, item):
             return 'Wrong item!'
         else:
             cursor.execute(f"SELECT {item} FROM `{type}` WHERE base_id='{id}';")
+    if type == 'proxies':
+        if item not in ['*']:
+            return 'Wrong item!'
+        else:
+            cursor.execute(f"SELECT {item} FROM `{type}` WHERE id='{id}';")
     result = cursor.fetchall()
     return result
 

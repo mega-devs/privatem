@@ -25,7 +25,7 @@
         </div>
       </div>
       <div style="display: grid; grid-template-columns: auto min-content; height: min-content; grid-gap: 16px;">
-        <v-select label="Check proxies" :items="allowedStatuses" />
+        <v-select v-model="check_file" label="Check proxies" :items="allowedStatuses" />
         <v-btn v-if="can_check" @click="checkSubmit" class="btn btn-primary">Submit</v-btn>
         <p v-else>Please wait!</p>
       </div>
@@ -101,7 +101,7 @@ export default {
         },
         {
           title: 'DELETE', data: 'id', render: (data) => {
-            return `<button class="btn btn-danger btn-delete-proxy" data-action="delete" data-id="${data}">-</button>`;
+            return `<button class="btn btn-danger btn-delete-proxy" data-action="delete" data-id="${data}"><i class="bi bi-dash"></i></button>`;
           }
         },
         {
@@ -171,6 +171,7 @@ export default {
           if (res.data.data === 'error') {
             this.errorSub = res.data.error;
           }
+          this.getMaterials()
         }).catch(error => {
           this.errorSub = 'An error occurred during submission.';
           console.error('Submission error:', error);
@@ -282,13 +283,13 @@ export default {
       }
     },
     view(id) {
-      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/materials/${id}`).then(res => {
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/materials/${id}/proxies/*`).then(res => {
         let modalData = []
         res.data.forEach(el => {
-          delete el[1]
-          modalData.push(el)
+          modalData.push()
         })
         this.$refs.modal.data = res.data
+        this.$refs.modal.columns = ['ID', 'PROXY', 'PORT', 'STATUS', 'SESSION']
         this.$refs.modal.show = true
       })
     },
@@ -323,7 +324,7 @@ export default {
           });
     },
     addLogEntry(logEntry) {
-      // this.logs.push(logEntry);
+      // this.logs.push(logEntry);check_file
       // this.$nextTick(() => {
       //   const consoleOutput = this.$refs.consoleOutput;
       //   if (consoleOutput) {
@@ -332,13 +333,16 @@ export default {
       // });
     },
     handleClick(event) {
-      const action = event.target.getAttribute('data-action');
-      const id = event.target.getAttribute('data-id');
+      const action = event.target.getAttribute('data-action') || event.target.parentElement.getAttribute('data-action');
+      const id = event.target.getAttribute('data-id') || event.target.parentElement.getAttribute('data-id');
 
       if (action === 'view') {
         this.view(id);
       } else if (action === 'delete') {
         this.del(id);
+      } else if (action === 'check') {
+        this.check_file = id
+        this.checkSubmit()
       }
     },
     fetchLogs() {
