@@ -3,8 +3,8 @@
     <template #content>
       <TwoConsoleComponent :logs="logs" :mailing_logs="mailing_logs" @delete-log="deleteLog()" />
       <div class="smtp-panel">
-        <v-file-input class="smtp-panel__txt" clearable label="Input SMTPs.txt or csv" accept="text file/txt" @change="fileUpload"></v-file-input>
-        <v-file-input class="smtp-panel__zip" clearable label="Input SMTPs.zip" accept="archive file/zip" @change="fileUpload"></v-file-input>
+        <v-file-input id="SMTPsTxtFileUpload" class="smtp-panel__txt" clearable label="Input SMTPs.txt or csv" accept="text file/txt" @change="fileUpload"></v-file-input>
+        <v-file-input id="SMTPsZipFileUpload" class="smtp-panel__zip" clearable label="Input SMTPs.zip" accept="archive file/zip" @change="fileUpload"></v-file-input>
         <v-textarea class="smtp-panel__input " label="Enter multiple SMTPs separated by new lines" v-model="smtpTextInput" variant="outlined"></v-textarea>
         <div class="smtp-panel__btns">
           <v-btn @click="submit()" class="btn btn-primary">Submit</v-btn>
@@ -237,7 +237,6 @@ export default {
           fileName: this.fileName || ''
         }).then(res => {
           this.getMaterials();
-          this.$refs.inputEl1.value = '';
           this.smtpTextInput = '';
           if (res.data.data === 'error') {
             this.errorSub = res.data.error;
@@ -279,14 +278,13 @@ export default {
       const file = event.target.files[0];
       this.fileName = file.name;
 
-      if (event.target.getAttribute('id') === 'formFile1') {
+      if (event.target.getAttribute('id') === 'SMTPsTxtFileUpload') {
         file.arrayBuffer().then((buffer) => {
           const bufferByteLength = buffer.byteLength;
           const bufferUint8Array = new Uint8Array(buffer, 0, bufferByteLength);
           this.file = new TextDecoder().decode(bufferUint8Array);
         });
-      } else if (event.target.getAttribute('id') === 'formFile2') {
-        this.$refs.inputEl1.value = '';
+      } else if (event.target.getAttribute('id') === 'SMTPsZipFileUpload') {
         file.arrayBuffer().then((buffer) => {
           const zip = new JSZip();
           zip.loadAsync(buffer).then((zip) => {

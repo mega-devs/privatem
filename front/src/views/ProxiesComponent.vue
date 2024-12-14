@@ -9,8 +9,6 @@
             <v-file-input id="proxiesTxtFileUpload" class="panel-loader__proxies-txt " clearable label="Input proxies.txt" accept="text file/txt" @change="fileUpload"></v-file-input>
             <v-file-input id="proxiesZipFileUpload" class="panel-loader__proxies-zip " clearable label="Input proxies.zip" accept="Archice/zip" @change="fileUpload"></v-file-input>
             <v-textarea class="panel-loader__proxies " label="Enter multiple proxies separated by new lines" v-model="proxyTextInput" variant="outlined"></v-textarea>
-            <v-file-input class="panel-loader__settings-json " clearable label="Input settings.json" accept="File/json" @change="importSettings"></v-file-input>
-            <v-textarea class="panel-loader__url " label="Enter the fetch URL" v-model="fetchUrlInput" variant="outlined"></v-textarea>
             <div class="panel-loader__btns">
               <v-btn @click="submit()" class="btn btn-primary">Submit</v-btn>
               <v-btn @click="exportData()" class="btn btn-primary">Export to TXT</v-btn>
@@ -101,18 +99,16 @@ export default {
         },
         {
           title: 'DELETE', data: 'id', render: (data) => {
-            return `<button class="btn btn-danger btn-delete-proxy" data-action="delete" data-id="${data}"><i class="bi bi-dash"></i></button>`;
+            return `<button class="btn btn-danger btn-delete-proxy" data-action="delete" data-id="${data}"><i class="bi bi-trash"></i></button>`;
           }
         },
         {
           title: 'Check', data: 'id', render: (data) => {
-            return `<button class="btn btn-info" data-action="check" data-id="${data}"><i class="bi bi-dash"></i></button>`;
+            return `<button class="btn btn-info" data-action="check" data-id="${data}"><i class="bi bi-check-square-fill"></i></button>`;
           }
         }
       ],
       tableClasses: 'table text-start align-middle table-bordered table-hover mb-0',
-      fetchUrlInput: '',
-      settingsFileContent: null,
     }
   },
   methods: {
@@ -177,29 +173,6 @@ export default {
           console.error('Submission error:', error);
         });
       }
-
-      if (this.settingsFileContent || this.fetchUrlInput) {
-        const settingsData = this.settingsFileContent || {};
-        if (this.fetchUrlInput) {
-          settingsData.fetch_url = this.fetchUrlInput;
-        }
-
-        axios.post(`${import.meta.env.VITE_BACK_URL}/api/update/settings_from_json`, {
-          token: token,
-          session: currentSessionName,
-          json_data: settingsData
-        }).then(res => {
-          if (res.data.status === 'success') {
-            location.reload();
-          } else {
-            this.errorSub = res.data.error;
-          }
-        }).catch(error => {
-          this.errorSub = 'An error occurred during settings import.';
-          console.error('Settings import error:', error);
-        });
-      }
-
       this.getMaterials();
       this.proxyTextInput = '';
     },
@@ -423,25 +396,7 @@ export default {
       a.click();
       window.URL.revokeObjectURL(url);
     },
-    importSettings(event) {
-      const file = event.target.files[0];
-      if (!file) {
-        this.errorSub = 'No file selected';
-        return;
-      }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          this.settingsFileContent = JSON.parse(e.target.result);
-        } catch (err) {
-          this.errorSub = 'Invalid JSON file';
-          console.error('JSON parse error:', err);
-        }
-      };
-
-      reader.readAsText(file);
-    },
     formatTime(timestamp) {
       // Split the timestamp to get the time part
       const timePart = timestamp.split(' ')[1]; // Get the part after the date
