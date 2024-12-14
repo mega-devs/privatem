@@ -101,7 +101,7 @@ export default {
         },
         {
           title: 'DELETE', data: 'id', render: (data) => {
-            return `<button class="btn btn-danger" data-action="delete" data-id="${data}"><i class="bi bi-dash"></i></button>`;
+            return `<button class="btn btn-danger btn-delete-proxy" data-action="delete" data-id="${data}">-</button>`;
           }
         },
         {
