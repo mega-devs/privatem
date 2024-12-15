@@ -416,7 +416,6 @@ def check_smtp(socket, session, smtp_id):
 
 
 def check_imaps(socket, session, imap_id, proxy_id, timeout):
-    timeout = 5
     if not try_float(timeout):
         timeout = 45
     else:

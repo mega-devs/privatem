@@ -5,25 +5,6 @@
       <PanelInputFileTextButtonComponent @submit="submit" @export="exportToTxt" @upload="fileUpload" v-model="imapTextInput" what="IMAPs"/>
       <p class="text-danger">{{ errorSub }}</p>
       <div class="container-fluid dummy-form">
-      <div class="row">
-        <div class="col-lg-6">
-          <div class="row">
-            
-            <div class="col-lg-6 mb-3">
-              <label for="formText" class="form-label labelnew">Input IMAPs</label>
-              <textarea ref="inputEl3" class="form-control" id="formText" v-model="imapTextInput"
-                        placeholder="Enter multiple IMAPs separated by new lines"></textarea>
-            </div>
-          </div>
-          <button type="button" @click.prevent="submit" class="btn btn-primary">Submit</button>&nbsp;
-          <button type="button" @click.prevent="exportToTxt" class="btn btn-primary">Export to TXT</button>
-          
-        </div>
-        <div class="col-lg-12">
-          <DataTable :data="imapsData" :columns="imapsColumns" :class="tableClasses" @click="handleClick">
-          </DataTable>
-        </div>
-      </div>
       <div>
         <br>
         <hr>
@@ -142,12 +123,12 @@ export default {
         },
         {
           title: 'DELETE', data: 'id', render: (data) => {
-            return `<button class="btn btn-danger" data-action="delete" data-id="${data}"><i class="bi bi-dash"></i></button>`;
+            return `<button class="btn btn-danger" data-action="delete" data-id="${data}"><i class="bi bi-trash"></i></button>`;
           }
         },
         {
           title: 'Check B/L', data: 'id', render: (data) => {
-            return `<button class="btn btn-info" data-action="checkIMAP" data-id="${data}"><i class="bi bi-check"></i></button>`;
+            return `<button class="btn btn-info" data-action="checkIMAP" data-id="${data}"><i class="bi bi-check-square-fill"></i></button>`;
           }
         }
       ],
@@ -244,8 +225,8 @@ export default {
           });
     },
     handleClick(event) {
-      const action = event.target.getAttribute('data-action');
-      const id = event.target.getAttribute('data-id');
+      const action = event.target.getAttribute('data-action') || event.target.parentElement.getAttribute('data-action');
+      const id = event.target.getAttribute('data-id') || event.target.parentElement.getAttribute('data-id');
 
       if (action === 'view') {
         this.view(id);
@@ -288,7 +269,6 @@ export default {
           fileName: this.fileName || ''
         }).then(res => {
           this.getMaterials();
-          this.$refs.inputEl1.value = '';
           this.imapTextInput = '';
           if (res.data.data === 'error') {
             this.errorSub = res.data.error;
@@ -334,13 +314,11 @@ export default {
       });
     },
     fileUpload(event) {
-      if (event.target.getAttribute('id') == 'formFile1') {
-        event.target.files[0].arrayBuffer().then((buffer) => {
-          const bufferByteLength = buffer.byteLength;
-          const bufferUint8Array = new Uint8Array(buffer, 0, bufferByteLength);
-          this.file = new TextDecoder().decode(bufferUint8Array);
-        });
-      }
+      event.target.files[0].arrayBuffer().then((buffer) => {
+        const bufferByteLength = buffer.byteLength;
+        const bufferUint8Array = new Uint8Array(buffer, 0, bufferByteLength);
+        this.file = new TextDecoder().decode(bufferUint8Array);
+      });
     },
     view(id) {
       axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/materials/${id}`).then(res => {
