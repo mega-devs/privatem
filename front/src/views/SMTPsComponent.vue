@@ -94,12 +94,13 @@ export default {
       log_valid: null,
       check_file: null,
       check_file_name: null,
+      timeout: null,
       log_progress: null,
       errorCheck: null,
       smtpTextInput: '',
       mailing_logs: [],
       logs: [],
-      imapsData: [],
+      imaps: [],
       selectedImap: "",
       smtpsData: [],
       allowedStatuses: ['all', 'inbox', 'junk', 'dead', 'none', 'checked'],
@@ -156,10 +157,12 @@ export default {
       return Object.keys(obj).length === 0;
     },
     fetchImaps() {
-      axios.get(`${import.meta.env.VITE_BACK_URL}/api/imaps`)
+      const currentSessionName = this.getCurrentSessionName()
+      axios.get(`${import.meta.env.VITE_BACK_URL}/api/get/list/imaps/${currentSessionName}`)
           .then(response => {
-            if (response.data && response.data.status === 'success') {
-              this.imaps = response.data.imaps;
+            if (response.data) {
+              console.log(`Imaps: ${response.data}`)
+              this.imaps = response.data;
             }
           })
           .catch(error => {
@@ -202,8 +205,8 @@ export default {
       return name ? name.split('=')[1] : null;
     },
     handleClick(event) {
-      const action = event.target.getAttribute('data-action');
-      const id = event.target.getAttribute('data-id');
+      const action = event.target.getAttribute('data-action') || event.target.parentElement.getAttribute('data-action');
+      const id = event.target.getAttribute('data-id') || event.target.parentElement.getAttribute('data-id');
 
       if (action === 'view') {
         this.view(id);
@@ -394,9 +397,9 @@ export default {
     },
     checkSubmit() {
 
-      console.log('Check file:', this.check_file);
+      console.log('SMTP id:', this.selectedSmtp);
       console.log('Timeout:', this.timeout);
-      console.log('Proxy form:', this.proxy_form);
+      console.log('Proxy id:', this.selectedProxy);
 
       this.logs = [];
       let token = '';
@@ -407,14 +410,14 @@ export default {
       });
       this.errorCheck = null;
 
-      if (this.check_file && this.timeout && this.proxy_form) {
+      if (this.selectedSmtp && this.timeout && this.selectedProxy) {
         this.can_check = false;
 
         axios.post(`${import.meta.env.VITE_BACK_URL}/api/check/smtp`, {
           token: token,
           session: this.getCurrentSessionName(),
-          smtp_id: this.check_file,
-          proxy_id: this.proxy_form,
+          smtp_id: this.selectedSmtp,
+          proxy_id: this.selectedProxy,
           timeout: this.timeout,
         }).then(res => {
           if (res.data.data == 'success') {

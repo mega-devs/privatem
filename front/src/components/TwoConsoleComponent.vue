@@ -37,9 +37,11 @@ export default {
     methods: {
         formatTime(timestamp) {
             // Split the timestamp to get the time part
-            const timePart = timestamp.split(' ')[1]; // Get the part after the date
-            const [time] = timePart.split(','); // Remove milliseconds if present
-            return time; // Return only hh:mm:ss
+            if (timestamp){
+              const timePart = timestamp.split(' ')[1]; // Get the part after the date
+              const [time] = timePart.split(','); // Remove milliseconds if present
+              return time; // Return only hh:mm:ss
+            }
         },
     },
     emits: ['deleteLog'],
