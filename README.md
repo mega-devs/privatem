@@ -1,6 +1,6 @@
 # proto
 
-# dcoker commands
+# Docker commands
 
 ```
     docker-compose up --build
@@ -10,9 +10,6 @@
 ```
 ```
     docker start $(docker ps -aq)
-```
-```
-    docker start <name of backend container>
 ```
 
 # Important 
